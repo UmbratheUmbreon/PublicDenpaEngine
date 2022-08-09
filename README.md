@@ -4,12 +4,19 @@ The Public Denpa Engine Repo. Will be updated occasionally, but only when an act
 ## Credits
 
 -[BlueVapor1234] Guy who did most of the programming
+
 -[Toadette8394] Person who did a lot of helping with programming
+
 -[ThriftySoles] Guy who did OVERDOSE and various misc. arts and music for the engine
+
 -[Bethany Clone] Person who helped program some stuff
+
 -[Box] Person who helps optimize the engine
+
 -[Elecytophyll II] Person who provides ideas and some programming
+
 -[Jorge] Person who got the crossfade code and helped get it working
+
 -[Megaverse] Person who made the title sceen music
 
 ## Credits to Psych
