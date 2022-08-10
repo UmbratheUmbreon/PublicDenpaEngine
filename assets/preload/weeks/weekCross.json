@@ -1,0 +1,20 @@
+{
+	"songs": [
+		["Gospel X", "sarvente-lucifer", [218, 49, 124]]
+	],
+
+	"weekCharacters": [
+		"",
+		"",
+		""
+	],
+	"weekBackground": "stage",
+
+	"storyName": "Hell Yeah",
+	"weekBefore": "tutorial",
+	"weekName": "Week Cross",
+	"startUnlocked": true,
+
+	"hideStoryMode": false,
+	"hideFreeplay": false
+}

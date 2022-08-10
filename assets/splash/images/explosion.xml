@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="explosion.png">
+<SubTexture name="kaboom0000" x="0" y="0" width="175" height="235" frameX="-17" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0001" x="175" y="0" width="150" height="213" frameX="-19" frameY="-3" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0002" x="325" y="0" width="145" height="224" frameX="-19" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0003" x="470" y="0" width="139" height="232" frameX="-19" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0004" x="609" y="0" width="128" height="244" frameX="-22" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0005" x="0" y="244" width="153" height="250" frameX="-19" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0006" x="153" y="244" width="130" height="29" frameX="-31" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0007" x="283" y="244" width="3" height="3" frameX="-166" frameY="-15" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0008" x="286" y="244" width="32" height="34" frameX="-81" frameY="-122" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0009" x="318" y="244" width="105" height="94" frameX="-33" frameY="-85" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0010" x="0" y="494" width="122" height="156" frameX="-28" frameY="-34" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0011" x="122" y="494" width="147" height="221" frameX="-22" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0012" x="269" y="494" width="170" height="204" frameX="-19" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0013" x="439" y="494" width="161" height="201" frameX="-22" frameY="-6" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0014" x="600" y="494" width="178" height="221" frameX="-22" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0015" x="0" y="715" width="183" height="233" frameX="-17" frameY="0" frameWidth="200" frameHeight="250" />
+<SubTexture name="kaboom0016" x="183" y="715" width="175" height="227" frameX="-17" frameY="0" frameWidth="200" frameHeight="250" />
+</TextureAtlas>

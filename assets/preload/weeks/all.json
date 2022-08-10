@@ -1,0 +1,37 @@
+{
+	"songs": [
+		["Bopeebo", "dad", [146, 113, 253]],
+		["Fresh", "dad", [146, 113, 253]],
+		["Dad Battle", "dad", [146, 113, 253]],
+		["Spookeez", "spooky", [34, 51, 68]],
+		["South", "spooky", [34, 51, 68]],
+		["Monster", "monster", [34, 51, 68]],
+		["Pico", "pico", [148, 22, 83]],
+		["Philly Nice", "pico", [148, 22, 83]],
+		["Blammed", "pico", [148, 22, 83]],
+		["Satin Panties", "mom", [252, 150, 215]],
+		["High", "mom", [252, 150, 215]],
+		["Milf", "mom", [252, 150, 215]],
+		["Cocoa", "parents", [160, 209, 255]],
+		["Eggnog", "parents", [160, 209, 255]],
+		["Winter Horrorland", "monster", [160, 209, 255]],
+		["Senpai", "senpai-pixel", [255, 120, 191]],
+		["Roses", "senpai-pixel", [255, 120, 191]],
+		["Thorns", "spirit-pixel", [255, 120, 191]]
+	],
+
+	"weekCharacters": [
+		"dad",
+		"bf",
+		"gf"
+	],
+	"weekBackground": "stage",
+
+	"storyName": "Do Them All!",
+	"weekBefore": "tutorial",
+	"weekName": "All",
+	"startUnlocked": true,
+
+	"hideStoryMode": false,
+	"hideFreeplay": true
+}
