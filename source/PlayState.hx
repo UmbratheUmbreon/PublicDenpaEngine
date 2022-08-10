@@ -1914,7 +1914,7 @@ class PlayState extends MusicBeatState
 		//in create(), this does the actual tinting
 		if (SONG.tintRed != null && SONG.tintGreen != null && SONG.tintBlue != null) {
 			if(SONG.tintRed != 255 && SONG.tintGreen != 255 && SONG.tintBlue != 255) {
-				var tint:FlxSprite = new FlxSprite(-500,-500).makeGraphic(FlxG.width*4,FlxG.width*4,FlxColor.WHITE);
+				var tint:FlxSprite = new FlxSprite(-2000,-2000).makeGraphic(FlxG.width*6,FlxG.width*6,FlxColor.WHITE);
 				tint.scrollFactor.set();
 				tint.alpha = 0.5;
 				tint.blend = BlendMode.MULTIPLY;
@@ -5338,6 +5338,8 @@ class PlayState extends MusicBeatState
 	public function finishSong(?ignoreNoteOffset:Bool = false):Void
 	{
 		var finishCallback:Void->Void = endSong; //In case you want to change it in a specific song.
+
+		PauseSubState.transferPlayState = false;
 
 		updateTime = false;
 		FlxG.sound.music.volume = 0;

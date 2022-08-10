@@ -1720,12 +1720,11 @@ class ChartingState extends MusicBeatState
 
 	var lastConductorPos:Float;
 	var colorSine:Float = 0;
+	var coolColor:FlxColor;
 	override function update(elapsed:Float)
 	{
 		curStep = recalculateSteps();
 
-		var coolColor = FlxColor.fromInt(CoolUtil.dominantColor(leftIcon)); //whoever is on the left
-		coolColor = FlxColor.fromRGB(coolColor.red - 40,coolColor.green - 40,coolColor.blue - 40);
 		var newColor:Int = coolColor;
 		if(newColor != intendedColor) {
 			if(colorTween != null) {
@@ -2651,12 +2650,16 @@ class ChartingState extends MusicBeatState
 			leftIcon.changeIcon(healthIconP1);
 			rightIcon.changeIcon(healthIconP2);
 			if (_song.notes[curSection].gfSection) leftIcon.changeIcon('gf');
+			coolColor = FlxColor.fromInt(CoolUtil.dominantColor(leftIcon));
+			coolColor = FlxColor.fromRGB(coolColor.red - 40,coolColor.green - 40,coolColor.blue - 40);
 		}
 		else
 		{
 			leftIcon.changeIcon(healthIconP2);
 			rightIcon.changeIcon(healthIconP1);
 			if (_song.notes[curSection].gfSection) leftIcon.changeIcon('gf');
+			coolColor = FlxColor.fromInt(CoolUtil.dominantColor(leftIcon));
+			coolColor = FlxColor.fromRGB(coolColor.red - 40,coolColor.green - 40,coolColor.blue - 40);
 		}
 	}
 

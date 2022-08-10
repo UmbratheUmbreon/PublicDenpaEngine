@@ -23,10 +23,11 @@ class PauseSubState extends MusicBeatSubstate
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
 	var menuItems:Array<String> = [];
-	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Options Menu', 'Exit to menu'];
+	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', /*'Options Menu', */'Exit to menu'];
 	var difficultyChoices = [];
 	var curSelected:Int = 0;
 	public static var changedOptions:Bool = false;
+	public static var transferPlayState:Bool = false;
 
 	var pauseMusic:FlxSound;
 	var practiceText:FlxText;
@@ -249,17 +250,8 @@ class PauseSubState extends MusicBeatSubstate
 					menuItems = difficultyChoices;
 					regenMenu();
 				case "Options Menu":
-					menuItems = ['Gameplay', 'Graphics', 'Visuals', 'Back'];
-					regenMenu();
-				case 'Gameplay':
-					menuItems = ['Controller Mode', 'Downscroll', 'Middlescroll', 'Ghost Tapping', 'No Antimash', 'Disable Reset Button', 'Orbs Gathered', 'Random Mode', 'Back'];
-					regenMenu();
-				case 'Graphics':
-					menuItems = ['Low Quality', 'Anti-Aliasing', 'Back'];
-					regenMenu();
-				case 'Visuals':
-					menuItems = ['Note Splashes', 'Watermarks', 'OG Healthbar', 'Ghost Tapping Miss Animation', 'Winning Icons', 'Autoswap Time Bar Colour', 'Hide HUD', 'Flashing Lights', 'Camera Zooms', 'Score Text Zoom on Hit', 'FPS Counter', 'Back'];
-					regenMenu();
+					transferPlayState = true;
+					LoadingState.loadAndSwitchState(new options.OptionsState());
 				case 'Toggle Practice Mode':
 					PlayState.instance.practiceMode = !PlayState.instance.practiceMode;
 					PlayState.changedDifficulty = true;
@@ -285,6 +277,7 @@ class PauseSubState extends MusicBeatSubstate
 						close();
 					}
 				case "End Song":
+					transferPlayState = false;
 					close();
 					PlayState.instance.finishSong(true);
 				case 'Toggle Botplay':
@@ -294,6 +287,7 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.instance.botplayTxt.alpha = 1;
 					PlayState.instance.botplaySine = 0;
 				case "Exit to menu":
+					transferPlayState = false;
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 					if(PlayState.isStoryMode) {
@@ -304,166 +298,6 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
-				case 'Controller Mode':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.controllerMode) {
-						ClientPrefs.controllerMode = false;
-					} else {
-						ClientPrefs.controllerMode = true;
-					}
-				case 'Downscroll':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.downScroll) {
-						ClientPrefs.downScroll = false;
-					} else {
-						ClientPrefs.downScroll = true;
-					}
-				case 'Middlescroll':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.middleScroll) {
-						ClientPrefs.middleScroll = false;
-					} else {
-						ClientPrefs.middleScroll = true;
-					}
-				case 'No Antimash':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.noAntimash) {
-						ClientPrefs.noAntimash = false;
-					} else {
-						ClientPrefs.noAntimash = true;
-					}
-				case 'Disable Reset Button':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.noReset) {
-						ClientPrefs.noReset = false;
-					} else {
-						ClientPrefs.noReset = true;
-					}
-				case 'Orbs Gathered':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.orbsScattered) {
-						ClientPrefs.orbsScattered = false;
-					} else {
-						ClientPrefs.orbsScattered = true;
-					}
-				case 'Random Mode':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.randomMode) {
-						ClientPrefs.randomMode = false;
-					} else {
-						ClientPrefs.randomMode = true;
-					}
-				case 'Low Quality':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.lowQuality) {
-						ClientPrefs.lowQuality = false;
-					} else {
-						ClientPrefs.lowQuality = true;
-					}
-				case 'Anti-Aliasing':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.globalAntialiasing) {
-						ClientPrefs.globalAntialiasing = false;
-					} else {
-						ClientPrefs.globalAntialiasing = true;
-					}
-				case 'Note Splashes':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.noteSplashes) {
-						ClientPrefs.noteSplashes = false;
-					} else {
-						ClientPrefs.noteSplashes = true;
-					}
-				case 'Watermarks':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.watermarks) {
-						ClientPrefs.watermarks = false;
-					} else {
-						ClientPrefs.watermarks = true;
-					}
-				case 'OG Healthbar':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.greenhp) {
-						ClientPrefs.greenhp = false;
-					} else {
-						ClientPrefs.greenhp = true;
-					}
-				case 'Ghost Tapping Miss Animation':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.gsmiss) {
-						ClientPrefs.gsmiss = false;
-					} else {
-						ClientPrefs.gsmiss = true;
-					}
-				case 'Winning Icons':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.winningicons) {
-						ClientPrefs.winningicons = false;
-					} else {
-						ClientPrefs.winningicons = true;
-					}
-				case 'Autoswap Time Bar Colour':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.changeTBcolour) {
-						ClientPrefs.changeTBcolour = false;
-					} else {
-						ClientPrefs.changeTBcolour = true;
-					}
-				case 'Hide HUD':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.hideHud) {
-						ClientPrefs.hideHud = false;
-					} else {
-						ClientPrefs.hideHud = true;
-					}
-				case 'Flashing Lights':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.flashing) {
-						ClientPrefs.flashing = false;
-					} else {
-						ClientPrefs.flashing = true;
-					}
-				case 'Camera Zooms':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.camZooms) {
-						ClientPrefs.camZooms = false;
-					} else {
-						ClientPrefs.camZooms = true;
-					}
-				case 'Score Text Zoom on Hit':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.scoreZoom) {
-						ClientPrefs.scoreZoom = false;
-					} else {
-						ClientPrefs.scoreZoom = true;
-					}
-				case 'FPS Counter':
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					changedOptions = true;
-					if (ClientPrefs.showFPS) {
-						ClientPrefs.showFPS = false;
-					} else {
-						ClientPrefs.showFPS = true;
-					}
 			}
 		}
 	}

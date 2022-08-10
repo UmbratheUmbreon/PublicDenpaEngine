@@ -113,11 +113,6 @@ class CharacterEditorState extends MusicBeatState
 	var healthBarBGM:FlxSprite;
 	var healthBarBGB:FlxSprite;
 
-	var bpm:Int = 1;
-	var totalBeats:Int = 0;
-	var resetToMinute:Int = ClientPrefs.framerate*60;
-	var minute:Int = ClientPrefs.framerate*60;
-
 	override function create()
 	{
 		var musicID:Int = FlxG.random.int(0, 2);
@@ -125,13 +120,13 @@ class CharacterEditorState extends MusicBeatState
 		{
 			case 0:
 				FlxG.sound.playMusic(Paths.music('shop'), 0.5);
-				bpm = 143;
+				Conductor.changeBPM(143);
 			case 1:
 				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
-				bpm = 108;
+				Conductor.changeBPM(108);
 			case 2:
 				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
-				bpm = 118;
+				Conductor.changeBPM(118);
 		}
 		//FlxG.sound.playMusic(Paths.music('breakfast'), 0.5);
 
@@ -1180,7 +1175,7 @@ class CharacterEditorState extends MusicBeatState
 
 		singDurationStepper = new FlxUINumericStepper(15, imageInputText.y + 45, 0.1, 4, 0, 999, 1);
 
-		scaleStepper = new FlxUINumericStepper(15, singDurationStepper.y + 40, 0.1, 1, 0.05, 10, 1);
+		scaleStepper = new FlxUINumericStepper(15, singDurationStepper.y + 40, 0.1, 1, 0.05, 20, 1);
 
 		flipXCheckBox = new FlxUICheckBox(singDurationStepper.x + 80, singDurationStepper.y, null, null, "Flip X", 50);
 		flipXCheckBox.checked = char.flipX;
@@ -1951,15 +1946,13 @@ class CharacterEditorState extends MusicBeatState
 			textAnim.text = '';
 		}
 
-		if(minute > 0){
-			minute -= bpm;
-		} else {
-			daBeat();
-			minute = resetToMinute;
-		}
-
-		FlxG.watch.addQuick("timeTillBeat", minute);
-		FlxG.watch.addQuick("totalBeats", totalBeats);
+		if (FlxG.sound.music.volume < 0.7)
+			{
+				FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+			}
+	
+		if (FlxG.sound.music != null)
+			Conductor.songPosition = FlxG.sound.music.time;
 
 		if(stageDropDown.selectedLabel != currentStage) {
 			currentStage = stageDropDown.selectedLabel;
@@ -2010,13 +2003,13 @@ class CharacterEditorState extends MusicBeatState
 				FlxG.camera.zoom = 1;
 			}
 
-			if (FlxG.keys.pressed.E && FlxG.camera.zoom < 3) {
+			if (FlxG.keys.pressed.E && FlxG.camera.zoom < 6) {
 				FlxG.camera.zoom += elapsed * FlxG.camera.zoom;
-				if(FlxG.camera.zoom > 3) FlxG.camera.zoom = 3;
+				if(FlxG.camera.zoom > 6) FlxG.camera.zoom = 6;
 			}
-			if (FlxG.keys.pressed.Q && FlxG.camera.zoom > 0.1) {
+			if (FlxG.keys.pressed.Q && FlxG.camera.zoom > 0.01) {
 				FlxG.camera.zoom -= elapsed * FlxG.camera.zoom;
-				if(FlxG.camera.zoom < 0.1) FlxG.camera.zoom = 0.1;
+				if(FlxG.camera.zoom < 0.01) FlxG.camera.zoom = 0.01;
 			}
 
 			if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L)
@@ -2203,9 +2196,9 @@ class CharacterEditorState extends MusicBeatState
 		return text;
 	}
 
-	override function daBeat()
+	override function beatHit()
 		{
-			super.daBeat();
+			super.beatHit();
 
 			if(!ClientPrefs.lowQuality){
 				gf.dance();
@@ -2233,6 +2226,5 @@ class CharacterEditorState extends MusicBeatState
 						if(bgGirls != null) bgGirls.dance();
 				}
 			}
-			totalBeats += 1;
 		}
 }
