@@ -23,7 +23,7 @@ class PauseSubState extends MusicBeatSubstate
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
 	var menuItems:Array<String> = [];
-	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', /*'Options Menu', */'Exit to menu'];
+	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Replay Cutscene', 'Change Difficulty', 'Options Menu', 'Exit to menu'];
 	var difficultyChoices = [];
 	var curSelected:Int = 0;
 	public static var changedOptions:Bool = false;
@@ -258,6 +258,9 @@ class PauseSubState extends MusicBeatSubstate
 					practiceText.visible = PlayState.instance.practiceMode;
 				case "Restart Song":
 					restartSong();
+				case "Replay Cutscene":
+					PlayState.seenCutscene = false;
+					restartSong();
 				case "Leave Charting Mode":
 					restartSong();
 					PlayState.chartingMode = false;
@@ -296,6 +299,7 @@ class PauseSubState extends MusicBeatSubstate
 						MusicBeatState.switchState(new FreeplayState());
 					}
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					Conductor.changeBPM(100);
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
 			}

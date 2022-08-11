@@ -64,6 +64,14 @@ class MiscSettingsSubState extends BaseOptionsMenu
 			['Mid-Fight Masses', 'Static', 'Eccentric', 'Off']);
 		addOption(option);
 
+		var option:Option = new Option('Cutscenes:',
+			'When do you want cutscenes to play?',
+			'cutscenes',
+			'string',
+			'Story Mode Only',
+			['Story Mode Only', 'Freeplay Only', 'Always', 'Never']);
+		addOption(option);
+
 		var option:Option = new Option('Orbs Gathered',
 			'Keep them scattered!',
 			'orbsScattered',

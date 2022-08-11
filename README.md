@@ -119,6 +119,10 @@ The Public Denpa Engine Repo. Will be updated occasionally, but only when an act
 
 -[Improved Icons] This one only really applies to the icons without losing states, like the pixel ones and GF.
 
+-[Pause Menu Options] Ever wanted to tweak your settings without having to back out of the song? Well now with this [Exact Duplicate of the Options Menu] you can change your options on the fly! (Note: Song will be automatically reloaded when you do this!!!)
+
+-[Cutscene Options] Cutscenes are cool and all but what if you don't want to see them? Well Denpa Man has got you covered with options to specify when you want those cool cutscenes!
+
 And of course, all of Psych's 0.5.2h features (not 0.6+, that is GARBO)
 
 ## How to Build

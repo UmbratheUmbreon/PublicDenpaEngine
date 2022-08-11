@@ -58,6 +58,7 @@ class ClientPrefs {
 	public static var newHP:Bool = true;
 	public static var sarvAccuracy:Bool = false;
 	public static var comboPopup:Bool = true;
+	public static var cutscenes:String = 'Story Mode Only';
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 
@@ -257,6 +258,7 @@ class ClientPrefs {
 		FlxG.save.data.pauseMusic = pauseMusic;
 		FlxG.save.data.inputType = inputType;
 		FlxG.save.data.ratingIntensity = ratingIntensity;
+		FlxG.save.data.cutscenes = cutscenes;
 	
 		FlxG.save.flush();
 
@@ -494,6 +496,10 @@ class ClientPrefs {
 			{
 				changeTBcolour = FlxG.save.data.changeTBcolour;
 			}		
+		if (FlxG.save.data.cutscenes != null)
+			{
+				cutscenes = FlxG.save.data.cutscenes;
+			}
 
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');

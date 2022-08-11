@@ -26,7 +26,7 @@ using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
-	public static var denpaEngineVersion:String = '0.4.0d Nightly'; //This is also used for Discord RPC
+	public static var denpaEngineVersion:String = '0.4.0e Nightly'; //This is also used for Discord RPC
 	public static var curSelected:Int = 0;
 	public static var seenTween:Bool = false;
 

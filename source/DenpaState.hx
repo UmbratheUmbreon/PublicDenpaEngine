@@ -159,7 +159,7 @@ class DenpaState extends MusicBeatState
 					case 2:
 						//logo.kill();
 						//logo.destroy();
-						for (i in 0...79) {
+						for (i in 0...80) {
 							var logoPiece:FlxSprite = new FlxSprite().loadGraphic(Paths.image('loader/' + 'row-' + (i+1) + '-column-1'));
 							logoPiece.scrollFactor.set();
 							logoPiece.screenCenter();

@@ -97,6 +97,7 @@ class ChartingState extends MusicBeatState
 		['Play Animation', "Plays an animation on a Character,\nonce the animation is completed,\nthe animation changes to Idle\n\nValue 1: Animation to play.\nValue 2: Character (Dad, BF, GF)"],
 		['Screen Shake', "Value 1: Camera shake\nValue 2: HUD shake\n\nEvery value works as the following example: \"1, 0.05\".\nThe first number (1) is the duration.\nThe second number (0.05) is the intensity."],
 		['Set GF Speed', "Sets GF head bopping speed,\nValue 1: 1 = Normal speed,\n2 = 1/2 speed, 4 = 1/4 speed etc.\nUsed on Fresh during the beatbox parts.\n\nWarning: Value must be integer!"],
+		/*['Spacebar Dodge', "Places a dodge event.\nValue 1: Amount of dodges (max 3)."],*/
 		['Stage Tint', "Tints the stage a certain colour.\nValue 1: Intensity (Write as '0.number').\nValue 2: Duration (In seconds)."],
 		/*['Swap Hud', "Makes all the opponent stuff on the right, and player stuff on the left, or vice versa.\nValue 1: What side BF should be on. (Write as 'left' or 'right')."],*/
 		['Toggle Botplay', "Do I really need to explain this?\nValue 1: Type of toggle, 0 = Toggle, 1 = Turn Off, 2 = Turn On."],

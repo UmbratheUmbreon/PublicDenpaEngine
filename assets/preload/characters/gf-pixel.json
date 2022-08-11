@@ -1,14 +1,13 @@
 {
 	"animations": [
 		{
-			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"anim": "danceLeft",
+			"loop": false,
 			"fps": 24,
-			"name": "GF IDLE",
+			"anim": "danceLeft",
 			"indices": [
 				30,
 				0,
@@ -26,17 +25,17 @@
 				12,
 				13,
 				14
-			]
+			],
+			"name": "GF IDLE"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"anim": "danceRight",
+			"loop": false,
 			"fps": 24,
-			"name": "GF IDLE",
+			"anim": "danceRight",
 			"indices": [
 				15,
 				16,
@@ -53,18 +52,19 @@
 				27,
 				28,
 				29
-			]
+			],
+			"name": "GF IDLE"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"anim": "singUP",
+			"loop": false,
 			"fps": 24,
-			"name": "GF IDLE",
-			"indices": []
+			"anim": "singUP",
+			"indices": [],
+			"name": "GF IDLE"
 		}
 	],
 	"sarvente_floating": false,
@@ -80,13 +80,20 @@
 		0
 	],
 	"image": "characters/gfPixel",
+	"trail_length": null,
+	"trail_delay": null,
 	"position": [
 		0,
 		0
 	],
+	"trail_diff": null,
+	"trail_alpha": null,
+	"health_drain": false,
 	"healthicon": "gf",
+	"shake_screen": false,
+	"orbit": false,
 	"healthbar_count": 3,
-	"flip_x": true,
+	"flip_x": false,
 	"healthbar_colors": [
 		165,
 		0,
