@@ -69,7 +69,6 @@
 	<section if="PRELOAD_ALL">
 		<library name="songs"         preload="true" />
 		<library name="shared"        preload="true" />
-		<library name="gospel"        preload="true" />
 		<library name="splash"        preload="true" />
 		<library name="static"        preload="true" />
 		<library name="week2"         preload="true" />
@@ -83,7 +82,6 @@
 	<section if="NO_PRELOAD_ALL">
 		<library name="songs"         preload="false" />
 		<library name="shared"        preload="false" />
-		<library name="gospel"        preload="false" />
 		<library name="splash"        preload="false" />
 		<library name="static"        preload="false" />
 		<library name="week2"         preload="false" />
@@ -101,8 +99,6 @@
 	<assets path="assets/songs"         library="songs"         exclude="*.mp3" unless="web"/>
 	<assets path="assets/shared"        library="shared"        exclude="*.ogg" if="web"/>
 	<assets path="assets/shared"        library="shared"        exclude="*.mp3" unless="web"/>
-	<assets path="assets/gospel"        library="gospel"        exclude="*.ogg" if="web"/>
-	<assets path="assets/gospel"        library="gospel"        exclude="*.mp3" unless="web"/>
 	<assets path="assets/splash"        library="splash"        exclude="*.ogg" if="web"/>
 	<assets path="assets/splash"        library="splash"        exclude="*.mp3" unless="web"/>
 	<assets path="assets/static"        library="static"        exclude="*.ogg" if="web"/>
