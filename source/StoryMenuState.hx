@@ -220,6 +220,13 @@ class StoryMenuState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
 
+			if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+			{
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+				changeWeek(-FlxG.mouse.wheel);
+				changeDifficulty();
+			}
+
 			if (controls.UI_RIGHT)
 				rightArrow.animation.play('press')
 			else
@@ -248,13 +255,46 @@ class StoryMenuState extends MusicBeatState
 				openSubState(new ResetScoreSubState('', curDifficulty, '', curWeek));
 				//FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
-			else if (controls.ACCEPT)
+			else if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
 			{
+				var songArray:Array<String> = [];
+				var leWeek:Array<Dynamic> = loadedWeeks[curWeek].songs;
+				for (i in 0...leWeek.length) {
+					songArray.push(leWeek[i][0]);
+				}
+				
+				var songLowercase:String = Paths.formatToSongPath(songArray[0]);
+				var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
+
+				#if desktop
+				if(sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))){
+					selectWeek();
+				}
+				else{
+					trace('The .json is wrong dummy!');
+					FlxG.sound.play(Paths.sound('invalidJSON'));
+					FlxG.camera.shake(0.05, 0.05);
+					var funnyText = new FlxText(12, FlxG.height - 24, 0, "Invalid JSON!");
+					funnyText.scrollFactor.set();
+					funnyText.screenCenter();
+					funnyText.x = FlxG.width/2 - 250;
+					funnyText.y = FlxG.height/2 - 64;
+					funnyText.setFormat("VCR OSD Mono", 64, FlxColor.RED, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+					add(funnyText);
+					FlxTween.tween(funnyText, {alpha: 0}, 0.6, {
+						onComplete: function(tween:FlxTween)
+						{
+							funnyText.destroy();
+						}
+					});
+				}
+				#else
 				selectWeek();
+				#end
 			}
 		}
 
-		if (controls.BACK && !movedBack && !selectedWeek)
+		if ((controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) && !movedBack && !selectedWeek)
 		{
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			movedBack = true;

@@ -1,5 +1,6 @@
 package;
 
+import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
 import sys.thread.Thread;
@@ -47,7 +48,7 @@ class InitState extends MusicBeatState
 
 	override public function create():Void
 	{
-		init();
+		localInit();
 	}
 
 	override function update(elapsed:Float)
@@ -55,12 +56,12 @@ class InitState extends MusicBeatState
 		super.update(elapsed);
 	}
 
-	public static function init() {
+	public static function init(?transfer:Bool = null) {
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
 		trace('cleared mem');
-
+		
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.sound.muteKeys = muteKeys;
 		FlxG.sound.volumeDownKeys = volumeDownKeys;
@@ -107,9 +108,73 @@ class InitState extends MusicBeatState
 			Application.current.onExit.add (function (exitCode) {
 				DiscordClient.shutdown();
 			});
-			trace('initialized discord client');
+			//trace('initialized discord client');
 		}
 		#end
-		MusicBeatState.switchState(new DenpaState());
+		if(transfer == null) {
+			FlxTransitionableState.skipNextTransIn = true;
+			MusicBeatState.switchState(new DenpaState());
+		}
+	}
+
+	private function localInit(?transfer:Bool = null) {
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+
+		trace('cleared mem');
+		
+		FlxG.game.focusLostFramerate = 60;
+		FlxG.sound.muteKeys = muteKeys;
+		FlxG.sound.volumeDownKeys = volumeDownKeys;
+		FlxG.sound.volumeUpKeys = volumeUpKeys;
+		FlxG.keys.preventDefaultKeys = [TAB];
+
+		trace('set keys and framerate');
+
+		PlayerSettings.init();
+
+		trace('initialized playersettings');
+
+		FlxG.save.bind('funkin', 'ninjamuffin99');
+
+		trace('binded save');
+		
+		ClientPrefs.loadPrefs();
+		
+		trace('loaded prefs');
+
+		Highscore.load();
+
+		trace('loaded highscore');
+
+		FlxG.fullscreen = ClientPrefs.fullscreen;
+
+		trace('LOADED FULLSCREEN SETTING!! (LIAR!!!)');
+
+		if (FlxG.save.data.weekCompleted != null)
+		{
+			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
+			trace('set weekdata');
+
+		}
+
+		FlxG.mouse.visible = false;
+
+		trace('hid mouse');
+
+		#if desktop
+		if (!DiscordClient.isInitialized)
+		{
+			DiscordClient.initialize();
+			Application.current.onExit.add (function (exitCode) {
+				DiscordClient.shutdown();
+			});
+			//trace('initialized discord client');
+		}
+		#end
+		if(transfer == null) {
+			FlxTransitionableState.skipNextTransIn = true;
+			MusicBeatState.switchState(new DenpaState());
+		}
 	}
 }

@@ -1,0 +1,79 @@
+{
+	"animations": [
+		{
+			"loop": true,
+			"offsets": [
+				37,
+				-3
+			],
+			"anim": "deathLoop",
+			"fps": 24,
+			"name": "BF Dead with GF Loop",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				37,
+				14
+			],
+			"anim": "firstDeath",
+			"fps": 24,
+			"name": "BF Dies with GF",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				37,
+				28
+			],
+			"anim": "deathConfirm",
+			"fps": 24,
+			"name": "RETRY confirm holding gf",
+			"indices": []
+		}
+	],
+	"sarvente_floating": false,
+	"healthbar_colors_middle": [
+		29,
+		156,
+		189
+	],
+	"no_antialiasing": false,
+	"healthbar_colors_bottom": [
+		9,
+		136,
+		169
+	],
+	"image": "characters/bfHoldingGF-DEAD",
+	"trail_length": 4,
+	"trail_delay": 24,
+	"position": [
+		0,
+		350
+	],
+	"trail_diff": 0,
+	"trail_alpha": 1,
+	"health_drain": false,
+	"healthicon": "bf",
+	"shake_screen": false,
+	"orbit": false,
+	"healthbar_count": 3,
+	"flip_x": true,
+	"healthbar_colors": [
+		49,
+		176,
+		209
+	],
+	"camera_position": [
+		-10,
+		0
+	],
+	"float_magnitude": 0,
+	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
+	"scale": 1.05,
+	"flixel_trail": false
+}

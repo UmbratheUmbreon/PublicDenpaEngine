@@ -126,12 +126,12 @@ class MasterEditorMenu extends MusicBeatState
 		}
 		#end
 
-		if (controls.BACK)
+		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 		{
 			MusicBeatState.switchState(new MainMenuState());
 		}
 
-		if (controls.ACCEPT)
+		if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
 		{
 			switch(options[curSelected]) {
 				case 'Character Editor':

@@ -72,13 +72,6 @@ class MiscSettingsSubState extends BaseOptionsMenu
 			['Story Mode Only', 'Freeplay Only', 'Always', 'Never']);
 		addOption(option);
 
-		var option:Option = new Option('Orbs Gathered',
-			'Keep them scattered!',
-			'orbsScattered',
-			'bool',
-			false);
-		addOption(option);
-
 		var option:Option = new Option('Quartiz',
 			'Quartiz',
 			'quartiz',

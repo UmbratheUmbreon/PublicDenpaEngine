@@ -1,5 +1,7 @@
 package;
 
+import flixel.math.FlxMath;
+import flixel.graphics.frames.FlxFrame;
 #if desktop
 import Discord.DiscordClient;
 import sys.thread.Thread;
@@ -116,7 +118,7 @@ class TitleState extends MusicBeatState
 		#if CHECK_FOR_UPDATES
 		if(!closedState) {
 			trace('checking for update');
-			var http = new haxe.Http("https://raw.githubusercontent.com/ShadowMario/FNF-PsychEngine/main/gitVersion.txt");
+			var http = new haxe.Http("https://raw.githubusercontent.com/UmbratheUmbreon/PublicDenpaEngine/main/gitVersion.txt");
 			
 			http.onData = function (data:String)
 			{
@@ -125,7 +127,16 @@ class TitleState extends MusicBeatState
 				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
 				if(updateVersion != curVersion) {
 					trace('versions arent matching!');
+					#if !debug
+					if (ClientPrefs.checkForUpdates != null) {
+						mustUpdate = ClientPrefs.checkForUpdates;
+					} else {
+						mustUpdate = false;
+					}
+					#else
+					trace('you\'re on debug so you get a pass');
 					mustUpdate = false;
+					#end
 				}
 			}
 			
@@ -198,6 +209,8 @@ class TitleState extends MusicBeatState
 	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
+	var titleTextColors:Array<FlxColor> = [0xFF33FFFF, 0xFF3333CC];
+	var titleTextAlphas:Array<Float> = [1, .64];
 	var swagShader:ColorSwap = null;
 
 	function startIntro()
@@ -315,8 +328,25 @@ class TitleState extends MusicBeatState
 		
 		titleText.frames = Paths.getSparrowAtlas('titleEnter');
 		#end
-		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
-		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
+		var animFrames:Array<FlxFrame> = [];
+		@:privateAccess {
+			titleText.animation.findByPrefix(animFrames, "ENTER IDLE");
+			titleText.animation.findByPrefix(animFrames, "ENTER FREEZE");
+		}
+		
+		if (animFrames.length > 0) {
+			newTitle = true;
+			
+			titleText.animation.addByPrefix('idle', "ENTER IDLE", 24);
+			titleText.animation.addByPrefix('press', ClientPrefs.flashing ? "ENTER PRESSED" : "ENTER FREEZE", 24);
+		}
+		else {
+			newTitle = false;
+			
+			titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
+			titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
+		}
+		
 		titleText.antialiasing = ClientPrefs.globalAntialiasing;
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
@@ -402,6 +432,9 @@ class TitleState extends MusicBeatState
 	var transitioning:Bool = false;
 	private static var playJingle:Bool = false;
 
+	var newTitle:Bool = false;
+	var titleTimer:Float = 0;
+
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music != null)
@@ -409,6 +442,8 @@ class TitleState extends MusicBeatState
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
+
+		if (FlxG.mouse.justPressed && ClientPrefs.mouseControls) pressedEnter = true;
 
 		#if mobile
 		for (touch in FlxG.touches.list)
@@ -433,15 +468,35 @@ class TitleState extends MusicBeatState
 			#end
 		}
 
+		if (newTitle) {
+			titleTimer += CoolUtil.boundTo(elapsed, 0, 1);
+			if (titleTimer > 2) titleTimer -= 2;
+		}
+
 		// EASTER EGG
 
 		if (initialized && !transitioning && skippedIntro)
 		{
+			if (newTitle && !pressedEnter)
+			{
+				var timer:Float = titleTimer;
+				if (timer >= 1)
+					timer = (-timer) + 2;
+				
+				timer = FlxEase.quadInOut(timer);
+					
+				titleText.color = FlxColor.interpolate(titleTextColors[0], titleTextColors[1], timer);
+				titleText.alpha = FlxMath.lerp(titleTextAlphas[0], titleTextAlphas[1], timer);
+			}
+
 			if(pressedEnter)
 			{
+				titleText.color = FlxColor.WHITE;
+				titleText.alpha = 1;
+				
 				if(titleText != null) titleText.animation.play('press');
 
-				FlxG.camera.flash(FlxColor.WHITE, 1);
+				FlxG.camera.flash(ClientPrefs.flashing ? FlxColor.WHITE : 0x4CFFFFFF, 1);
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 
 				transitioning = true;
@@ -450,6 +505,7 @@ class TitleState extends MusicBeatState
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
 					if (mustUpdate) {
+						FlxG.sound.music.fadeOut(0.5);
 						MusicBeatState.switchState(new OutdatedState());
 					} else {
 						MusicBeatState.switchState(new MainMenuState());
@@ -672,7 +728,7 @@ class TitleState extends MusicBeatState
 						playJingle = false;
 						
 						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
+						FlxG.sound.music.fadeIn(0.5, 0, 0.7);
 						return;
 				}
 

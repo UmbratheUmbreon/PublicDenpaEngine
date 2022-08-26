@@ -11,8 +11,10 @@ import openfl.Lib;
 import haxe.CallStack.StackItem;
 import haxe.CallStack;
 import haxe.io.Path;
+#if desktop
 import sys.FileSystem;
 import sys.io.File;
+#end
 import flash.system.System;
 
 /**
@@ -91,6 +93,7 @@ class SUtil {
 		#end
 	}
 
+	#if android
 	static public function gameCrashCheck() {
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 	}
@@ -131,6 +134,7 @@ class SUtil {
 	private static function applicationAlert(title:String, description:String) {
 		Application.current.window.alert(description, title);
 	}
+	#end
 
 	#if android
 	static public function saveContent(fileName:String = "file", fileExtension:String = ".json", fileData:String = "you forgot something to add in your code"){

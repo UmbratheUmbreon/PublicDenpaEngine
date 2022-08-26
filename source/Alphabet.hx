@@ -26,6 +26,7 @@ class Alphabet extends FlxSpriteGroup
 	public var xAdd:Float = 0;
 	public var yAdd:Float = 0;
 	public var isMenuItem:Bool = false;
+	public var altRotation:Bool = false;
 	public var textSize:Float = 1.0;
 
 	public var text:String = "";
@@ -355,6 +356,26 @@ class Alphabet extends FlxSpriteGroup
 				x = forceX;
 			} else {
 				x = FlxMath.lerp(x, (targetY * 20) + 90 + xAdd, lerpVal);
+			}
+		}
+		if (altRotation) {
+			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
+
+			var lerpVal:Float = CoolUtil.boundTo(elapsed * 9.6, 0, 1);
+			y = FlxMath.lerp(y, (scaledY * yMult) + (FlxG.height * 0.48) + yAdd, lerpVal);
+			if(forceX != Math.NEGATIVE_INFINITY) {
+				x = forceX;
+			} else {
+				switch (targetY) {
+					case 0:
+						x = FlxMath.lerp(x, (targetY * 20) + 90 + xAdd, lerpVal); //i wanted to center it but couldnt figure out the math in a way that doesnt make long strings go off screen
+					default:
+						if (targetY < 0) {
+							x = FlxMath.lerp(x, (targetY * 20) + 90 + xAdd, lerpVal);
+						} else {
+							x = FlxMath.lerp(x, (targetY * -20) + 90 + xAdd, lerpVal);
+						}
+				}
 			}
 		}
 

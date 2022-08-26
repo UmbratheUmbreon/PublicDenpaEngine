@@ -50,6 +50,14 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			['Generous', 'Default', 'Harsh']);
 		addOption(option);
 
+		var option:Option = new Option('Accuracy Mode:',
+			"How accurate do you want the accuracy?",
+			'accuracyMode',
+			'string',
+			'Simple',
+			['Simple', 'Complex']);
+		addOption(option);
+
 		var option:Option = new Option('Controller Mode',
 			'Check this if you want to play with\na controller instead of using your Keyboard.',
 			'controllerMode',
@@ -72,6 +80,13 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 
+		/*var option:Option = new Option('Darken Background',
+			"While enabled, the BG will darken during sections you must sing in.",
+			'darkenBG',
+			'bool',
+			false);
+		addOption(option);*/
+
 		var option:Option = new Option('Ghost Tapping',
 			"If checked, you won't get misses from pressing keys\nwhile there are no notes able to be hit.",
 			'ghostTapping',
@@ -80,11 +95,11 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('No Antimash',
-		"If checked, Antimash will be disabled.",
-		'noAntimash',
-		'bool',
-		false);
-	addOption(option);
+			"If checked, Antimash will be disabled.",
+			'noAntimash',
+			'bool',
+			false);
+		addOption(option);
 
 		var option:Option = new Option('Disable Reset Button',
 			"If checked, pressing Reset won't do anything.",

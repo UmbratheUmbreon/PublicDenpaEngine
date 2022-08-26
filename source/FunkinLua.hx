@@ -1084,6 +1084,12 @@ class FunkinLua {
 				}
 			}
 		});
+		Lua_helper.add_callback(lua, "addGlitchShader", function(tag:String, amplitude:Float, frequency:Float, speed:Float) {
+			if(PlayState.instance.modchartSprites.exists(tag)) {
+				var shit:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
+				PlayState.instance.addLuaGlitchShader(shit, amplitude, frequency, speed);
+			}
+		});
 		Lua_helper.add_callback(lua, "setGraphicSize", function(obj:String, x:Int, y:Int = 0) {
 			if(PlayState.instance.modchartSprites.exists(obj)) {
 				var shit:ModchartSprite = PlayState.instance.modchartSprites.get(obj);

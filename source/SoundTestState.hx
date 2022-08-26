@@ -201,7 +201,7 @@ class SoundTestState extends MusicBeatState
 				upOrDown = 'down';
 			}
 		
-		if (controls.BACK)
+		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 		{
 			if(colorTween != null) {
 				colorTween.cancel();

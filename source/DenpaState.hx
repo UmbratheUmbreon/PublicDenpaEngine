@@ -36,6 +36,16 @@ import flixel.util.FlxTimer;
 import lime.app.Application;
 import openfl.Assets;
 
+#if desktop
+import editors.MasterEditorMenu;
+import editors.CharacterEditorState;
+import editors.DialogueEditorState;
+import editors.DialogueCharacterEditorState;
+import editors.WeekEditorState;
+import editors.CharacterEditorState;
+import editors.ChartingState;
+#end
+
 import flash.system.System;
 
 using StringTools;
@@ -67,6 +77,7 @@ class DenpaState extends MusicBeatState
 			CoolUtil.precacheSound('explosion');
 		} 
 
+		#if desktop
 		if (FlxG.random.bool(0.01)) { //0.01
 			chooseYerIntroMate = 666;
 			CoolUtil.precacheSound('JON_JUIMPSCARE');
@@ -75,6 +86,7 @@ class DenpaState extends MusicBeatState
 			CoolUtil.precacheSound('soulbreak');
 			CoolUtil.precacheSound('ourple');
 		} 
+		#end
 
 		logo = new FlxSprite().loadGraphic(Paths.image('logo'));
 		logo.scrollFactor.set();
@@ -83,7 +95,7 @@ class DenpaState extends MusicBeatState
 		logo.alpha = 0;
 		add(logo);
 
-		new FlxTimer().start(0.15, function(tmr:FlxTimer)
+		new FlxTimer().start(0.01, function(tmr:FlxTimer)
 			{
 				errorFixer = true;
 				switch (chooseYerIntroMate){
@@ -95,6 +107,7 @@ class DenpaState extends MusicBeatState
 								FlxTween.tween(logo, {alpha: 0}, 2, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween) {
+										FlxTransitionableState.skipNextTransIn = true;
 										MusicBeatState.switchState(new TitleState());
 									}
 								});
@@ -113,6 +126,7 @@ class DenpaState extends MusicBeatState
 								FlxTween.tween(logo, {alpha: 0, "scale.x": 8, "scale.y": 8}, 2, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween) {
+										FlxTransitionableState.skipNextTransIn = true;
 										MusicBeatState.switchState(new TitleState());
 									}
 								});
@@ -149,6 +163,7 @@ class DenpaState extends MusicBeatState
 									onComplete: function(twn:FlxTween) {
 										FlxTween.tween(logo, {y: 15000, x: logo.x + 500}, 1.8, {
 											onComplete: function(twnFlxTween) {
+												FlxTransitionableState.skipNextTransIn = true;
 												MusicBeatState.switchState(new TitleState());
 											}
 										});
@@ -175,6 +190,7 @@ class DenpaState extends MusicBeatState
 						FlxG.sound.play(Paths.sound('denpa'));
 						new FlxTimer().start(2, function(tmr:FlxTimer)
 							{
+								FlxTransitionableState.skipNextTransIn = true;
 								MusicBeatState.switchState(new TitleState());
 							});
 					case 3:
@@ -186,6 +202,7 @@ class DenpaState extends MusicBeatState
 								FlxTween.tween(logo, {alpha: 0, x: FlxG.width + 1000}, 2, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween) {
+										FlxTransitionableState.skipNextTransIn = true;
 										MusicBeatState.switchState(new TitleState());
 									}
 								});
@@ -200,11 +217,13 @@ class DenpaState extends MusicBeatState
 								FlxTween.tween(logo, {alpha: 0, y: FlxG.height + 500}, 2, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween) {
+										FlxTransitionableState.skipNextTransIn = true;
 										MusicBeatState.switchState(new TitleState());
 									}
 								});
 							}
 						});
+					#if desktop
 					case 666:
 						FlxG.sound.play(Paths.sound('denpa'));
 						FlxTween.tween(logo, {alpha: 1}, 0.95, {
@@ -406,6 +425,7 @@ class DenpaState extends MusicBeatState
 									});
 							}
 						});
+					#end
 					case 5:
 						FlxG.sound.play(Paths.sound('denpa'));
 						logo.scale.set(8,8);
@@ -419,6 +439,7 @@ class DenpaState extends MusicBeatState
 								FlxTween.tween(logo, {alpha: 0, "scale.x": 0.1, "scale.y": 0.1}, 2, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween) {
+										FlxTransitionableState.skipNextTransIn = true;
 										MusicBeatState.switchState(new TitleState());
 									}
 								});
@@ -433,6 +454,7 @@ class DenpaState extends MusicBeatState
 								FlxTween.tween(logo, {alpha: 0, x: FlxG.width - 1000}, 2, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween) {
+										FlxTransitionableState.skipNextTransIn = true;
 										MusicBeatState.switchState(new TitleState());
 									}
 								});
@@ -447,6 +469,7 @@ class DenpaState extends MusicBeatState
 								FlxTween.tween(logo, {alpha: 0, y: FlxG.height - 500}, 2, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween) {
+										FlxTransitionableState.skipNextTransIn = true;
 										MusicBeatState.switchState(new TitleState());
 									}
 								});
@@ -462,6 +485,123 @@ class DenpaState extends MusicBeatState
 	{
 		if (jonScare != null) {
 			jonScare.x = FlxG.random.int(-10, 10);
+		}
+
+		if (errorFixer) {
+			
+			if(FlxG.keys.justPressed.ENTER || controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)){
+				trace('attempting to switch to TitleState!');
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new TitleState());
+			}
+			if (FlxG.keys.justPressed.SHIFT){
+				trace('attempting to switch to MainMenuState!');
+				if(FlxG.sound.music == null) {
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+	
+					FlxG.sound.music.fadeIn(4, 0, 0.7);
+				}
+				Conductor.changeBPM(100);
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new MainMenuState());
+			}
+			if (FlxG.keys.justPressed.S){
+				trace('attempting to switch to StoryMenuState!');
+				if(FlxG.sound.music == null) {
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+	
+					FlxG.sound.music.fadeIn(4, 0, 0.7);
+				}
+				Conductor.changeBPM(100);
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new StoryMenuState());
+			}
+			if (FlxG.keys.justPressed.F){
+				trace('attempting to switch to FreeplayState!');
+				if(FlxG.sound.music == null) {
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+	
+					FlxG.sound.music.fadeIn(4, 0, 0.7);
+				}
+				Conductor.changeBPM(100);
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new FreeplayState());
+			}
+			if (FlxG.keys.justPressed.C){
+				trace('attempting to switch to CreditsState!');
+				if(FlxG.sound.music == null) {
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+	
+					FlxG.sound.music.fadeIn(4, 0, 0.7);
+				}
+				Conductor.changeBPM(100);
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new CreditsState());
+			}
+			if (FlxG.keys.justPressed.O){
+				trace('attempting to switch to OptionsState!');
+				if(FlxG.sound.music == null) {
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+	
+					FlxG.sound.music.fadeIn(4, 0, 0.7);
+				}
+				Conductor.changeBPM(100);
+				FlxTransitionableState.skipNextTransIn = true;
+				LoadingState.loadAndSwitchState(new options.OptionsState());
+			}
+			if (FlxG.keys.justPressed.P){
+				trace('attempting to switch to PatchState!');
+				if(FlxG.sound.music == null) {
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+	
+					FlxG.sound.music.fadeIn(4, 0, 0.7);
+				}
+				Conductor.changeBPM(100);
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new PatchState());
+			}
+			#if desktop
+			if (FlxG.keys.justPressed.M){
+				trace('attempting to switch to MasterEditorMenu!');
+				if(FlxG.sound.music == null) {
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+	
+					FlxG.sound.music.fadeIn(4, 0, 0.7);
+				}
+				Conductor.changeBPM(100);
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new MasterEditorMenu());
+			}
+			if (FlxG.keys.justPressed.EIGHT){
+				trace('attempting to switch to CharacterEditorState!');
+				FlxTransitionableState.skipNextTransIn = true;
+				LoadingState.loadAndSwitchState(new CharacterEditorState(Character.DEFAULT_CHARACTER, false));
+			}
+			if (FlxG.keys.justPressed.SEVEN){
+				trace('attempting to switch to ChartingState!');
+				FlxTransitionableState.skipNextTransIn = true;
+				LoadingState.loadAndSwitchState(new ChartingState(), false);
+			}
+			if (FlxG.keys.justPressed.SIX){
+				trace('attempting to switch to DialogueEditorState!');
+				FlxTransitionableState.skipNextTransIn = true;
+				LoadingState.loadAndSwitchState(new DialogueEditorState(), false);
+			}
+			if (FlxG.keys.justPressed.FIVE){
+				trace('attempting to switch to DialogueCharacterEditorState!');
+				FlxTransitionableState.skipNextTransIn = true;
+				LoadingState.loadAndSwitchState(new DialogueCharacterEditorState(), false);
+			}
+			if (FlxG.keys.justPressed.FOUR){
+				trace('attempting to switch to WeekEditorState!');
+				FlxTransitionableState.skipNextTransIn = true;
+				MusicBeatState.switchState(new WeekEditorState());
+			}
+			if (FlxG.keys.justPressed.BACKSPACE || FlxG.keys.justPressed.ESCAPE){
+				trace('attempting to Exit!');
+				System.exit(0);
+			}
+			#end
 		}
 		super.update(elapsed);
 	}

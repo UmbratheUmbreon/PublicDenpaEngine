@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="buttons.png">
+<SubTexture name="no0000" x="0" y="0" width="86" height="30" frameX="0" frameY="-2" frameWidth="128" frameHeight="32" />
+<SubTexture name="no lit0000" x="0" y="33" width="86" height="33" frameX="0" frameY="-2" frameWidth="128" frameHeight="32" />
+<SubTexture name="ok0000" x="0" y="66" width="86" height="33" frameX="0" frameY="-2" frameWidth="128" frameHeight="32" />
+<SubTexture name="ok lit0000" x="0" y="99" width="86" height="33" frameX="0" frameY="-2" frameWidth="128" frameHeight="32" />
+<SubTexture name="yes0000" x="0" y="132" width="86" height="33" frameX="0" frameY="-2" frameWidth="128" frameHeight="32" />
+<SubTexture name="yes lit0000" x="0" y="165" width="86" height="33" frameX="0" frameY="-2" frameWidth="128" frameHeight="32" />
+</TextureAtlas>

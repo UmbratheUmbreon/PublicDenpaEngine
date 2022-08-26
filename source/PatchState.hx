@@ -105,6 +105,7 @@ class PatchState extends MusicBeatState
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Patch Notes'],
+			['0.5.0',		'waidol',		'A-Week 7, A-Mouse Controls to Menus, A-That Psych Crash Handler, A-Hscript (By _jorge), A-Stretch Icon Bop, A-Psych Philly Glow, A-Animation for Singing with the Spacebar, A-Scare Options, A-MS Timing Indicator, A-Texture Packer XML Support, A-Anti Crash for Invalid JSONs (by Toadette), A-Option to Toggle Flinching Icons, F-Flinching Icons, O-Score Texts, O-Health Icons, I-Static CrossFade, I-Camera Movement, I-Quartiz, I-Icon Animations, R-Blammed Lights, R-Gospel X, R-Unused Assets, RFV-0.5.0',							'wait till next update',	'3B4CB7'],
 			['0.4.0e',		'eidol',		'A-Time Text Boppin, A-Cutscene Options, A-Replay Cutscene Option in Pause Menu, A-Bar-less Time Bar Options, A-Pause Options, F-Song Card Appearing During Cutscenes, F-Healthbar Offsets, F-Positionings for Score Displays, F-Pixel GF Being Flipped, RFV-0.4.0e',							'wait till next update',	'998844'],
 			['0.4.0d',		'eidol',		'A-Increased Max and Min Zoom on Chara Editor, A-Increased Scale Max, F-Lag on Chart Editor, F-Tints, F-Chara Editor BPM, R-Skunked Pause Options, RFV-0.4.0d',							'wait till next update',	'998844'],
 			['0.4.0c',		'eidol',		'A-Options to Customize Character Trail, A-Option to Disable Combo Pop-up, A-Cooler Looking BGScroll in Pause Menu, A-Tints, RFV-0.4.0c',							'wait till next update',	'998844'],
@@ -239,6 +240,11 @@ class PatchState extends MusicBeatState
 					holdTime = 0;
 				}
 
+				if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+					{
+						changeSelection(-shiftMult * FlxG.mouse.wheel);
+					}
+
 				if(controls.UI_DOWN || controls.UI_UP)
 				{
 					var checkLastHold:Int = Math.floor((holdTime - 0.5) * 10);
@@ -252,10 +258,10 @@ class PatchState extends MusicBeatState
 				}
 			}
 
-			if(controls.ACCEPT) {
+			if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
 				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
 			}
-			if (controls.BACK)
+			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 			{
 				if(colorTween != null) {
 					colorTween.cancel();

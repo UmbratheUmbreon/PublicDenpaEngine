@@ -34,7 +34,6 @@ class ClientPrefs {
 	public static var iconSwing:String = 'Swing Mild';
 	public static var scoreDisplay:String = 'Psych';
 	public static var crossFadeMode:String = 'Mid-Fight Masses';
-	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var timeBarType:String = 'Time Left';
 	public static var scoreZoom:Bool = true;
@@ -45,7 +44,6 @@ class ClientPrefs {
 	public static var pauseMusic:String = 'Tea Time';
 	public static var inputType:String = 'Psych';
 	public static var ratingIntensity:String = 'Default';
-	public static var orbsScattered:Bool = false; //Denpa Funkin ONLY
 	public static var randomMode:Bool = false;
 	public static var quartiz:Bool = false;
 	public static var ghostMode:Bool = false; //Unused, Does nothing as of rn because its disabled.
@@ -58,7 +56,15 @@ class ClientPrefs {
 	public static var newHP:Bool = true;
 	public static var sarvAccuracy:Bool = false;
 	public static var comboPopup:Bool = true;
+	public static var msPopup:Bool = true;
+	public static var msPrecision:Int = 2;
+	public static var flinchy:Bool = true;
 	public static var cutscenes:String = 'Story Mode Only';
+	public static var camPanMode:String = 'Always';
+	public static var mouseControls:Bool = true;
+	public static var checkForUpdates:Null<Bool> = true;
+	public static var darkenBG:Bool = false;
+	public static var accuracyMode:String = 'Simple';
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 
@@ -222,7 +228,6 @@ class ClientPrefs {
 		FlxG.save.data.iconSwing = iconSwing;
 		FlxG.save.data.scoreDisplay = scoreDisplay;
 		FlxG.save.data.crossFadeMode = crossFadeMode;
-		FlxG.save.data.imagesPersist = imagesPersist;
 		FlxG.save.data.ghostTapping = ghostTapping;
 		FlxG.save.data.timeBarType = timeBarType;
 		FlxG.save.data.scoreZoom = scoreZoom;
@@ -232,7 +237,6 @@ class ClientPrefs {
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
 		FlxG.save.data.noAntimash = noAntimash;
-		FlxG.save.data.orbsScattered = orbsScattered;
 		FlxG.save.data.quartiz = quartiz;
 		FlxG.save.data.randomMode = randomMode;
 		FlxG.save.data.ghostMode = ghostMode;
@@ -243,6 +247,8 @@ class ClientPrefs {
 		FlxG.save.data.newHP = newHP;
 		FlxG.save.data.sarvAccuracy = sarvAccuracy;
 		FlxG.save.data.comboPopup = comboPopup;
+		FlxG.save.data.msPopup = msPopup;
+		FlxG.save.data.msPrecision = msPrecision;
 		FlxG.save.data.winningicons = winningicons;
 		FlxG.save.data.changeTBcolour = changeTBcolour;
 		FlxG.save.data.ratingOffset = ratingOffset;
@@ -259,6 +265,12 @@ class ClientPrefs {
 		FlxG.save.data.inputType = inputType;
 		FlxG.save.data.ratingIntensity = ratingIntensity;
 		FlxG.save.data.cutscenes = cutscenes;
+		FlxG.save.data.camPanMode = camPanMode;
+		FlxG.save.data.flinchy = flinchy;
+		FlxG.save.data.mouseControls = mouseControls;
+		FlxG.save.data.checkForUpdates = checkForUpdates;
+		FlxG.save.data.darkenBG = darkenBG;
+		FlxG.save.data.accuracyMode = accuracyMode;
 	
 		FlxG.save.flush();
 
@@ -439,11 +451,6 @@ class ClientPrefs {
 			{
 				noAntimash = FlxG.save.data.noAntimash;
 			}
-
-		if (FlxG.save.data.orbsScattered != null)
-			{
-				orbsScattered = FlxG.save.data.orbsScattered;
-			}
 		
 		if (FlxG.save.data.quartiz != null)
 			{
@@ -488,6 +495,14 @@ class ClientPrefs {
 			{
 				comboPopup = FlxG.save.data.comboPopup;
 			}
+		if (FlxG.save.data.msPopup != null)
+			{
+				msPopup = FlxG.save.data.msPopup;
+			}
+		if (FlxG.save.data.msPrecision != null)
+			{
+				msPrecision = FlxG.save.data.msPrecision;
+			}
 		if (FlxG.save.data.winningicons != null)
 			{
 				winningicons = FlxG.save.data.winningicons;
@@ -499,6 +514,30 @@ class ClientPrefs {
 		if (FlxG.save.data.cutscenes != null)
 			{
 				cutscenes = FlxG.save.data.cutscenes;
+			}
+		if (FlxG.save.data.camPanMode != null)
+			{
+				camPanMode = FlxG.save.data.camPanMode;
+			}
+		if (FlxG.save.data.flinchy != null)
+			{
+				flinchy = FlxG.save.data.flinchy;
+			}
+		if (FlxG.save.data.mouseControls != null)
+			{
+				mouseControls = FlxG.save.data.mouseControls;
+			}
+		if (FlxG.save.data.checkForUpdates != null)
+			{
+				checkForUpdates = FlxG.save.data.checkForUpdates;
+			}
+		if (FlxG.save.data.darkenBG != null)
+			{
+				darkenBG = FlxG.save.data.darkenBG;
+			}
+		if (FlxG.save.data.accuracyMode != null)
+			{
+				accuracyMode = FlxG.save.data.accuracyMode;
 			}
 
 		var save:FlxSave = new FlxSave();

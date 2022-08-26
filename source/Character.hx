@@ -42,6 +42,8 @@ typedef CharacterFile = {
 	var orbit:Bool;
 	var flixel_trail:Bool;
 	var shake_screen:Bool;
+	var scare_bf:Bool;
+	var scare_gf:Bool;
 	var health_drain:Bool;
 	var healthbar_colors:Array<Int>;
 	var healthbar_colors_middle:Array<Int>;
@@ -80,6 +82,7 @@ class Character extends FlxSprite
 	public var trailDiff:Null<Float> = 0.069; //flxtrail shit
 	public var idleSuffix:String = '';
 	public var danceIdle:Bool = false; //Character use "danceLeft" and "danceRight" instead of "idle"
+	public var skipDance:Bool = false;
 	
 
 	public var healthIcon:String = 'face';
@@ -98,6 +101,8 @@ class Character extends FlxSprite
 	public var orbit:Bool = false;
 	public var flixelTrail:Bool = false;
 	public var shakeScreen:Bool = false;
+	public var scareBf:Bool = false;
+	public var scareGf:Bool = false;
 	public var healthDrain:Bool = false;
 	public var originalFlipX:Bool = false;
 	public var healthColorArray:Array<Int> = [255, 0, 0];
@@ -215,6 +220,8 @@ class Character extends FlxSprite
 				orbit = json.orbit;
 				flixelTrail = json.flixel_trail;
 				shakeScreen = json.shake_screen;
+				scareBf = json.scare_bf;
+				scareGf = json.scare_gf;
 				healthDrain = json.health_drain;
 				flipX = !!json.flip_x;
 				if(json.no_antialiasing) {
@@ -287,6 +294,14 @@ class Character extends FlxSprite
 				}
 			}*/
 		}
+
+		switch(curCharacter)
+		{
+			case 'pico-speaker':
+				skipDance = true;
+				loadMappedAnims();
+				playAnim("shoot1");
+		}
 	}
 
 	public var POOP:Bool = false;
@@ -311,6 +326,21 @@ class Character extends FlxSprite
 			{
 				specialAnim = false;
 				dance();
+			}
+
+			switch(curCharacter)
+			{
+				case 'pico-speaker':
+					if(animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
+					{
+						var noteData:Int = 1;
+						if(animationNotes[0][1] > 2) noteData = 3;
+
+						noteData += FlxG.random.int(0, 1);
+						playAnim('shoot' + noteData, true);
+						animationNotes.shift();
+					}
+					if(animation.curAnim.finished) playAnim(animation.curAnim.name, false, false, animation.curAnim.frames.length - 3);
 			}
 
 			if (!isPlayer)
@@ -342,7 +372,7 @@ class Character extends FlxSprite
 	 */
 	public function dance()
 	{
-		if (!debugMode && !specialAnim)
+		if (!debugMode && !specialAnim && !skipDance)
 		{
 			if(danceIdle)
 			{
@@ -357,6 +387,23 @@ class Character extends FlxSprite
 					playAnim('idle' + idleSuffix);
 			}
 		}
+	}
+
+	function loadMappedAnims():Void
+		{
+			var noteData:Array<SwagSection> = Song.loadFromJson('picospeaker', Paths.formatToSongPath(PlayState.SONG.song)).notes;
+			for (section in noteData) {
+				for (songNotes in section.sectionNotes) {
+					animationNotes.push(songNotes);
+				}
+			}
+			TankmenBG.animationNotes = animationNotes;
+			animationNotes.sort(sortAnims);
+		}
+
+	function sortAnims(Obj1:Array<Dynamic>, Obj2:Array<Dynamic>):Int
+	{
+		return FlxSort.byValues(FlxSort.ASCENDING, Obj1[0], Obj2[0]);
 	}
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void

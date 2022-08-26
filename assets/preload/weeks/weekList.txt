@@ -5,5 +5,5 @@ week3
 week4
 week5
 week6
-weekCross
+week7
 all

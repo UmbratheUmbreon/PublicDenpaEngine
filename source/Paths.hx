@@ -314,6 +314,22 @@ class Paths
 	}
 
 
+	inline static public function getTexturePacker(key:String, ?library:String):FlxAtlasFrames
+		{
+			#if MODS_ALLOWED
+			var imageLoaded:FlxGraphic = returnGraphic(key);
+			var xmlExists:Bool = false;
+			if(FileSystem.exists(modsXml(key))) {
+				xmlExists = true;
+			}
+	
+			return FlxAtlasFrames.fromTexturePackerXml((imageLoaded != null ? imageLoaded : image(key, library)), (xmlExists ? File.getContent(modsXml(key)) : file('images/$key.xml', library)));
+			#else
+			return FlxAtlasFrames.fromTexturePackerXml(image(key, library), file('images/$key.xml', library));
+			#end
+		}
+
+
 	inline static public function getPackerAtlas(key:String, ?library:String)
 	{
 		#if MODS_ALLOWED
@@ -330,7 +346,11 @@ class Paths
 	}
 
 	inline static public function formatToSongPath(path:String) {
-		return path.toLowerCase().replace(' ', '-');
+		var invalidChars = ~/[~&\\;:<>#]/;
+		var hideChars = ~/[.,'"%?!]/;
+
+		var path = invalidChars.split(path.replace(' ', '-')).join("-");
+		return hideChars.split(path).join("").toLowerCase();
 	}
 
 	// completely rewritten asset loading? fuck!
@@ -342,6 +362,7 @@ class Paths
 			if(!currentTrackedAssets.exists(modKey)) {
 				var newBitmap:BitmapData = BitmapData.fromFile(modKey);
 				var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(newBitmap, false, modKey);
+				newGraphic.persist = true;
 				currentTrackedAssets.set(modKey, newGraphic);
 			}
 			localTrackedAssets.push(modKey);
@@ -353,6 +374,7 @@ class Paths
 		if (OpenFlAssets.exists(path, IMAGE)) {
 			if(!currentTrackedAssets.exists(path)) {
 				var newGraphic:FlxGraphic = FlxG.bitmap.add(path, false, path);
+				newGraphic.persist = true;
 				currentTrackedAssets.set(path, newGraphic);
 			}
 			localTrackedAssets.push(path);

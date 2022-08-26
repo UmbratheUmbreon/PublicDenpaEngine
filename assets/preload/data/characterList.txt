@@ -17,6 +17,10 @@ gf-pixel
 senpai
 senpai-angry
 spirit
-sarvente-lucifer
 bf-pixel-opponent
+gf-tankmen
+tankman
+pico-speaker
+bf-holding-gf
 pico-player
+tankman-player

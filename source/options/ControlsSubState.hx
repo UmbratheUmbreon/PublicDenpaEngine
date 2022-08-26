@@ -208,7 +208,7 @@ class ControlsSubState extends MusicBeatSubstate {
 			}
 
 			var optionText:Alphabet = new Alphabet(0, (10 * i), optionShit[i][0], (!isCentered || isDefaultKey), false);
-			optionText.isMenuItem = true;
+			optionText.altRotation = true;
 			if(isCentered) {
 				optionText.screenCenter(X);
 				optionText.forceX = optionText.x;
@@ -243,7 +243,14 @@ class ControlsSubState extends MusicBeatSubstate {
 				changeAlt();
 			}
 
-			if (controls.BACK) {
+			var shiftMult:Int = 1;
+
+			if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+				{
+					changeSelection(-shiftMult * FlxG.mouse.wheel);
+				}
+
+			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
 				ClientPrefs.reloadControls();
 				close();
 				FlxG.sound.play(Paths.sound('cancelMenu'));

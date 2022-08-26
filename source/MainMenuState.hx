@@ -26,7 +26,12 @@ using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
-	public static var denpaEngineVersion:String = '0.4.0e Nightly'; //This is also used for Discord RPC
+	#if !debug
+	public static var denpaEngineVersion:String = '0.5.0'; //This is also used for Discord RPC
+	#else
+	public static var denpaEngineVersion:String = '0.5.0 Nightly'; //For declaring "HEY THIS ISNT FINAL"
+	#end
+	public static var baseVersion:String = '0.5.2h'; //For those wondering what this engine is based on
 	public static var curSelected:Int = 0;
 	public static var seenTween:Bool = false;
 
@@ -45,25 +50,14 @@ class MainMenuState extends MusicBeatState
 //This causes the screen to blank out, looks like the other stuff is going to the optionShit variable. -Beth
 	function menuShit()
 	{
-		if(ClientPrefs.orbsScattered == false) {
-		//trace('no true');
-			optionShit = [
-				'story_mode', 
-				'freeplay', 
-				'credits', 
-				'options',
-				'patch',
-				'soundtest'
-				];
-				
-		}	
-		else {
-		//trace('true');
-			optionShit = [
-				'optionstrue',
-				'true'
+		optionShit = [
+			'story_mode', 
+			'freeplay', 
+			'credits', 
+			'options',
+			'patch',
+			'soundtest'
 			];
-		}
 	}
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -79,24 +73,14 @@ class MainMenuState extends MusicBeatState
 	override function create()
 	{
 		WeekData.loadTheFirstEnabledMod();
-	if(ClientPrefs.orbsScattered == false) {
-		//trace('test1');
-			optionShit = [
-				'story_mode', 
-				'freeplay', 
-				'credits', 
-				'options',
-				'patch',
-				'soundtest'
-				];
-		}	
-		else {
-		//trace('test2');
-			optionShit = [
-				'optionstrue',
-				'true'
+		optionShit = [
+			'story_mode', 
+			'freeplay', 
+			'credits', 
+			'options',
+			'patch',
+			'soundtest'
 			];
-		}
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("On the Main Menu", null);
@@ -159,16 +143,6 @@ class MainMenuState extends MusicBeatState
 		}
 		add(logo);
 
-		var bg3:FlxSprite = new FlxSprite(270,0);
-		bg3.frames = Paths.getSparrowAtlas('secret/logotrue');
-		bg3.animation.addByPrefix('nameToCall','logotrue idle',24,true);
-		bg3.animation.play('nameToCall');
-		bg3.antialiasing = ClientPrefs.globalAntialiasing;
-		bg3.scrollFactor.set(0, 0);
-		bg3.setGraphicSize(Std.int(0.75));
-		bg3.updateHitbox();
-		add(bg3);
-
 		camFollow = new FlxObject(0, 0, 1, 1);
 		camFollowPos = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
@@ -186,23 +160,11 @@ class MainMenuState extends MusicBeatState
 		
 		// magenta.scrollFactor.set();
 
-	if(ClientPrefs.orbsScattered == false) {
-		bg3.visible = false;
 		bg.visible = true;
 		logo.visible = true;
 		if (!ClientPrefs.lowQuality) {
 			bgScroll.visible = true;
 			bgScroll2.visible = true;
-		}
-		}	
-		else {
-		bg3.visible = true;
-		bg.visible = false;
-		logo.visible = false;
-		if (!ClientPrefs.lowQuality) {
-			bgScroll.visible = false;
-			bgScroll2.visible = false;
-		}
 		}
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
@@ -262,12 +224,6 @@ class MainMenuState extends MusicBeatState
 			case 'soundtest':
 				menuItem.x = 0;
 				menuItem.y = -30;
-			case 'true':
-				menuItem.x = 370;
-				menuItem.y = -9999;
-			case 'optionstrue':
-				menuItem.x = 345;
-				menuItem.y = 250;
 			}
 			menuItems.add(menuItem);
 			var scr:Float = (optionShit.length - 4) * 0.135;
@@ -289,14 +245,8 @@ class MainMenuState extends MusicBeatState
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
-	if(ClientPrefs.orbsScattered == false) {
 		versionShit.visible = true;
-		versionShit2.visible = true;
-		}	
-		else {
-		versionShit.visible = false;
-		versionShit2.visible = false;
-		}
+		versionShit2.visible = true;	
 
 		// NG.core.calls.event.logEvent('swag').send();
 
@@ -392,14 +342,21 @@ class MainMenuState extends MusicBeatState
 				changeItem(-4);
 			}
 
-			if (controls.BACK)
+			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 			{
 				selectedSomethin = true;
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				MusicBeatState.switchState(new TitleState());
 			}
 
-			if (controls.ACCEPT)
+			var shiftMult:Int = 1;
+			if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+			{
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.2);
+				changeItem(-shiftMult * FlxG.mouse.wheel);
+			}
+
+			if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
 			{
 				if (optionShit[curSelected] == 'donate')
 				{
@@ -444,10 +401,6 @@ class MainMenuState extends MusicBeatState
 										MusicBeatState.switchState(new PatchState());
 									case 'soundtest':
 										MusicBeatState.switchState(new SoundTestState());
-									case 'true':
-										MusicBeatState.switchState(new FreeplayState());
-									case 'optionstrue':
-										LoadingState.loadAndSwitchState(new options.OptionsState());
 								}
 							});
 						}

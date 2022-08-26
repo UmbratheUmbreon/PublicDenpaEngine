@@ -181,7 +181,13 @@ class NotesSubState extends MusicBeatSubstate
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
-			if (controls.ACCEPT && nextAccept <= 0) {
+			var shiftMult:Int = 1;
+
+			if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+				{
+					changeSelection(-shiftMult * FlxG.mouse.wheel);
+				}
+			if ((controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) && nextAccept <= 0) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				changingNote = true;
 				holdTime = 0;
@@ -204,7 +210,7 @@ class NotesSubState extends MusicBeatSubstate
 			}
 		}
 
-		if (controls.BACK || (changingNote && controls.ACCEPT)) {
+		if (controls.BACK || (changingNote && (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)))) {
 			if(!changingNote) {
 				close();
 			} else {

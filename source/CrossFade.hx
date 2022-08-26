@@ -27,7 +27,7 @@ class CrossFade extends FlxSprite
 				y = character.y + FlxG.random.float(-50, 50);
 			case 'Static':
 				x = character.x + 60;
-				y = character.y + 50;
+				y = character.y - 50;
 			case 'Eccentric':
 				x = character.x + FlxG.random.float(-20,90);
 				y = character.y + FlxG.random.float(-80, 80);
@@ -52,6 +52,13 @@ class CrossFade extends FlxSprite
 				case 'bf' | 'bf-car' | 'bf-christmas':
 					color = 0xFF1b008c;
 					antialiasing = FlxG.save.data.globalAntialiasing;
+				case 'bf-holding-gf':
+					if (FlxG.random.bool(50)) {
+						color = 0xFF1b008c;
+					} else {
+						color = 0xFFa5004d;
+					}
+					antialiasing = FlxG.save.data.globalAntialiasing;
 				case 'bf-pixel':
 					color = 0xFF00368c;
 					antialiasing = false;
@@ -63,6 +70,28 @@ class CrossFade extends FlxSprite
 					antialiasing = FlxG.save.data.globalAntialiasing;
 				case 'ruv':
 					color = 0xFF2e0069;
+					antialiasing = FlxG.save.data.globalAntialiasing;
+				case 'tankman' | 'tankman-player':
+					if (PlayState.tankmanRainbow) {
+						switch(FlxG.random.int(0,5)) {
+							case 0:
+								color = 0xff7c0000;
+							case 1:
+								color = 0xff7e3200;
+							case 2:
+								color = 0xff7c6900;
+							case 3:
+								color = 0xff0a7c00;
+							case 4:
+								color = 0xff02007c;
+							case 5:
+								color = 0xff6d007c;
+							default:
+								color = 0xff000000;
+						}
+					} else {
+						color = 0xff000000;
+					}
 					antialiasing = FlxG.save.data.globalAntialiasing;
 				default:
 					color = FlxColor.fromRGB(character.healthColorArray[0], character.healthColorArray[1], character.healthColorArray[2]);

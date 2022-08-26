@@ -2,7 +2,6 @@ package;
 
 #if desktop
 import Discord.DiscordClient;
-#end
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -17,7 +16,6 @@ import flixel.tweens.FlxTween;
 import lime.utils.Assets;
 import flixel.system.FlxSound;
 import openfl.utils.Assets as OpenFlAssets;
-import sys.io.File;
 import sys.FileSystem;
 import haxe.Json;
 import haxe.format.JsonParser;
@@ -773,3 +771,4 @@ class ModMetadata
 		}
 	}
 }
+#end

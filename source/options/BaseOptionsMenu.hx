@@ -113,7 +113,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		for (i in 0...optionsArray.length)
 		{
 			var optionText:Alphabet = new Alphabet(0, 70 * i, optionsArray[i].name, false, false);
-			optionText.isMenuItem = true;
+			optionText.altRotation = true;
 			optionText.x += 300;
 			/*optionText.forceX = 300;
 			optionText.yMult = 90;*/
@@ -175,7 +175,14 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			changeSelection(1);
 		}
 
-		if (controls.BACK) {
+		var shiftMult:Int = 1;
+
+		if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+			{
+				changeSelection(-shiftMult * FlxG.mouse.wheel);
+			}
+
+		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
 			close();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
@@ -190,7 +197,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 			if(usesCheckbox)
 			{
-				if(controls.ACCEPT)
+				if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
 				{
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					curOption.setValue((curOption.getValue() == true) ? false : true);

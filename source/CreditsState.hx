@@ -104,20 +104,33 @@ class CreditsState extends MusicBeatState
 		#end
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
-			['Psych Engine Team'],
-			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',							'https://twitter.com/Shadow_Mario_',	'444444'],
-			['RiverOaken',			'riveroaken',		'Main Artist/Animator of Psych Engine',						'https://twitter.com/RiverOaken',		'C30085'],
-			['shubs',				'shubs',			'Additional Programmer of Psych Engine',					'https://twitter.com/yoshubs',			'279ADC'],
+			["Denpa Engine Contributors"],
+			['BlueVapor1234',		'bluevapor1234',	"Main Programmer of Denpa Engine",							'https://twitter.com/BlueVapor1234',	'242424'],
+			['Bethany Clone',			'bethanyclone',		"Extra Programmer and Advisor of Denpa Engine",							'NON EXISTENT',		'46B3FB'],
+			['Box',			'discord',		"Extra Programmer and Optimizer of Denpa Engine",							'NON EXISTENT',		'5C89BF'],
+			['Toadette8394',			'discord',		"Extra Programmer of Denpa Engine",							'https://twitter.com/Toadette8394',		'5C89BF'],
+			['Electrophyll II',			'discord',		"Extra Programmer and Ideas Provider of Denpa Engine",							'NON EXISTENT',		'5C89BF'],
+			['_Jorge',			'discord',		"Cross Fade Code, Hscript Support",							'NON EXISTENT',		'5C89BF'],
+			['ThriftySoles',			'discord',		"Ideas Provider and Misc. Music/Assets Maker of Denpa Engine",							'https://twitter.com/thriftysoles',		'5C89BF'],
+			['Megaverse',			'discord',		"Title Music for the Engine and Denpa Funkin'",							'NON EXISTENT',		'5C89BF'],
+			['Denpa Engine Discord',			'discord',		"Press Enter to Join",							'https://discord.gg/BFaMfmTNaa',		'5C89BF'],
 			[''],
-			['Former Engine Members'],
-			['bb-panzu',			'bb-panzu',			'Ex-Programmer of Psych Engine',							'https://twitter.com/bbsub3',			'389A58'],
+			["Misc. Credits"],
+			['Mike Geno',			'discord',		"Gospel Song Composer",							'https://www.youtube.com/channel/UC3aPeoW8JeQHAPyl38XcNoQ',		'5C89BF'],
+			['Dokki.doodlez',			'discord',		"Sarvente Sprites & Sarvente Character",							'CANNOT FIND!',		'5C89BF'],
+			['kuroao_anomal',			'discord',		"Sarvente Engine Programmer",							'https://twitter.com/kuroao_anomal?lang=en',		'5C89BF'],
+			['Kade Developer',			'discord',		"Kade Engine Programmer",							'https://twitter.com/kade0912?lang=en',		'5C89BF'],
+			['srPEREZ',		'discord',	"Multi Key Assets/Original Multi Key Code",						'https://twitter.com/newsrperez?lang=en',	'5C89BF'],
 			[''],
-			['Engine Contributors'],
-			['iFlicky',				'iflicky',			'Composer of Psync and Tea Time\nMade the Dialogue Sounds',	'https://twitter.com/flicky_i',			'AA32FE'],
-			['SqirraRNG',			'gedehari',			'Chart Editor\'s Sound Waveform base',						'https://twitter.com/gedehari',			'FF9300'],
-			['PolybiusProxy',		'polybiusproxy',	'.MP4 Video Loader Extension',								'https://twitter.com/polybiusproxy',	'FFEAA6'],
-			['Keoiki',				'keoiki',			'Note Splash Animations',									'https://twitter.com/Keoiki_',			'FFFFFF'],
-			['Smokey',				'smokey',			'Spritemap Texture Support',								'https://twitter.com/Smokey_5_',		'4D5DBD'],
+			["Denpa Funkin' Crew"],
+			['DPadderz',		'dpadderz',	"Artist, Composer, and Ideas Man",						'https://twitter.com/MoldyPuff',	'A5BABA'],
+			['Shayz',			'shayz',		"Charter",							'NON EXISTENT',		'DF002F'],
+			['Denpamoo',			'moo',		"Cool 2d artist",							'NON EXISTENT',		'63E7FF'],
+			['ZebruhYes',			'zebruh',		"Cool 3d artist",							'https://www.youtube.com/channel/UCIpWCo8lgIxtkXEhRFA50lg',		'FFFFFF'],
+			['Adrian',			'discord',		"Composer + In The Mod",							'NON EXISTENT',		'5C89BF'],
+			['Chuckles',			'discord',		"Composer and Ideas Man + In The Mod",							'https://twitter.com/Chuckle10511369',		'5C89BF'],
+			['Satas',			'discord',		"Arist and Playtester",							'https://mobile.twitter.com/Void_satas',		'5C89BF'],
+			['Denpa Men Discord',			'discord',		"Press Enter to Join",							'https://discord.gg/thedenpamen',		'5C89BF'],
 			[''],
 			["Funkin' Crew"],
 			['ninjamuffin99',		'ninjamuffin99',	"Programmer of Friday Night Funkin'",						'https://twitter.com/ninja_muffin99',	'F73838'],
@@ -125,35 +138,16 @@ class CreditsState extends MusicBeatState
 			['evilsk8r',			'evilsk8r',			"Artist of Friday Night Funkin'",							'https://twitter.com/evilsk8r',			'53E52C'],
 			['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",							'https://twitter.com/kawaisprite',		'6475F3'],
 			[''],
-			["Denpa Engine Contributors"],
-			['BlueVapor1234',		'bluevapor1234',	"Main Programmer of Denpa Engine",							'https://twitter.com/BlueVapor1234',	'242424'],
-			['Bethany Clone',			'bethanyclone',		"Extra Programmer and Advisor of Denpa Engine",							'no',		'46B3FB'],
-			['Box',			'discord',		"Extra Programmer and Optimizer of Denpa Engine",							'no',		'5C89BF'],
-			['Toadette8394',			'discord',		"Extra Programmer of Denpa Engine",							'no',		'5C89BF'],
-			['Electrophyll II',			'discord',		"Extra Programmer and Ideas Provider of Denpa Engine",							'no',		'5C89BF'],
-			['_Jorge',			'discord',		"Cross Fade Code Getter and Helper",							'no',		'5C89BF'],
-			['ThriftySoles',			'discord',		"Ideas Provider and Misc. Music/Assets Maker of Denpa Engine",							'no',		'5C89BF'],
-			['Megaverse',			'discord',		"Title Music for the Engine and Denpa Funkin'",							'no',		'5C89BF'],
-			['Denpa Engine Discord',			'discord',		"Press Enter to Join",							'https://discord.gg/BFaMfmTNaa',		'5C89BF'],
-			[''],
-			["Misc. Credits"],
-			['Mike Geno',			'discord',		"Gospel Song Composer",							'no',		'5C89BF'],
-			['Dokki.doodlez',			'discord',		"Sarvente Sprites & Sarvente Character",							'no',		'5C89BF'],
-			['kuroao_anomal',			'discord',		"Sarvente Engine Programmer",							'no',		'5C89BF'],
-			[''],
-			['Kade Developer',			'discord',		"Kade Engine Programmer",							'no',		'5C89BF'],
-			[''],
-			['srPEREZ',		'discord',	"Multi Key Assets/Original Multi Key Code",						'no',	'5C89BF'],
-			[''],
-			["Denpa Funkin' Crew"],
-			['DPadderz',		'dpadderz',	"Artist, Composer, and Ideas Man",						'https://twitter.com/MoldyPuff',	'A5BABA'],
-			['Shayz',			'shayz',		"Charter",							'no',		'DF002F'],
-			['Denpamoo',			'moo',		"Cool 2d artist",							'no',		'63E7FF'],
-			['ZebruhYes',			'zebruh',		"Cool 3d artist",							'https://www.youtube.com/channel/UCIpWCo8lgIxtkXEhRFA50lg',		'FFFFFF'],
-			['Adrian',			'discord',		"Composer + In The Mod",							'no',		'5C89BF'],
-			['Chuckles',			'discord',		"Composer and Ideas Man + In The Mod",							'no',		'5C89BF'],
-			['Satas',			'discord',		"Arist and Playtester",							'no',		'5C89BF'],
-			['Denpa Men Discord',			'discord',		"Press Enter to Join",							'https://discord.gg/thedenpamen',		'5C89BF']
+			['Psych Engine Contributors'],
+			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',							'https://twitter.com/Shadow_Mario_',	'444444'],
+			['RiverOaken',			'riveroaken',		'Main Artist/Animator of Psych Engine',						'https://twitter.com/RiverOaken',		'C30085'],
+			['shubs',				'shubs',			'Additional Programmer of Psych Engine',					'https://twitter.com/yoshubs',			'279ADC'],
+			['bb-panzu',			'bb-panzu',			'Ex-Programmer of Psych Engine',							'https://twitter.com/bbsub3',			'389A58'],
+			['iFlicky',				'iflicky',			'Composer of Psync and Tea Time\nMade the Dialogue Sounds',	'https://twitter.com/flicky_i',			'AA32FE'],
+			['SqirraRNG',			'gedehari',			'Chart Editor\'s Sound Waveform base',						'https://twitter.com/gedehari',			'FF9300'],
+			['PolybiusProxy',		'polybiusproxy',	'.MP4 Video Loader Extension',								'https://twitter.com/polybiusproxy',	'FFEAA6'],
+			['Keoiki',				'keoiki',			'Note Splash Animations',									'https://twitter.com/Keoiki_',			'FFFFFF'],
+			['Smokey',				'smokey',			'Spritemap Texture Support',								'https://twitter.com/Smokey_5_',		'4D5DBD']
 		];
 		
 		for(i in pisspoop){
@@ -257,6 +251,11 @@ class CreditsState extends MusicBeatState
 					holdTime = 0;
 				}
 
+				if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+					{
+						changeSelection(-shiftMult * FlxG.mouse.wheel);
+					}
+
 				if(controls.UI_DOWN || controls.UI_UP)
 				{
 					var checkLastHold:Int = Math.floor((holdTime - 0.5) * 10);
@@ -270,10 +269,10 @@ class CreditsState extends MusicBeatState
 				}
 			}
 
-			if(controls.ACCEPT) {
+			if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
 				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
 			}
-			if (controls.BACK)
+			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 			{
 				if(colorTween != null) {
 					colorTween.cancel();

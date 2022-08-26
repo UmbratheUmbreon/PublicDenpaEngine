@@ -81,6 +81,14 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
+		var option:Option = new Option('Cam Move Mode:',
+			"How do you want the camera movement to behave?",
+			'camPanMode',
+			'string',
+			'Always',
+			['Always', 'Camera Focus', 'BF Only', 'Oppt Only', 'Player 4 Only']);
+		addOption(option);
+
 		var option:Option = new Option('Ghost Tapping Miss Animation',
 			"If checked, the player will do miss animations when you press the arrows while Ghost Tapping is enabled. If unchecked, the player will do normal sing animations instead.",
 			'gsmiss',
@@ -116,12 +124,19 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
+		var option:Option = new Option('Icon Flinching',
+			"If checked, Missing will cause the player's icon to show the dying animation temporarily.",
+			'flinchy',
+			'bool',
+			true);
+		addOption(option);
+
 		var option:Option = new Option('Icon Animation:',
 			"What animation should the healthbar icons do?",
 			'iconSwing',
 			'string',
 			'Swing Mild',
-			['Swing Mild', 'Angle Snap', 'Bop Mild', 'Vanilla', 'Old', 'None']);
+			['Swing Mild', 'Angle Snap', 'Bop Mild', 'Vanilla', 'Squish', 'Stretch', 'Old', 'None']);
 		addOption(option);
 
 		var option:Option = new Option('OG Healthbar',
@@ -164,6 +179,23 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
+
+		var option:Option = new Option('MS Timing Text',
+			'If checked, text displaying your MS timing will appear when hitting a note.',
+			'msPopup',
+			'bool',
+			true);
+		addOption(option);
+
+		var option:Option = new Option('MS Display Precision:',
+			"How precise the MS Timing display is. Lower numbers = less precise. 0 is only Integers.",
+			'msPrecision',
+			'int',
+			2);
+		addOption(option);
+
+		option.minValue = 0;
+		option.maxValue = 9;
 
 		var option:Option = new Option('Score Display:',
 			"What engine's score display do you want?",

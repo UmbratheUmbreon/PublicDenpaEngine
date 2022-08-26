@@ -142,7 +142,15 @@ class OptionsState extends MusicBeatState
 			changeSelection(1);
 		}
 
-		if (controls.BACK) {
+		var shiftMult:Int = 1;
+
+		if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+			{
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.2);
+				changeSelection(-shiftMult * FlxG.mouse.wheel);
+			}
+
+		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			if (PauseSubState.transferPlayState) {
 				StageData.loadDirectory(PlayState.SONG);
@@ -152,7 +160,7 @@ class OptionsState extends MusicBeatState
 			}
 		}
 
-		if (controls.ACCEPT) {
+		if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
 			openSelectedSubstate(options[curSelected]);
 		}
 
@@ -230,7 +238,6 @@ class OptionsState extends MusicBeatState
 		ClientPrefs.iconSwing = 'Swing Mild';
 		ClientPrefs.scoreDisplay = 'Psych';
 		ClientPrefs.crossFadeMode = 'Mid-Fight Masses';
-		ClientPrefs.imagesPersist = false;
 		ClientPrefs.ghostTapping = true;
 		ClientPrefs.timeBarType = 'Time Left';
 		ClientPrefs.scoreZoom = true;
@@ -241,7 +248,6 @@ class OptionsState extends MusicBeatState
 		ClientPrefs.pauseMusic = 'Tea Time';
 		ClientPrefs.inputType = 'Psych';
 		ClientPrefs.ratingIntensity = 'Default';
-		ClientPrefs.orbsScattered = false;
 		ClientPrefs.randomMode = false;
 		ClientPrefs.quartiz = false;
 		ClientPrefs.ghostMode = false;

@@ -66,6 +66,27 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 		option.onChange = onChangeFullscreen;
+
+		/*var option:Option = new Option('Preloading',
+			'Preloads the game upon startup.',
+			'preloading',
+			'bool',
+			false);
+		addOption(option);*/
+
+		var option:Option = new Option('Mouse Controls',
+			'Turns on or off UI Mouse Controls',
+			'mouseControls',
+			'bool',
+			true);
+		addOption(option);
+
+		var option:Option = new Option('Check For Updates',
+			'Checks for updates on startup if enabled.',
+			'checkForUpdates',
+			'bool',
+			true);
+		addOption(option);
 		#end
 
 		var option:Option = new Option('Pause Screen Song:',

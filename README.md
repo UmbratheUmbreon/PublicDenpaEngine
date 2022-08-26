@@ -1,4 +1,5 @@
 # PublicDenpaEngine
+
 The Public Denpa Engine Repo. Will be updated occasionally, but only when an actual pre-release/release happens.
 
 ## Credits
@@ -123,14 +124,24 @@ The Public Denpa Engine Repo. Will be updated occasionally, but only when an act
 
 -[Cutscene Options] Cutscenes are cool and all but what if you don't want to see them? Well Denpa Man has got you covered with options to specify when you want those cool cutscenes!
 
+-[Week 7] Week 7 is dope and having it is better than not!
+
+-[Menu Mouse Controls] Sometimes scrolling through menus can be an absolute pain, but now with toggleable mouse controls... THAT PROBLEM IS ALL BUT GONE!
+
+-[Hscript Support] Hard coding can be annoying with long compile times on some devices, and a lot of crashes when you do something wrong... But with Hscript, 1 of those problems are fixed!
+
+-[Player 4] Ever wanted to have 2 opponents? With seperate strum lines? And completely seperate properties? And an extra icon for them? And a loving spouse? Well with Player 4, All but one of those problems can be solved easily and gracefully!
+
+-[Accuracy Modes] Maybe to you, the accuracy in base FNF doesn't cut it. Maybe you want some uber accurate accuracy system. Fortunately for you, hyperspecific person out there, Denpa Engine comes packaged with 2 accuracy modes to choose from, Simple and Complex! Complex is so accurate, it rivals other- (Our legal team has advised us to stop there).
+
 And of course, all of Psych's 0.5.2h features (not 0.6+, that is GARBO)
 
 ## How to Build
 
-1) Follow FNF's compiling tutorial, which is here: https://github.com/ninjamuffin99/Funkin
+1) Follow FNF's compiling tutorial, which is here: <https://github.com/ninjamuffin99/Funkin>
 
 2) MAKE SURE YOUR HAXE IS 4.2.5 OR HIGHER!!!
- 
+
 3) Do all da shits for compiling Psych engine that arent stated on the FNF compiling tutorial
 
 4) Pray that it works

@@ -39,7 +39,7 @@ class FlashingState extends MusicBeatState
 	{
 		if(!leftState) {
 			var back:Bool = controls.BACK;
-			if (controls.ACCEPT || back) {
+			if (controls.ACCEPT || back || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
 				leftState = true;
 				FlxTransitionableState.skipNextTransIn = true;
 				FlxTransitionableState.skipNextTransOut = true;

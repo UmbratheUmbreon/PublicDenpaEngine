@@ -1,5 +1,6 @@
 package editors;
 
+import flixel.math.FlxPoint;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -55,7 +56,7 @@ class CharacterEditorState extends MusicBeatState
 	var ghostChar:Character;
 	var textAnim:FlxText;
 	var bgLayer:FlxTypedGroup<FlxSprite>;
-	var grpLimoDancers:FlxTypedGroup<ChEditLimoDancer>;
+	var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
 	var gfLayer:FlxTypedGroup<Character>;
 	var fuckLayer:FlxTypedGroup<FlxSprite>;
 	var dadLayer:FlxTypedGroup<Character>;
@@ -65,9 +66,12 @@ class CharacterEditorState extends MusicBeatState
 	var curAnim:Int = 0;
 	var daAnim:String = 'spooky';
 	var goToPlayState:Bool = true;
-	var camFollow:FlxObject;
+	var camFollow:FlxPoint;
+	var camFollowPos:FlxObject;
+	var prevCamFollow:FlxPoint;
+	var prevCamFollowPos:FlxObject;
 	var stageDropDown:FlxUIDropDownMenuCustom;
-	var stages:Array<String> = ['stage', 'spooky', 'philly', 'limo', 'mall', 'mallEvil', 'school', 'schoolEvil', 'gospel-vector'];
+	var stages:Array<String> = ['stage', 'spooky', 'philly', 'limo', 'mall', 'mallEvil', 'school', 'schoolEvil', 'tank'];
 	var currentStage:String = 'stage';
 
 	var xPositioningOffset:Float = 0;
@@ -88,6 +92,10 @@ class CharacterEditorState extends MusicBeatState
 	var santa:BGSprite;
 
 	var bgGirls:BackgroundGirls;
+
+	var tankWatchtower:BGSprite;
+	var tankGround:BGSprite;
+	var foregroundSprites:FlxTypedGroup<BGSprite>;
 
 	public function new(daAnim:String = 'spooky', goToPlayState:Bool = true)
 	{
@@ -115,6 +123,7 @@ class CharacterEditorState extends MusicBeatState
 
 	override function create()
 	{
+		if (PlayState.curStage != null && PlayState.curStage != '') currentStage = PlayState.curStage;
 		var musicID:Int = FlxG.random.int(0, 2);
 		switch (musicID)
 		{
@@ -144,7 +153,7 @@ class CharacterEditorState extends MusicBeatState
 
 		bgLayer = new FlxTypedGroup<FlxSprite>();
 		add(bgLayer);
-		grpLimoDancers = new FlxTypedGroup<ChEditLimoDancer>();
+		grpLimoDancers = new FlxTypedGroup<BackgroundDancer>();
 		add(grpLimoDancers);
 		gfLayer = new FlxTypedGroup<Character>();
 		add(gfLayer);
@@ -154,6 +163,8 @@ class CharacterEditorState extends MusicBeatState
 		add(dadLayer);
 		charLayer = new FlxTypedGroup<Character>();
 		add(charLayer);
+		foregroundSprites = new FlxTypedGroup<BGSprite>();
+		add(foregroundSprites);
 
 		var pointer:FlxGraphic = FlxGraphic.fromClass(GraphicCursorCross);
 		cameraFollowPointer = new FlxSprite().loadGraphic(pointer);
@@ -168,6 +179,7 @@ class CharacterEditorState extends MusicBeatState
 		changeBGbutton = new FlxButton(FlxG.width - 360, stageDropDown.y + 20, "Reload BG", function()
 		{
 			reloadBGs();
+			char.setPosition(char.positionArray[0] + OFFSET_X + 100 + xPositioningOffset, char.positionArray[1] + yPositioningOffset); //we do it again so that it gets properly set lmao
 		});
 		changeBGbutton.cameras = [camMenu];
 
@@ -194,7 +206,7 @@ class CharacterEditorState extends MusicBeatState
 		healthBarBGB.cameras = [camHUD];
 
 		leHealthIcon = new HealthIcon(char.healthIcon, false);
-		leHealthIcon.y = FlxG.height - 150;
+		leHealthIcon.y = FlxG.height - 130;
 		add(leHealthIcon);
 		leHealthIcon.cameras = [camHUD];
 
@@ -212,9 +224,25 @@ class CharacterEditorState extends MusicBeatState
 
 		genBoyOffsets();
 
-		camFollow = new FlxObject(0, 0, 2, 2);
-		camFollow.screenCenter();
-		add(camFollow);
+		camFollow = new FlxPoint();
+		camFollowPos = new FlxObject(0, 0, 1, 1);
+
+		if (char != null) {
+			snapCamFollowToPos(char.getMidpoint().x + 150, char.getMidpoint().y - 100);
+		} else {
+			snapCamFollowToPos(0, 0);
+		}
+		if (prevCamFollow != null)
+		{
+			camFollow = prevCamFollow;
+			prevCamFollow = null;
+		}
+		if (prevCamFollowPos != null)
+		{
+			camFollowPos = prevCamFollowPos;
+			prevCamFollowPos = null;
+		}
+		add(camFollowPos);
 
 		var tipTextArray:Array<String> = "E/Q - Camera Zoom In/Out
 		\nR - Reset Camera Zoom
@@ -235,7 +263,8 @@ class CharacterEditorState extends MusicBeatState
 			add(tipText);
 		}
 
-		FlxG.camera.follow(camFollow);
+		FlxG.camera.follow(camFollowPos, LOCKON, 1);
+		FlxG.camera.focusOn(camFollow);
 
 		var tabs = [
 			//{name: 'Offsets', label: 'Offsets'},
@@ -298,9 +327,21 @@ class CharacterEditorState extends MusicBeatState
 		}
 		bgLayer.clear();
 
+		var i:Int = foregroundSprites.members.length-1;
+		while(i >= 0) {
+			var memb:BGSprite = foregroundSprites.members[i];
+			if(memb != null) {
+				memb.kill();
+				foregroundSprites.remove(memb);
+				memb.destroy();
+			}
+			--i;
+		}
+		foregroundSprites.clear();
+
 		var i:Int = grpLimoDancers.members.length-1;
 		while(i >= 0) {
-			var memb:ChEditLimoDancer = grpLimoDancers.members[i];
+			var memb:BackgroundDancer = grpLimoDancers.members[i];
 			if(memb != null) {
 				memb.kill();
 				grpLimoDancers.remove(memb);
@@ -354,6 +395,8 @@ class CharacterEditorState extends MusicBeatState
 				gfVersion = 'gf-christmas';
 			case 'school' | 'schoolEvil':
 				gfVersion = 'gf-pixel';
+			case 'tank':
+				gfVersion = 'gf-tankmen';
 			default:
 				gfVersion = 'gf';
 		}
@@ -376,8 +419,8 @@ class CharacterEditorState extends MusicBeatState
 				dadVersion = 'senpai';
 			case 'schoolEvil':
 				dadVersion = 'spirit';
-			case 'gospel-vector':
-				dadVersion = 'sarvente-lucifer';
+			case 'tank':
+				dadVersion = 'tankman';
 			default:
 				dadVersion = 'dad';
 		}
@@ -389,6 +432,14 @@ class CharacterEditorState extends MusicBeatState
 		switch (currentStage)
 		{
 			case 'stage':
+				var directory:String = 'shared';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
 				var bg:BGSprite = new BGSprite('stageback', -600 + OFFSET_X, -200, 0.9, 0.9);
 				bgLayer.add(bg);
 	
@@ -423,7 +474,15 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 			case 'spooky':
-				var halloweenBG:BGSprite = new BGSprite('ch-editor/halloween_bg_low', -200 + OFFSET_X, -25);
+				var directory:String = 'week2';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
+				var halloweenBG:BGSprite = new BGSprite('halloween_bg_low', -200 + OFFSET_X, -25);
 				bgLayer.add(halloweenBG);
 				if(char != null){
 					if(char.isPlayer) {
@@ -452,18 +511,26 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 			case 'philly':
-				var bg:BGSprite = new BGSprite('ch-editor/philly/sky', -300 + OFFSET_X, -100, 0.1, 0.1);
+				var directory:String = 'week3';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
+				var bg:BGSprite = new BGSprite('philly/sky', -300 + OFFSET_X, -100, 0.1, 0.1);
 				bgLayer.add(bg);
 				
-				var city:BGSprite = new BGSprite('ch-editor/philly/city', -210 + OFFSET_X, 0, 0.3, 0.3);
+				var city:BGSprite = new BGSprite('philly/city', -210 + OFFSET_X, 0, 0.3, 0.3);
 				city.setGraphicSize(Std.int(city.width * 0.85));
 				city.updateHitbox();
 				bgLayer.add(city);
 
-				var streetBehind:BGSprite = new BGSprite('ch-editor/philly/behindTrain', -90 + OFFSET_X, 150);
+				var streetBehind:BGSprite = new BGSprite('philly/behindTrain', -90 + OFFSET_X, 150);
 				bgLayer.add(streetBehind);
 
-				var street:BGSprite = new BGSprite('ch-editor/philly/street', -40 + OFFSET_X, 100);
+				var street:BGSprite = new BGSprite('philly/street', -40 + OFFSET_X, 100);
 				bgLayer.add(street);
 				if(char != null){
 					if(char.isPlayer) {
@@ -492,10 +559,18 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 			case 'limo':
-				var skyBG:BGSprite = new BGSprite('ch-editor/limo/limoSunset', -420 + OFFSET_X, -50, 0.1, 0.1);
+				var directory:String = 'week4';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
+				var skyBG:BGSprite = new BGSprite('limo/limoSunset', -420 + OFFSET_X, -50, 0.1, 0.1);
 				bgLayer.add(skyBG);
 
-				var bgLimo:BGSprite = new BGSprite('ch-editor/limo/bgLimo', -150 + OFFSET_X, 480, 0.4, 0.4, ['background limo pink'], true);
+				var bgLimo:BGSprite = new BGSprite('limo/bgLimo', -150 + OFFSET_X, 480, 0.4, 0.4, ['background limo pink'], true);
 				bgLayer.add(bgLimo);
 				if(char != null){
 					if(char.isPlayer) {
@@ -510,7 +585,7 @@ class CharacterEditorState extends MusicBeatState
 
 				for (i in 0...5)
 					{
-						var dancer:ChEditLimoDancer = new ChEditLimoDancer((370 * i) + 430, bgLimo.y - 400);
+						var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 430, bgLimo.y - 400);
 						dancer.scrollFactor.set(0.4, 0.4);
 						grpLimoDancers.add(dancer);
 					}
@@ -532,46 +607,54 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 
-				var limo:BGSprite = new BGSprite('ch-editor/limo/limoDrive', -120 + OFFSET_X, 550, 1, 1, ['Limo stage'], true);
+				var limo:BGSprite = new BGSprite('limo/limoDrive', -120 + OFFSET_X, 550, 1, 1, ['Limo stage'], true);
 				fuckLayer.add(limo);
 
-				fastCar = new BGSprite('ch-editor/limo/fastCarLol', -300, 160);
+				fastCar = new BGSprite('limo/fastCarLol', -300, 160);
 				fastCar.active = true;
 				resetFastCar();
 				insert(members.indexOf(fuckLayer) - 1, fastCar);
 			case 'mall':
-				var bg:BGSprite = new BGSprite('ch-editor/christmas/bgWalls', -1200 + OFFSET_X, -500, 0.2, 0.2);
+				var directory:String = 'week5';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
+				var bg:BGSprite = new BGSprite('christmas/bgWalls', -1200 + OFFSET_X, -500, 0.2, 0.2);
 				bg.setGraphicSize(Std.int(bg.width * 0.8));
 				bg.updateHitbox();
 				bgLayer.add(bg);
 
 				if(!ClientPrefs.lowQuality){
-				upperBoppers = new BGSprite('ch-editor/christmas/upperBop', -440 + OFFSET_X, -90, 0.33, 0.33, ['Upper Crowd Bob']);
+				upperBoppers = new BGSprite('christmas/upperBop', -440 + OFFSET_X, -90, 0.33, 0.33, ['Upper Crowd Bob']);
 				upperBoppers.setGraphicSize(Std.int(upperBoppers.width * 0.85));
 				upperBoppers.updateHitbox();
 				bgLayer.add(upperBoppers);
 				}
 
-				var bgEscalator:BGSprite = new BGSprite('ch-editor/christmas/bgEscalator', -1300 + OFFSET_X, -600, 0.3, 0.3);
+				var bgEscalator:BGSprite = new BGSprite('christmas/bgEscalator', -1300 + OFFSET_X, -600, 0.3, 0.3);
 				bgEscalator.setGraphicSize(Std.int(bgEscalator.width * 0.9));
 				bgEscalator.updateHitbox();
 				bgLayer.add(bgEscalator);
 
-				var tree:BGSprite = new BGSprite('ch-editor/christmas/christmasTree', 170 + OFFSET_X, -250, 0.40, 0.40);
+				var tree:BGSprite = new BGSprite('christmas/christmasTree', 170 + OFFSET_X, -250, 0.40, 0.40);
 				bgLayer.add(tree);
 
 				if(!ClientPrefs.lowQuality){
-				bottomBoppers = new BGSprite('ch-editor/christmas/bottomBop', -400 + OFFSET_X, 140, 0.9, 0.9, ['Bottom Level Boppers Idle']);
+				bottomBoppers = new BGSprite('christmas/bottomBop', -400 + OFFSET_X, 140, 0.9, 0.9, ['Bottom Level Boppers Idle']);
 				bottomBoppers.setGraphicSize(Std.int(bottomBoppers.width * 1));
 				bottomBoppers.updateHitbox();
 				bgLayer.add(bottomBoppers);
 				}
 
-				var fgSnow:BGSprite = new BGSprite('ch-editor/christmas/fgSnow', -800 + OFFSET_X, 700);
+				var fgSnow:BGSprite = new BGSprite('christmas/fgSnow', -800 + OFFSET_X, 700);
 				bgLayer.add(fgSnow);
 
 				if(!ClientPrefs.lowQuality){
-				santa = new BGSprite('ch-editor/christmas/santa', -840 + OFFSET_X, 150, 1, 1, ['santa idle in fear']);
+				santa = new BGSprite('christmas/santa', -840 + OFFSET_X, 150, 1, 1, ['santa idle in fear']);
 				bgLayer.add(santa);
 				}
 
@@ -602,15 +685,23 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 			case 'mallEvil':
-				var bg:BGSprite = new BGSprite('ch-editor/christmas/evilBG', -600 + OFFSET_X, -500, 0.2, 0.2);
+				var directory:String = 'week5';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
+				var bg:BGSprite = new BGSprite('christmas/evilBG', -600 + OFFSET_X, -500, 0.2, 0.2);
 				bg.setGraphicSize(Std.int(bg.width * 0.8));
 				bg.updateHitbox();
 				bgLayer.add(bg);
 
-				var evilTree:BGSprite = new BGSprite('ch-editor/christmas/evilTree', 100 + OFFSET_X, -300, 0.2, 0.2);
+				var evilTree:BGSprite = new BGSprite('christmas/evilTree', 100 + OFFSET_X, -300, 0.2, 0.2);
 				bgLayer.add(evilTree);
 
-				var evilSnow:BGSprite = new BGSprite('ch-editor/christmas/evilSnow', -300 + OFFSET_X, 700);
+				var evilSnow:BGSprite = new BGSprite('christmas/evilSnow', -300 + OFFSET_X, 700);
 				bgLayer.add(evilSnow);
 				if(char != null){
 					if(char.isPlayer) {
@@ -639,6 +730,14 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 			case 'school':
+				var directory:String = 'week6';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
 				if(char.isPlayer) {
 					playerXDifference += 200;
 					playerYDifference = 0;
@@ -720,6 +819,14 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 			case 'schoolEvil':
+				var directory:String = 'week6';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
 				if(char.isPlayer) {
 					playerXDifference += 200;
 					playerYDifference = 0;
@@ -727,7 +834,7 @@ class CharacterEditorState extends MusicBeatState
 
 				var repositionShit = -200 + OFFSET_X;
 				
-				var bg:BGSprite = new BGSprite('weeb/animatedEvilSchool', 400 + repositionShit, 300, 0.8, 0.9, ['background 2'], true);
+				var bg:BGSprite = new BGSprite('weeb/animatedEvilSchool', 500 + repositionShit, 300, 0.8, 0.9, ['background 2'], true);
 				bg.scale.set(6, 6);
 				bg.antialiasing = false;
 				bgLayer.add(bg);
@@ -756,136 +863,88 @@ class CharacterEditorState extends MusicBeatState
 						dadLayer.add(dad);
 						}
 					}
-				}					
-			case 'gospel-vector':
-				var penta_rune:BGSprite = new BGSprite('ch-editor/gospel/penta_rune', -5 + OFFSET_X, -290, 0.5, 0.5);
+				}			
+			case 'tank':
+				var directory:String = 'week7';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
+				var sky:BGSprite = new BGSprite('tankSky', -600 + OFFSET_X, -400, 0, 0);
+				bgLayer.add(sky);
 
-				var rotating_circle:BGSprite = new BGSprite('ch-editor/gospel/rotating_circle', penta_rune.x, penta_rune.y, 0.5, 0.5);
+				if(!ClientPrefs.lowQuality)
+				{
+					var clouds:BGSprite = new BGSprite('tankClouds', FlxG.random.int(-700, -100) + OFFSET_X, FlxG.random.int(-20, 20), 0.1, 0.1);
+					clouds.active = true;
+					clouds.velocity.x = FlxG.random.float(5, 15);
+					bgLayer.add(clouds);
 
-				var rotating_circle2:BGSprite = new BGSprite('ch-editor/gospel/rotating_circle', penta_rune.x - 275, penta_rune.y - 275, 0.5, 0.5);
-				rotating_circle2.setGraphicSize(Std.int(rotating_circle2.width * 2));
-				rotating_circle2.updateHitbox();
+					var mountains:BGSprite = new BGSprite('tankMountains', -500 + OFFSET_X, -20, 0.2, 0.2);
+					mountains.setGraphicSize(Std.int(1.2 * mountains.width));
+					mountains.updateHitbox();
+					bgLayer.add(mountains);
 
-				var pink_lines:BGSprite = new BGSprite('ch-editor/gospel/pink_lines', -2500 + OFFSET_X, -660, 1, 1);
-				pink_lines.setGraphicSize(Std.int(pink_lines.width * 1.3));
-				pink_lines.updateHitbox();
+					var buildings:BGSprite = new BGSprite('tankBuildings', -300 + OFFSET_X, 0, 0.3, 0.3);
+					buildings.setGraphicSize(Std.int(1.1 * buildings.width));
+					buildings.updateHitbox();
+					bgLayer.add(buildings);
+				}
 
-					var far_bottom_vector_1:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2000 + OFFSET_X, 630, 0.9, 0.9);
-					far_bottom_vector_1.setGraphicSize(Std.int(far_bottom_vector_1.width * 1.1));
-					var far_bottom_vector_2:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2200 + OFFSET_X, 615, 0.8, 0.8);
-					far_bottom_vector_2.setGraphicSize(Std.int(far_bottom_vector_2.width * 1.2));
-					var far_bottom_vector_3:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2400 + OFFSET_X, 600, 0.7, 0.7);
-					far_bottom_vector_3.setGraphicSize(Std.int(far_bottom_vector_3.width * 1.3));
-					var far_bottom_vector_4:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2600 + OFFSET_X, 590, 0.6, 0.6);
-					far_bottom_vector_4.setGraphicSize(Std.int(far_bottom_vector_4.width * 1.4));
-					far_bottom_vector_1.updateHitbox();
-					far_bottom_vector_2.updateHitbox();
-					far_bottom_vector_3.updateHitbox();
-					far_bottom_vector_4.updateHitbox();
+				var ruins:BGSprite = new BGSprite('tankRuins',-400 + OFFSET_X,0,.35,.35);
+				ruins.setGraphicSize(Std.int(1.1 * ruins.width));
+				ruins.updateHitbox();
+				bgLayer.add(ruins);
 
-					var far_top_vector_1:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2000 + OFFSET_X, -630, 0.9, 0.9);
-					far_top_vector_1.setGraphicSize(Std.int(far_top_vector_1.width * 1.1));
-					var far_top_vector_2:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2200 + OFFSET_X, -615, 0.8, 0.8);
-					far_top_vector_2.setGraphicSize(Std.int(far_top_vector_2.width * 1.2));
-					var far_top_vector_3:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2400 + OFFSET_X, -600, 0.7, 0.7);
-					far_top_vector_3.setGraphicSize(Std.int(far_top_vector_3.width * 1.3));
-					var far_top_vector_4:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2600 + OFFSET_X, -590, 0.6, 0.6);
-					far_top_vector_4.setGraphicSize(Std.int(far_top_vector_4.width * 1.4));
-					far_top_vector_1.updateHitbox();
-					far_top_vector_2.updateHitbox();
-					far_top_vector_3.updateHitbox();
-					far_top_vector_4.updateHitbox();
+				if(!ClientPrefs.lowQuality)
+				{
+					var smokeLeft:BGSprite = new BGSprite('smokeLeft', -400 + OFFSET_X, -100, 0.4, 0.4, ['SmokeBlurLeft'], true);
+					bgLayer.add(smokeLeft);
+					var smokeRight:BGSprite = new BGSprite('smokeRight', 900 + OFFSET_X, -100, 0.4, 0.4, ['SmokeRight'], true);
+					bgLayer.add(smokeRight);
 
-					var bottom_vector_1:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2000 + OFFSET_X, 660, 1, 1);
-					bottom_vector_1.setGraphicSize(Std.int(bottom_vector_1.width * 1.1));
-					var bottom_vector_2:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2200 + OFFSET_X, 690, 1.1, 1.1);
-					bottom_vector_2.setGraphicSize(Std.int(bottom_vector_2.width * 1.2));
-					var bottom_vector_3:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2400 + OFFSET_X, 740, 1.2, 1.2);
-					bottom_vector_3.setGraphicSize(Std.int(bottom_vector_3.width * 1.3));
-					var bottom_vector_4:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2600 + OFFSET_X, 810, 1.3, 1.3);
-					bottom_vector_4.setGraphicSize(Std.int(bottom_vector_4.width * 1.4));
-					var bottom_vector_5:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2800 + OFFSET_X, 940, 1.4, 1.4);
-					bottom_vector_5.setGraphicSize(Std.int(bottom_vector_5.width * 1.5));
-					var bottom_vector_6:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -3000 + OFFSET_X, 1120, 1.5, 1.5);
-					bottom_vector_6.setGraphicSize(Std.int(bottom_vector_6.width * 1.6));
-					var bottom_vector_7:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -3200 + OFFSET_X, 1460, 1.6, 1.6);
-					bottom_vector_7.setGraphicSize(Std.int(bottom_vector_7.width * 1.7));
-					bottom_vector_1.updateHitbox();
-					bottom_vector_2.updateHitbox();
-					bottom_vector_3.updateHitbox();
-					bottom_vector_4.updateHitbox();
-					bottom_vector_5.updateHitbox();
-					bottom_vector_6.updateHitbox();
-					bottom_vector_7.updateHitbox();
+					tankWatchtower = new BGSprite('tankWatchtower', -100 + OFFSET_X, 50, 0.5, 0.5, ['watchtower gradient color']);
+					bgLayer.add(tankWatchtower);
+				}
 
-					var top_vector_1:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2000 + OFFSET_X, -660, 1, 1);
-					top_vector_1.setGraphicSize(Std.int(top_vector_1.width * 1.1));
-					var top_vector_2:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2200 + OFFSET_X, -690, 1.1, 1.1);
-					top_vector_2.setGraphicSize(Std.int(top_vector_2.width * 1.2));
-					var top_vector_3:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2400 + OFFSET_X, -740, 1.2, 1.2);
-					top_vector_3.setGraphicSize(Std.int(top_vector_3.width * 1.3));
-					var top_vector_4:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2600 + OFFSET_X, -810, 1.3, 1.3);
-					top_vector_4.setGraphicSize(Std.int(top_vector_4.width * 1.4));
-					var top_vector_5:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -2800 + OFFSET_X, -940, 1.4, 1.4);
-					top_vector_5.setGraphicSize(Std.int(top_vector_5.width * 1.5));
-					var top_vector_6:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -3000 + OFFSET_X, -1120, 1.5, 1.5);
-					top_vector_6.setGraphicSize(Std.int(top_vector_6.width * 1.6));
-					var top_vector_7:BGSprite = new BGSprite('ch-editor/gospel/pink_vector', -3200 + OFFSET_X, -1460, 1.6, 1.6);
-					top_vector_7.setGraphicSize(Std.int(top_vector_7.width * 1.7));
-					top_vector_1.updateHitbox();
-					top_vector_2.updateHitbox();
-					top_vector_3.updateHitbox();
-					top_vector_4.updateHitbox();
-					top_vector_5.updateHitbox();
-					top_vector_6.updateHitbox();
-					top_vector_7.updateHitbox();
+				tankGround = new BGSprite('tankRolling', 300 + OFFSET_X, 300, 0.5, 0.5,['BG tank w lighting'], true);
+				bgLayer.add(tankGround);
 
-				bgLayer.add(rotating_circle2);
-				bgLayer.add(penta_rune);
-				bgLayer.add(rotating_circle);
-				bgLayer.add(far_bottom_vector_1);
-				bgLayer.add(far_bottom_vector_2);
-				bgLayer.add(far_bottom_vector_3);
-				bgLayer.add(far_bottom_vector_4);
-				bgLayer.add(far_top_vector_1);
-				bgLayer.add(far_top_vector_2);
-				bgLayer.add(far_top_vector_3);
-				bgLayer.add(far_top_vector_4);
-				bgLayer.add(pink_lines);
-				bgLayer.add(bottom_vector_1);
-				bgLayer.add(bottom_vector_2);
-				bgLayer.add(bottom_vector_3);
-				bgLayer.add(bottom_vector_4);
-				bgLayer.add(bottom_vector_5);
-				bgLayer.add(bottom_vector_6);
-				bgLayer.add(bottom_vector_7);
-				bgLayer.add(top_vector_1);
-				bgLayer.add(top_vector_2);
-				bgLayer.add(top_vector_3);
-				bgLayer.add(top_vector_4);
-				bgLayer.add(top_vector_5);
-				bgLayer.add(top_vector_6);
-				bgLayer.add(top_vector_7);
+				var ground:BGSprite = new BGSprite('tankGround', -420 + OFFSET_X, -150);
+				ground.setGraphicSize(Std.int(1.15 * ground.width));
+				ground.updateHitbox();
+				bgLayer.add(ground);
+				moveTank();
+
+				foregroundSprites.add(new BGSprite('tank0', -500 + OFFSET_X, 650, 1.7, 1.5, ['fg']));
+				if(!ClientPrefs.lowQuality) foregroundSprites.add(new BGSprite('tank1', -300, 750, 2, 0.2, ['fg']));
+				foregroundSprites.add(new BGSprite('tank2', 450 + OFFSET_X, 940, 1.5, 1.5, ['foreground']));
+				if(!ClientPrefs.lowQuality) foregroundSprites.add(new BGSprite('tank4', 1300, 900, 1.5, 1.5, ['fg']));
+				foregroundSprites.add(new BGSprite('tank5', 1620 + OFFSET_X, 700, 1.5, 1.5, ['fg']));
+				if(!ClientPrefs.lowQuality) foregroundSprites.add(new BGSprite('tank3', 1300, 1200, 3.5, 2.5, ['fg']));
 				if(char != null){
 					if(char.isPlayer) {
-						xPositioningOffset = 560;
-						yPositioningOffset = 60;
+						xPositioningOffset = 810;
+						yPositioningOffset = 100;
 					} else {
-						xPositioningOffset = -560;
-						yPositioningOffset = -260;
+						xPositioningOffset = 20;
+						yPositioningOffset = 100;
 					}
 				}
 				if(!ClientPrefs.lowQuality){
-				gfXPositioningOffset = -160 + OFFSET_X;
-				gfYPositioningOffset = 20;
+				gfXPositioningOffset = 200 + OFFSET_X;
+				gfYPositioningOffset = 65;
 				gf = new Character(gfXPositioningOffset, gfYPositioningOffset, gfVersion);
 				gf.scrollFactor.set(0.95, 0.95);
 				gfLayer.add(gf);
 
 				if(char != null){
 					if(char.isPlayer) {
-						dadXPositioningOffset = -560 + OFFSET_X;
-						dadYPositioningOffset = -260;
+						dadXPositioningOffset = 20 + OFFSET_X;
+						dadYPositioningOffset = 300;
 						dad = new Character(dadXPositioningOffset, dadYPositioningOffset, dadVersion);
 						dad.scrollFactor.set(1, 1);
 						dadLayer.add(dad);
@@ -893,6 +952,14 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 			default:
+				var directory:String = 'shared';
+				var weekDir:String = StageData.forceNextDirectory;
+				StageData.forceNextDirectory = null;
+		
+				if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+		
+				Paths.setCurrentLevel(directory);
+				trace('Setting asset folder to ' + directory);
 				var bg:BGSprite = new BGSprite('stageback', -600 + OFFSET_X, -300, 0.9, 0.9);
 				bgLayer.add(bg);
 	
@@ -927,6 +994,13 @@ class CharacterEditorState extends MusicBeatState
 					}
 				}
 		}
+		if (char != null) {
+			if (char.isPlayer) {
+				snapCamFollowToPos(char.getMidpoint().x - 100, char.getMidpoint().y - 100);
+			} else {
+				snapCamFollowToPos(char.getMidpoint().x + 100, char.getMidpoint().y - 100);
+			}
+		}
 		trace ('reloaded bg with stage:' + currentStage);
 	}
 
@@ -956,82 +1030,116 @@ class CharacterEditorState extends MusicBeatState
 	}
 
 	var TemplateCharacter:String = '{
-			"animations": [
-				{
-					"loop": false,
-					"offsets": [
-						0,
-						0
-					],
-					"fps": 24,
-					"anim": "idle",
-					"indices": [],
-					"name": "Dad idle dance"
-				},
-				{
-					"offsets": [
-						0,
-						0
-					],
-					"indices": [],
-					"fps": 24,
-					"anim": "singLEFT",
-					"loop": false,
-					"name": "Dad Sing Note LEFT"
-				},
-				{
-					"offsets": [
-						0,
-						0
-					],
-					"indices": [],
-					"fps": 24,
-					"anim": "singDOWN",
-					"loop": false,
-					"name": "Dad Sing Note DOWN"
-				},
-				{
-					"offsets": [
-						0,
-						0
-					],
-					"indices": [],
-					"fps": 24,
-					"anim": "singUP",
-					"loop": false,
-					"name": "Dad Sing Note UP"
-				},
-				{
-					"offsets": [
-						0,
-						0
-					],
-					"indices": [],
-					"fps": 24,
-					"anim": "singRIGHT",
-					"loop": false,
-					"name": "Dad Sing Note RIGHT"
-				}
-			],
-			"no_antialiasing": false,
-			"image": "characters/DADDY_DEAREST",
-			"position": [
-				0,
-				0
-			],
-			"healthicon": "face",
-			"flip_x": false,
-			"healthbar_colors": [
-				161,
-				161,
-				161
-			],
-			"camera_position": [
-				0,
-				0
-			],
-			"sing_duration": 6.1,
-			"scale": 1
+		"animations": [
+			{
+				"offsets": [
+					-5,
+					0
+				],
+				"loop": false,
+				"fps": 24,
+				"anim": "idle",
+				"indices": [],
+				"name": "BF idle dance"
+			},
+			{
+				"offsets": [
+					5,
+					-6
+				],
+				"loop": false,
+				"fps": 24,
+				"anim": "singLEFT",
+				"indices": [],
+				"name": "BF NOTE LEFT0"
+			},
+			{
+				"offsets": [
+					-20,
+					-51
+				],
+				"loop": false,
+				"fps": 24,
+				"anim": "singDOWN",
+				"indices": [],
+				"name": "BF NOTE DOWN0"
+			},
+			{
+				"offsets": [
+					-46,
+					27
+				],
+				"loop": false,
+				"fps": 24,
+				"anim": "singUP",
+				"indices": [],
+				"name": "BF NOTE UP0"
+			},
+			{
+				"offsets": [
+					-48,
+					-7
+				],
+				"loop": false,
+				"fps": 24,
+				"anim": "singRIGHT",
+				"indices": [],
+				"name": "BF NOTE RIGHT0"
+			},
+			{
+				"offsets": [
+					-3,
+					5
+				],
+				"loop": false,
+				"fps": 24,
+				"anim": "singSPACE",
+				"indices": [],
+				"name": "BF HEY"
+			}
+		],
+		"sarvente_floating": false,
+		"healthbar_colors_middle": [
+			9,
+			136,
+			169
+		],
+		"no_antialiasing": false,
+		"healthbar_colors_bottom": [
+			0,
+			96,
+			129
+		],
+		"image": "characters/BOYFRIEND",
+		"trail_length": null,
+		"trail_delay": null,
+		"position": [
+			0,
+			350
+		],
+		"trail_diff": null,
+		"trail_alpha": null,
+		"health_drain": false,
+		"healthicon": "bf",
+		"shake_screen": false,
+		"orbit": false,
+		"healthbar_count": 3,
+		"flip_x": true,
+		"healthbar_colors": [
+			49,
+			176,
+			209
+		],
+		"camera_position": [
+			0,
+			0
+		],
+		"float_magnitude": 0,
+		"sing_duration": 4,
+		"scare_bf": false,
+		"scare_gf": false,
+		"scale": 1,
+		"flixel_trail": false
 		}';
 
 	var charDropDown:FlxUIDropDownMenuCustom;
@@ -1047,6 +1155,12 @@ class CharacterEditorState extends MusicBeatState
 			char.flipX = !char.flipX;
 			updatePointerPos();
 			reloadBGs();
+			char.setPosition(char.positionArray[0] + OFFSET_X + 100 + xPositioningOffset, char.positionArray[1] + yPositioningOffset); //we do it again so that it gets properly set lmao
+			if (char.isPlayer) {
+				snapCamFollowToPos(char.getMidpoint().x - 100, char.getMidpoint().y - 100);
+			} else {
+				snapCamFollowToPos(char.getMidpoint().x + 100, char.getMidpoint().y - 100);
+			}
 			ghostChar.flipX = char.flipX;
 		};
 
@@ -1095,6 +1209,8 @@ class CharacterEditorState extends MusicBeatState
 				character.orbit = parsedJson.orbit;
 				character.flixelTrail = parsedJson.flixel_trail;
 				character.shakeScreen = parsedJson.shake_screen;
+				character.scareBf = parsedJson.scare_bf;
+				character.scareGf = parsedJson.scare_gf;
 				character.healthDrain = parsedJson.health_drain;
 				character.healthIcon = parsedJson.healthicon;
 				character.healthColorArray = parsedJson.healthbar_colors;
@@ -1143,6 +1259,8 @@ class CharacterEditorState extends MusicBeatState
 	var orbitCheckBox:FlxUICheckBox;
 	var flixelTrailCheckBox:FlxUICheckBox;
 	var screenShakeCheckBox:FlxUICheckBox;
+	var scareBfCheckBox:FlxUICheckBox;
+	var scareGfCheckBox:FlxUICheckBox;
 	var healthDrainCheckBox:FlxUICheckBox;
 	var noAntialiasingCheckBox:FlxUICheckBox;
 
@@ -1352,6 +1470,28 @@ class CharacterEditorState extends MusicBeatState
 			ghostChar.shakeScreen = char.shakeScreen;
 		};
 
+		scareBfCheckBox = new FlxUICheckBox(screenShakeCheckBox.x + 80, orbitCheckBox.y + 40, null, null, "Scare BF", 50);
+		scareBfCheckBox.checked = char.scareBf;
+		scareBfCheckBox.callback = function() {
+			char.scareBf = false;
+			if(scareBfCheckBox.checked) {
+				char.scareBf = true;
+			}
+			char.scareBf = scareBfCheckBox.checked;
+			ghostChar.scareBf = char.scareBf;
+		};
+
+		scareGfCheckBox = new FlxUICheckBox(scareBfCheckBox.x + 80, orbitCheckBox.y + 40, null, null, "Scare GF", 50);
+		scareGfCheckBox.checked = char.scareGf;
+		scareGfCheckBox.callback = function() {
+			char.scareGf = false;
+			if(scareGfCheckBox.checked) {
+				char.scareGf = true;
+			}
+			char.scareGf = scareGfCheckBox.checked;
+			ghostChar.scareGf = char.scareGf;
+		};
+
 		healthDrainCheckBox = new FlxUICheckBox(sarventeFloatingCheckBox.x, screenShakeCheckBox.y + 40, null, null, "Health Drain", 50);
 		healthDrainCheckBox.checked = char.healthDrain;
 		healthDrainCheckBox.callback = function() {
@@ -1377,6 +1517,8 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(flixelTrailCheckBox);
 		tab_group.add(orbitCheckBox);
 		tab_group.add(screenShakeCheckBox);
+		tab_group.add(scareBfCheckBox);
+		tab_group.add(scareGfCheckBox);
 		tab_group.add(healthDrainCheckBox);
 		UI_characterbox.addGroup(tab_group);
 	}
@@ -1779,6 +1921,12 @@ class CharacterEditorState extends MusicBeatState
 		}
 		reloadCharacterOptions();
 		reloadBGs();
+		char.setPosition(char.positionArray[0] + OFFSET_X + 100 + xPositioningOffset, char.positionArray[1] + yPositioningOffset); //we do it again so that it gets properly set lmao
+		if (char.isPlayer) {
+			snapCamFollowToPos(char.getMidpoint().x - 100, char.getMidpoint().y - 100);
+		} else {
+			snapCamFollowToPos(char.getMidpoint().x + 100, char.getMidpoint().y - 100);
+		}
 		updatePointerPos();
 	}
 
@@ -1824,6 +1972,8 @@ class CharacterEditorState extends MusicBeatState
 			orbitCheckBox.checked = char.orbit;
 			flixelTrailCheckBox.checked = char.flixelTrail;
 			screenShakeCheckBox.checked = char.shakeScreen;
+			scareBfCheckBox.checked = char.scareBf;
+			scareGfCheckBox.checked = char.scareGf;
 			healthDrainCheckBox.checked = char.healthDrain;
 			resetHealthBarColor();
 			leHealthIcon.changeIcon(healthIconInputText.text);
@@ -1935,6 +2085,7 @@ class CharacterEditorState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		MusicBeatState.camBeat = FlxG.camera;
 		if(char.animationsArray[curAnim] != null) {
 			textAnim.text = char.animationsArray[curAnim].anim;
 
@@ -1956,6 +2107,11 @@ class CharacterEditorState extends MusicBeatState
 
 		if(stageDropDown.selectedLabel != currentStage) {
 			currentStage = stageDropDown.selectedLabel;
+		}
+
+		switch (currentStage) {
+			case 'tank':
+				moveTank(elapsed);
 		}
 		/*if(char.sarventeFloating) {
 			FlxTween.tween(char, {y: 100}, 4, {type:FlxTween.PINGPONG, ease: FlxEase.quadInOut});
@@ -2018,15 +2174,21 @@ class CharacterEditorState extends MusicBeatState
 				if (FlxG.keys.pressed.SHIFT)
 					addToCam *= 4;
 
-				if (FlxG.keys.pressed.I)
+				if (FlxG.keys.pressed.I) {
 					camFollow.y -= addToCam;
-				else if (FlxG.keys.pressed.K)
+					camFollowPos.y -= addToCam;
+				} else if (FlxG.keys.pressed.K) {
 					camFollow.y += addToCam;
+					camFollowPos.y += addToCam;
+				}
 
-				if (FlxG.keys.pressed.J)
+				if (FlxG.keys.pressed.J) {
 					camFollow.x -= addToCam;
-				else if (FlxG.keys.pressed.L)
+					camFollowPos.x -= addToCam;
+				} else if (FlxG.keys.pressed.L) {
 					camFollow.x += addToCam;
+					camFollowPos.x += addToCam;
+				}
 			}
 
 			if(char.animationsArray.length > 0) {
@@ -2167,6 +2329,8 @@ class CharacterEditorState extends MusicBeatState
 			"orbit": char.orbit,
 			"flixel_trail": char.flixelTrail,
 			"shake_screen": char.shakeScreen,
+			"scare_bf": char.scareBf,
+			"scare_gf": char.scareGf,
 			"health_drain": char.healthDrain,
 			"no_antialiasing": char.noAntialiasing,
 			"healthbar_colors": char.healthColorArray,
@@ -2207,7 +2371,7 @@ class CharacterEditorState extends MusicBeatState
 				{
 					case 'limo':
 						if(grpLimoDancers != null){
-							grpLimoDancers.forEach(function(dancer:ChEditLimoDancer)
+							grpLimoDancers.forEach(function(dancer:BackgroundDancer)
 								{
 									dancer.dance();
 								});
@@ -2224,7 +2388,36 @@ class CharacterEditorState extends MusicBeatState
 						if(santa != null) santa.dance();
 					case 'school':
 						if(bgGirls != null) bgGirls.dance();
+					case 'tank':
+						if(!ClientPrefs.lowQuality && tankWatchtower != null) tankWatchtower.dance();
+						foregroundSprites.forEach(function(spr:BGSprite)
+							{
+								if (spr != null) {
+									spr.dance();
+								}
+							});
 				}
 			}
 		}
+
+	var tankX:Float = 400;
+	var tankSpeed:Float = FlxG.random.float(5, 7);
+	var tankAngle:Float = FlxG.random.int(-90, 45);
+	
+	function moveTank(?elapsed:Float = 0):Void
+	{
+		if (tankGround != null) {
+			tankAngle += elapsed * tankSpeed;
+			tankGround.angle = tankAngle - 90 + 15;
+			tankGround.x = tankX + 1500 * Math.cos(Math.PI / 180 * (1 * tankAngle + 180));
+			tankGround.y = 1300 + 1100 * Math.sin(Math.PI / 180 * (1 * tankAngle + 180));
+		}
+	}
+
+	public function snapCamFollowToPos(x:Float, y:Float) {
+		if (camFollow != null && camFollowPos != null) {
+			camFollow.set(x, y);
+			camFollowPos.setPosition(x, y);
+		}
+	}
 }

@@ -80,26 +80,29 @@ class ChartingState extends MusicBeatState
 		['Add Camera Zoom', "Used on MILF on that one \"hard\" part\nValue 1: Camera zoom add (Default: 0.015)\nValue 2: UI zoom add (Default: 0.03)\nLeave the values blank if you want to use Default."],
 		['Alt Idle Animation', "Sets a specified suffix after the idle animation name.\nYou can use this to trigger 'idle-alt' if you set\nValue 2 to -alt\n\nValue 1: Character to set (Dad, BF or GF)\nValue 2: New suffix (Leave it blank to disable)"],
 		['BG Freaks Expression', "Should be used only in \"school\" Stage!"],
-		['BM:Camera Zoom', "Makes the Camera zoom."],
+		/*['BM:Camera Zoom', "Makes the Camera zoom."],
 		['BM:Character Dance', "Makes the Characters do their idle animation."],
 		['BM:Icon Bop', "Makes the Icons 'bop'. (Like the option in visuals and ui)."],
 		['BM:Icon Snap', "Makes the Icons 'snap'. (Like the option in visuals and ui)."],
 		['BM:Icon Swing', "Makes the Icons 'swing'. (Like the option in visuals and ui)."],
-		['BM:Stage', "Triggers a stage specific event."],
-		['Blammed Lights', "Value 1: 0 = Turn off, 1 = Blue, 2 = Green,\n3 = Pink, 4 = Red, 5 = Orange, Anything else = Random."],
+		['BM:Stage', "Triggers a stage specific event."],*/
 		['Camera Follow Pos', "Value 1: X\nValue 2: Y\n\nThe camera won't change the follow point\nafter using this, for getting it back\nto normal, leave both values blank."],
-		['Change Character', "Value 1: Character to change (Dad(1), BF(0), GF(2))\nValue 2: New character's name"],
+		['Change Character', "Value 1: Character to change (Dad(1), BF(0), GF(2), Player4(3))\nValue 2: New character's name"],
 		['Change Mania', "Value 1: The new mania value (min: 0; max: 9)"],
 		['Change Modchart', "Value 1: The new modchart name."],
 		['Change Scroll Speed', "Value 1: Scroll Speed Multiplier (1 is default)\nValue 2: Time it takes to change fully in seconds."],
+		['Flash Camera', "Value 1: Duration to fade.\nValue 2: Colour. (Write as '0xffffff')"],
+		['Flash Camera (HUD)', "Value 1: Duration to fade.\nValue 2: Colour. (Write as '0xffffff')"],
 		['Hey!', "Plays the \"Hey!\" animation from Bopeebo,\nValue 1: BF = Only Boyfriend, GF = Only Girlfriend,\nSomething else = Both.\nValue 2: Custom animation duration,\nleave it blank for 0.6s"],
 		['Kill Henchmen', "For Mom's songs, don't use this please, i love them :("],
+		['Philly Glow', "Exclusive to Week 3\nValue 1: 0/1/2 = OFF/ON/Reset Gradient"],
 		['Play Animation', "Plays an animation on a Character,\nonce the animation is completed,\nthe animation changes to Idle\n\nValue 1: Animation to play.\nValue 2: Character (Dad, BF, GF)"],
 		['Screen Shake', "Value 1: Camera shake\nValue 2: HUD shake\n\nEvery value works as the following example: \"1, 0.05\".\nThe first number (1) is the duration.\nThe second number (0.05) is the intensity."],
+		['Set Cam Speed', "Sets Camera's Movement Speed,\nValue 1: Speed to set to."],
 		['Set GF Speed', "Sets GF head bopping speed,\nValue 1: 1 = Normal speed,\n2 = 1/2 speed, 4 = 1/4 speed etc.\nUsed on Fresh during the beatbox parts.\n\nWarning: Value must be integer!"],
 		/*['Spacebar Dodge', "Places a dodge event.\nValue 1: Amount of dodges (max 3)."],*/
 		['Stage Tint', "Tints the stage a certain colour.\nValue 1: Intensity (Write as '0.number').\nValue 2: Duration (In seconds)."],
-		/*['Swap Hud', "Makes all the opponent stuff on the right, and player stuff on the left, or vice versa.\nValue 1: What side BF should be on. (Write as 'left' or 'right')."],*/
+		['Swap Hud', "Swaps the positions of the strums."],
 		['Toggle Botplay', "Do I really need to explain this?\nValue 1: Type of toggle, 0 = Toggle, 1 = Turn Off, 2 = Turn On."],
 		['Toggle Ghost Tapping', "Do I really need to explain this?\nValue 1: Type of toggle, 0 = Toggle, 1 = Turn Off, 2 = Turn On."],
 		['Trigger BG Ghouls', "Should be used only in \"schoolEvil\" Stage!"],
@@ -176,7 +179,7 @@ class ChartingState extends MusicBeatState
 
 	var bg:FlxSprite;
 	var bgScroll:FlxBackdrop;
-	var bgScroll2:FlxSprite;
+	var bgScroll2:FlxBackdrop;
 	var gradient:FlxSprite;
 	var intendedColor:Int;
 	var colorTween:FlxTween;
@@ -431,7 +434,9 @@ class ChartingState extends MusicBeatState
 		addEventsUI();
 		addChartingUI();
 		updateHeads();
+		#if desktop
 		updateWaveform();
+		#end
 		//UI_box.selected_tab = 4;
 
 		add(curRenderedSustains);
@@ -488,7 +493,9 @@ class ChartingState extends MusicBeatState
 			currentSongName = Paths.formatToSongPath(UI_songTitle.text);
 			loadSong();
 			loadAudioBuffer();
+			#if desktop
 			updateWaveform();
+			#end
 		});
 
 		var reloadSongJson:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 30, "Reload JSON", function()
@@ -2407,9 +2414,11 @@ class ChartingState extends MusicBeatState
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE + GRID_SIZE * Note.ammo[_song.mania] * 2, Std.int(GRID_SIZE * 32 * zoomList[curZoom]));
 		gridLayer.add(gridBG);
 
+		#if desktop
 		if(waveformEnabled != null) {
 			updateWaveform();
 		}
+		#end
 
 		var gridBlack:FlxSprite = new FlxSprite(0, gridBG.height / 2).makeGraphic(Std.int(GRID_SIZE + GRID_SIZE * Note.ammo[_song.mania] * 2), Std.int(gridBG.height / 2), FlxColor.BLACK);
 		gridBlack.alpha = 0.4;
@@ -2448,6 +2457,7 @@ class ChartingState extends MusicBeatState
 
 	var waveformPrinted:Bool = true;
 	var audioBuffers:Array<AudioBuffer> = [null, null, null];
+	#if desktop
 	function updateWaveform() {
 		if(waveformPrinted) {
 			waveformSprite.makeGraphic(Std.int(GRID_SIZE * (Note.ammo[_song.mania] * 2)), Std.int(gridBG.height), 0x00FFFFFF);
@@ -2520,6 +2530,7 @@ class ChartingState extends MusicBeatState
 		}
 		waveformPrinted = true;
 	}
+	#end
 
 	function changeNoteSustain(value:Float):Void
 	{
@@ -2579,7 +2590,9 @@ class ChartingState extends MusicBeatState
 
 		updateGrid();
 		updateSectionUI();
+		#if desktop
 		updateWaveform();
+		#end
 	}
 
 	function changeSection(sec:Int = 0, ?updateMusic:Bool = true):Void
@@ -2622,7 +2635,9 @@ class ChartingState extends MusicBeatState
 			changeSection();
 		}
 		Conductor.songPosition = FlxG.sound.music.time;
+		#if desktop
 		updateWaveform();
+		#end
 	}
 
 	function updateSectionUI():Void
@@ -3138,12 +3153,16 @@ class ChartingState extends MusicBeatState
 
 	function loadJson(song:String):Void
 	{
+		//shitty null fix, i fucking hate it when this happens
 		//make it look sexier if possible
 		if (CoolUtil.difficulties[PlayState.storyDifficulty] != "Normal"){
-		PlayState.SONG = Song.loadFromJson(song.toLowerCase()+"-"+CoolUtil.difficulties[PlayState.storyDifficulty], song.toLowerCase());
-			
+			if(CoolUtil.difficulties[PlayState.storyDifficulty] == null){
+				PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
+			}else{
+				PlayState.SONG = Song.loadFromJson(song.toLowerCase()+"-"+CoolUtil.difficulties[PlayState.storyDifficulty], song.toLowerCase());
+			}
 		}else{
-		PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
+			PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
 		}
 		MusicBeatState.resetState();
 	}
@@ -3166,7 +3185,7 @@ class ChartingState extends MusicBeatState
 
 	private function saveLevel()
 	{
-		_song.events.sort(sortByTime);
+		if(_song.events != null && _song.events.length > 1) _song.events.sort(sortByTime);
 		var json = {
 			"song": _song
 		};
@@ -3190,7 +3209,7 @@ class ChartingState extends MusicBeatState
 
 	private function saveEvents()
 	{
-		_song.events.sort(sortByTime);
+		if(_song.events != null && _song.events.length > 1) _song.events.sort(sortByTime);
 		var eventsSong:SwagSong = {
 			song: _song.song,
 			notes: [],

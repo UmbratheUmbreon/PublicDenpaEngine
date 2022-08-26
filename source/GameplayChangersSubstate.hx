@@ -170,7 +170,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			changeSelection(1);
 		}
 
-		if (controls.BACK) {
+		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
 			close();
 			ClientPrefs.saveSettings();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
@@ -186,7 +186,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 			if(usesCheckbox)
 			{
-				if(controls.ACCEPT)
+				if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
 				{
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					curOption.setValue((curOption.getValue() == true) ? false : true);

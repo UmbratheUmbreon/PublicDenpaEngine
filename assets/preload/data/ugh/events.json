@@ -1,0 +1,264 @@
+{
+	"song": {
+		"speed": 2.3,
+		"stage": "tank",
+		"player1": "bf",
+		"player2": "tankman",
+		"player3": null,
+		"player4": null,
+		"dangerMiss": null,
+		"autoIcons": true,
+		"autoIdles": true,
+		"events": [
+			[
+				5531.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.05",
+						"0.2"
+					]
+				]
+			],
+			[
+				5906.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.2"
+					]
+				]
+			],
+			[
+				9375,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				9750,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				10125,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				10687.5,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				10875,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				11062.5,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				11250,
+				[
+					[
+						"Add Camera Zoom",
+						"0.03",
+						"0.06"
+					]
+				]
+			],
+			[
+				11437.5,
+				[
+					[
+						"Add Camera Zoom",
+						"0.03",
+						"0.06"
+					]
+				]
+			],
+			[
+				11625,
+				[
+					[
+						"Add Camera Zoom",
+						"0.06",
+						"0.12"
+					]
+				]
+			],
+			[
+				11812.5,
+				[
+					[
+						"Add Camera Zoom",
+						"0.06",
+						"0.12"
+					]
+				]
+			],
+			[
+				12000,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				41531.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.05",
+						"0.2"
+					]
+				]
+			],
+			[
+				41906.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.2"
+					]
+				]
+			],
+			[
+				49031.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.05",
+						"0.2"
+					]
+				]
+			],
+			[
+				49406.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.2"
+					]
+				]
+			],
+			[
+				50531.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.05",
+						"0.2"
+					]
+				]
+			],
+			[
+				50625,
+				[
+					[
+						"Play Animation",
+						"singUP-alt",
+						"dad"
+					]
+				]
+			],
+			[
+				50812.5,
+				[
+					[
+						"Play Animation",
+						"singUP-alt",
+						"dad"
+					]
+				]
+			],
+			[
+				50906.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.2"
+					]
+				]
+			],
+			[
+				77531.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.05",
+						"0.2"
+					]
+				]
+			],
+			[
+				77906.25,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.2"
+					]
+				]
+			]
+		],
+		"allowBot": true,
+		"notes": [],
+		"splashSkin": null,
+		"modchart": null,
+		"validScore": false,
+		"beatDrain": null,
+		"tintBlue": null,
+		"gfVersion": "gf-tankmen",
+		"bpm": 160,
+		"mania": 3,
+		"arrowSkin": null,
+		"needsVoices": true,
+		"enablePlayer4": null,
+		"allowGhostTapping": true,
+		"crits": null,
+		"song": "Ugh",
+		"autoZooms": true,
+		"tintRed": null,
+		"tintGreen": null
+	}
+}
