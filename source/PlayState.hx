@@ -1303,15 +1303,28 @@ class PlayState extends MusicBeatState
 		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this,
 			'songPercent', 0, 1);
 		timeBar.scrollFactor.set();
+		var color:FlxColor;
+		var blockyness:Int = 1;
+		if(isPixelStage) blockyness = 5;
 		if (!ClientPrefs.changeTBcolour)
 		{
-			timeBar.createFilledBar(0xFF000000, FlxColor.fromRGB(ClientPrefs.timeBarRed, ClientPrefs.timeBarGreen, ClientPrefs.timeBarBlue));
+			timeBar.createGradientBar([0xFF000000], [color = FlxColor.fromRGB(ClientPrefs.timeBarRed, ClientPrefs.timeBarGreen, ClientPrefs.timeBarBlue), FlxColor.subtract(color, 0x00333333)], blockyness, 90);
 		}
 		else
 		{
-			timeBar.createFilledBar(0xFF000000, FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]));
+			if (dad != null) {
+				timeBar.createGradientBar([0xFF000000], [color = FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2]), FlxColor.subtract(color, 0x00333333)], blockyness, 90);
+			} else {
+				timeBar.createGradientBar([0xFF000000], [color = FlxColor.fromRGB(ClientPrefs.timeBarRed, ClientPrefs.timeBarGreen, ClientPrefs.timeBarBlue), FlxColor.subtract(color, 0x00333333)], blockyness, 90);
+			}
 		}
-		timeBar.numDivisions = 800; //How much lag this causes?? Should i tone it down to idk, 400 or 200?
+		#if (haxe >= "4.1.0")
+			if (ClientPrefs.lowQuality || isPixelStage) {
+				timeBar.numDivisions = 100;
+			} else {
+				timeBar.numDivisions = 800; //what if it was 1280 :flushed:
+			}
+		#end
 		timeBar.alpha = 0;
 		timeBar.visible = showTime;
 		if (timeBar.visible == true && showJustTimeText) {
@@ -1437,6 +1450,14 @@ class PlayState extends MusicBeatState
 			// healthBar
 			healthBar.visible = !ClientPrefs.hideHud;
 			healthBar.alpha = ClientPrefs.healthBarAlpha;
+			#if (haxe >= "4.1.0")
+			if (ClientPrefs.lowQuality) {
+				healthBar.numDivisions = 100;
+			} else {
+				healthBar.numDivisions = 200; //double res because you dont really need much more than that, since ynow, the health isnt constantly draining or anything
+				//as a side effect, the health icons get pushed away from eachother a bit
+			}
+			#end
 			add(healthBar);
 			healthBarBG.sprTracker = healthBar;
 
@@ -1446,6 +1467,13 @@ class PlayState extends MusicBeatState
 			// healthBar
 			healthBarMiddle.visible = !ClientPrefs.hideHud;
 			healthBarMiddle.alpha = ClientPrefs.healthBarAlpha;
+			#if (haxe >= "4.1.0")
+			if (ClientPrefs.lowQuality) {
+				healthBarMiddle.numDivisions = 100;
+			} else {
+				healthBarMiddle.numDivisions = 200;
+			}
+			#end
 			add(healthBarMiddle);
 			//healthBarBG.sprTracker = healthBar;
 
@@ -1455,6 +1483,13 @@ class PlayState extends MusicBeatState
 			// healthBar
 			healthBarMiddleHalf.visible = !ClientPrefs.hideHud;
 			healthBarMiddleHalf.alpha = ClientPrefs.healthBarAlpha;
+			#if (haxe >= "4.1.0")
+			if (ClientPrefs.lowQuality) {
+				healthBarMiddleHalf.numDivisions = 100;
+			} else {
+				healthBarMiddleHalf.numDivisions = 200;
+			}
+			#end
 			add(healthBarMiddleHalf);
 			//healthBarBG.sprTracker = healthBar;
 
@@ -1464,6 +1499,13 @@ class PlayState extends MusicBeatState
 			// healthBar
 			healthBarBottom.visible = !ClientPrefs.hideHud;
 			healthBarBottom.alpha = ClientPrefs.healthBarAlpha;
+			#if (haxe >= "4.1.0")
+			if (ClientPrefs.lowQuality) {
+				healthBarBottom.numDivisions = 100;
+			} else {
+				healthBarBottom.numDivisions = 200;
+			}
+			#end
 			add(healthBarBottom);
 			//healthBarBG.sprTracker = healthBar;
 		

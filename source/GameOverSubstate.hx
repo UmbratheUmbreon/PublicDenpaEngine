@@ -38,6 +38,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		instance = this;
 		PlayState.instance.callOnLuas('onGameOverStart', []);
+		PlayState.tankmanRainbow = false;
 
 		super.create();
 	}

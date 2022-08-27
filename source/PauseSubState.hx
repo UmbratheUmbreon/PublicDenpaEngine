@@ -292,6 +292,7 @@ class PauseSubState extends MusicBeatSubstate
 					transferPlayState = false;
 					close();
 					PlayState.instance.finishSong(true);
+					PlayState.tankmanRainbow = false;
 				case 'Toggle Botplay':
 					PlayState.instance.cpuControlled = !PlayState.instance.cpuControlled;
 					PlayState.changedDifficulty = true;
@@ -311,6 +312,7 @@ class PauseSubState extends MusicBeatSubstate
 					Conductor.changeBPM(100);
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
+					PlayState.tankmanRainbow = false;
 			}
 		}
 	}
@@ -318,6 +320,7 @@ class PauseSubState extends MusicBeatSubstate
 	public static function restartSong(noTrans:Bool = false)
 	{
 		PlayState.instance.paused = true; // For lua
+		PlayState.tankmanRainbow = false;
 		FlxG.sound.music.volume = 0;
 		PlayState.instance.vocals.volume = 0;
 

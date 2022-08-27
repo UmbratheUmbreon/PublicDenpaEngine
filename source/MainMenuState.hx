@@ -87,6 +87,8 @@ class MainMenuState extends MusicBeatState
 		#end
 		debugKeys = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
 
+		if (ClientPrefs.mouseControls) FlxG.mouse.visible = true;
+
 		camGame = new FlxCamera();
 		camAchievement = new FlxCamera();
 		camAchievement.bgColor.alpha = 0;
@@ -298,6 +300,8 @@ class MainMenuState extends MusicBeatState
 	#end
 
 	var selectedSomethin:Bool = false;
+	var canClick:Bool = true;
+	var usingMouse:Bool = ClientPrefs.mouseControls;
 
 	override function update(elapsed:Float)
 	{
@@ -315,6 +319,32 @@ class MainMenuState extends MusicBeatState
 		var mult:Float = FlxMath.lerp(1, bg.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
 		bg.scale.set(mult, mult);
 		bg.updateHitbox();
+
+		if (usingMouse) {
+			menuItems.forEach(function(spr:FlxSprite)
+				{
+					if(!FlxG.mouse.overlaps(spr))
+						spr.animation.play('idle');
+						spr.updateHitbox();
+			
+					if (FlxG.mouse.overlaps(spr))
+					{
+						if(canClick)
+						{
+							//curSelected = spr.ID;
+							//FlxG.sound.play(Paths.sound('scrollMenu'));
+							changeItem(spr.ID, true);
+						}
+							
+						if(FlxG.mouse.pressed && canClick)
+						{
+							doTheThingHouston();
+						}
+					}
+			
+					spr.updateHitbox();
+				});
+		}
 
 		if (!selectedSomethin)
 		{
@@ -349,63 +379,9 @@ class MainMenuState extends MusicBeatState
 				MusicBeatState.switchState(new TitleState());
 			}
 
-			var shiftMult:Int = 1;
-			if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+			if (controls.ACCEPT)
 			{
-				FlxG.sound.play(Paths.sound('scrollMenu'), 0.2);
-				changeItem(-shiftMult * FlxG.mouse.wheel);
-			}
-
-			if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
-			{
-				if (optionShit[curSelected] == 'donate')
-				{
-					CoolUtil.browserLoad('https://ninja-muffin24.itch.io/funkin');
-				}
-				else
-				{
-					selectedSomethin = true;
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-
-					//if(ClientPrefs.flashing) FlxFlicker.flicker(magenta, 1.1, 0.15, false);
-
-					menuItems.forEach(function(spr:FlxSprite)
-					{
-						if (curSelected != spr.ID)
-						{
-							FlxTween.tween(spr, {alpha: 0}, 0.4, {
-								ease: FlxEase.quadOut,
-								onComplete: function(twn:FlxTween)
-								{
-									spr.kill();
-								}
-							});
-						}
-						else
-						{
-							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
-							{
-								var daChoice:String = optionShit[curSelected];
-
-								switch (daChoice)
-								{
-									case 'story_mode':
-										MusicBeatState.switchState(new StoryMenuState());
-									case 'freeplay':
-										MusicBeatState.switchState(new FreeplayState());
-									case 'credits':
-										MusicBeatState.switchState(new CreditsState());
-									case 'options':
-										LoadingState.loadAndSwitchState(new options.OptionsState());
-									case 'patch':
-										MusicBeatState.switchState(new PatchState());
-									case 'soundtest':
-										MusicBeatState.switchState(new SoundTestState());
-								}
-							});
-						}
-					});
-				}
+				doTheThingHouston();
 			}
 			#if desktop
 			else if (FlxG.keys.anyJustPressed(debugKeys))
@@ -424,9 +400,66 @@ class MainMenuState extends MusicBeatState
 		});
 	}
 
-	function changeItem(huh:Int = 0)
+	function doTheThingHouston() {
+		if (optionShit[curSelected] == 'donate')
+			{
+				CoolUtil.browserLoad('https://ninja-muffin24.itch.io/funkin');
+			}
+			else
+			{
+				selectedSomethin = true;
+				canClick = false;
+				FlxG.mouse.visible = false;
+				FlxG.sound.play(Paths.sound('confirmMenu'));
+
+				//if(ClientPrefs.flashing) FlxFlicker.flicker(magenta, 1.1, 0.15, false);
+
+				menuItems.forEach(function(spr:FlxSprite)
+				{
+					if (curSelected != spr.ID)
+					{
+						FlxTween.tween(spr, {alpha: 0}, 0.4, {
+							ease: FlxEase.quadOut,
+							onComplete: function(twn:FlxTween)
+							{
+								spr.kill();
+							}
+						});
+					}
+					else
+					{
+						FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
+						{
+							var daChoice:String = optionShit[curSelected];
+
+							switch (daChoice)
+							{
+								case 'story_mode':
+									MusicBeatState.switchState(new StoryMenuState());
+								case 'freeplay':
+									MusicBeatState.switchState(new FreeplayState());
+								case 'credits':
+									MusicBeatState.switchState(new CreditsState());
+								case 'options':
+									LoadingState.loadAndSwitchState(new options.OptionsState());
+								case 'patch':
+									MusicBeatState.switchState(new PatchState());
+								case 'soundtest':
+									MusicBeatState.switchState(new SoundTestState());
+							}
+						});
+					}
+				});
+			}
+	}
+
+	function changeItem(huh:Int = 0, ?mouseInput:Bool = null)
 	{
-		curSelected += huh;
+		if (mouseInput == null) {
+			curSelected += huh;
+		} else {
+			curSelected = huh;
+		}
 
 		if (curSelected >= menuItems.length)
 			curSelected = 0;
