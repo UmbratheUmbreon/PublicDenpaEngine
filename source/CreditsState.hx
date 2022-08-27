@@ -113,7 +113,7 @@ class CreditsState extends MusicBeatState
 			['_Jorge',			'discord',		"Cross Fade Code, Hscript Support",							'NON EXISTENT',		'5C89BF'],
 			['ThriftySoles',			'discord',		"Ideas Provider and Misc. Music/Assets Maker of Denpa Engine",							'https://twitter.com/thriftysoles',		'5C89BF'],
 			['Megaverse',			'discord',		"Title Music for the Engine and Denpa Funkin'",							'NON EXISTENT',		'5C89BF'],
-			['Denpa Engine Discord',			'discord',		"Press Enter to Join",							'https://discord.gg/BFaMfmTNaa',		'5C89BF'],
+			['Denpa Engine Discord',			'discord',		"Press Enter to Join",							'https://discord.gg/pUX2ZMm4Qt',		'5C89BF'],
 			[''],
 			["Misc. Credits"],
 			['Mike Geno',			'discord',		"Gospel Song Composer",							'https://www.youtube.com/channel/UC3aPeoW8JeQHAPyl38XcNoQ',		'5C89BF'],

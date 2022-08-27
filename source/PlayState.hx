@@ -5722,22 +5722,22 @@ class PlayState extends MusicBeatState
 		}*/
 		if (SONG.notes[id].player4Section) {
 			/*switch (hudIsSwapped) {
-				case true:*/
+				case true:
 					if (iconP1 != null && iconP4 != null && iconP2 != null) {
 						iconP4.changeIcon(dad.healthIcon);
 						iconP1.changeIcon(player4.healthIcon);
 						iconP2.changeIcon(boyfriend.healthIcon);
 						reloadHealthBarColors(true);
 						recalculateIconAnimations();
-					}
-				/*case false:
+					}*/
+				//case false:
 					if (iconP2 != null && iconP4 != null) {
 						iconP4.changeIcon(dad.healthIcon);
 						iconP2.changeIcon(player4.healthIcon);
 						reloadHealthBarColors(true);
 						recalculateIconAnimations();
 					}
-			}*/
+			//}
 		}
 	}
 
@@ -8058,8 +8058,6 @@ class PlayState extends MusicBeatState
 		switch (SONG.song.toLowerCase()) {
 			case 'guns':
 				switch (curStep) {
-					//case 890:
-						//addBehindDad(gunsThing);
 					case 896:
 						tankmanRainbow = true;
 						raiseTankman = true;
