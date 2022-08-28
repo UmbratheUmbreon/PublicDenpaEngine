@@ -67,6 +67,16 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangeFullscreen;
 
+		#if !html
+		var option:Option = new Option('Auto Pause',
+			'Turns on/off auto pausing on focus lost.',
+			'autoPause',
+			'bool',
+			true);
+		addOption(option);
+		option.onChange = onChangeAutoPause;
+		#end
+
 		/*var option:Option = new Option('Preloading',
 			'Preloads the game upon startup.',
 			'preloading',
@@ -136,6 +146,11 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 	function onChangeFullscreen()
 		{
 			FlxG.fullscreen = ClientPrefs.fullscreen;
+		}
+
+	function onChangeAutoPause()
+		{
+			FlxG.autoPause = ClientPrefs.autoPause;
 		}
 	#end
 
