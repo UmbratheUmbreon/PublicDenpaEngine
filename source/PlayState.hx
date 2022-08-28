@@ -253,6 +253,7 @@ class PlayState extends MusicBeatState
 	public var poison:Bool = false;
 	public var poisonMult:Float = 0;
 	var poisonTimer:FlxTimer = null;
+	var poisonSprite:FlxSprite = null;
 
 	//local storage of ghost tapping
 	public var tappy:Bool = false;
@@ -936,6 +937,7 @@ class PlayState extends MusicBeatState
 				autoLayer(layerArray);
 
 			case 'tank': //Week 7 - Ugh, Guns, Stress
+				tankmanRainbow = false;
 				var layerArray:Array<FlxBasic> = [];
 				
 				var sky:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0);
@@ -1744,6 +1746,15 @@ class PlayState extends MusicBeatState
 				sarvRightTxt.borderStyle = SHADOW;
 				sarvRightTxt.x = -FlxG.width/2 + 315;
 			}
+			if (ClientPrefs.scoreDisplay == 'FNF+') {
+				sarvRightTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				sarvRightTxt.x = -15;
+				sarvRightTxt.y = FlxG.height/2 - 100;
+			}
+			if (ClientPrefs.scoreDisplay == 'FNM') {
+				sarvRightTxt.setFormat(Paths.font("helvetica.ttf"), 20, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				sarvRightTxt.y -= 20;
+			}
 			sarvRightTxt.visible = !ClientPrefs.hideHud;
 
 			sarvAccuracyTxt = new FlxText(sarvAccuracyBg.x + 5, scoreTxt.y, FlxG.width, "", 20);
@@ -1771,6 +1782,11 @@ class PlayState extends MusicBeatState
 			botplayTxt.y = timeBarBG.y - 78;
 		}
 
+		poisonSprite = new FlxSprite().loadGraphic(Paths.image('poisonEffect'));
+		poisonSprite.alpha = 0;
+		poisonSprite.scrollFactor.set();
+		add(poisonSprite);
+
 		//lets set ALL the cameras at once
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
@@ -1796,6 +1812,7 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
+		poisonSprite.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
@@ -3862,6 +3879,9 @@ class PlayState extends MusicBeatState
 	}
 
 	if (poison) {
+		if (poisonMult == 0) {
+			iconP1Poison.visible = false;
+		}
 		var fps:Float = Main.fpsVar.currentFPS;
 		health -= (0.0066666666666667 * poisonMult)*240/fps; //lose 0.06 per second
 	}
@@ -4443,6 +4463,9 @@ class PlayState extends MusicBeatState
 			lastHealth = health;
 			recalculateIconAnimations();
 		}
+
+		//not optimized! hell yeah!
+		if (ClientPrefs.scoreDisplay == 'FNF+') sarvRightTxt.text = 'HP\n' + healthBar.percent + '%\n\nACCURACY\n' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%\n\nSCORE\n' + songScore;
 
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
 			persistentUpdate = false;
@@ -6948,6 +6971,7 @@ class PlayState extends MusicBeatState
 				}
 				health -= daNote.missHealth * healthLoss;
 				poisonMult += 0.038;
+				if (poisonSprite.alpha < 1 && poison) FlxTween.tween(poisonSprite, {alpha: 1}, 0.2);
 				if (poisonTimer != null) {
 					poisonTimer.cancel();
 					poisonTimer = null;
@@ -6961,6 +6985,7 @@ class PlayState extends MusicBeatState
 					} else {
 						reloadHealthBarColors(false);
 					}
+					FlxTween.tween(poisonSprite, {alpha: 0}, 0.2);
 				});
 				if(instakillOnMiss)
 				{
@@ -7029,7 +7054,8 @@ class PlayState extends MusicBeatState
 					maxHealth -= 0.10;
 				}
 				health -= daNote.missHealth * healthLoss;
-				poisonMult += 0.01;
+				poisonMult += 0.038;
+				if (poisonSprite.alpha < 1 && poison) FlxTween.tween(poisonSprite, {alpha: 1}, 0.2);
 				if (poisonTimer != null) {
 					poisonTimer.cancel();
 					poisonTimer = null;
@@ -7043,6 +7069,7 @@ class PlayState extends MusicBeatState
 					} else {
 						reloadHealthBarColors(false);
 					}
+					FlxTween.tween(poisonSprite, {alpha: 0}, 0.2);
 				});
 				if(instakillOnMiss)
 				{
@@ -8561,10 +8588,20 @@ class PlayState extends MusicBeatState
 				deathTxt.text = '';
 				sarvRightTxt.text = '';
 				sarvAccuracyTxt.text = '';
+			case 'FNF+':
+				scoreTxt.text = '';
+				deathTxt.text = '';
+				sarvRightTxt.text = 'HP\n' + healthBar.percent + '%\n\nACCURACY\n' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%\n\nSCORE\n' + songScore;
+				sarvAccuracyTxt.text = '';
 			case 'Vanilla':
 				scoreTxt.text = '';
 				deathTxt.text = '';
 				sarvRightTxt.text = 'Score:' + songScore;
+				sarvAccuracyTxt.text = '';
+			case 'FNM':
+				scoreTxt.text = '';
+				deathTxt.text = '';
+				sarvRightTxt.text = 'score:' + songScore;
 				sarvAccuracyTxt.text = '';
 			case 'None':
 				scoreTxt.text = '';

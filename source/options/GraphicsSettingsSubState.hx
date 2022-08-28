@@ -202,7 +202,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'scoreDisplay',
 			'string',
 			'Psych',
-			['Psych', 'Kade', 'Sarvente', 'FPS+', 'Vanilla', 'None']);
+			['Psych', 'Kade', 'Sarvente', 'FPS+', 'FNF+', 'FNM', 'Vanilla', 'None']);
 		addOption(option);
 
 		var option:Option = new Option('Sarvente Accuracy Display',

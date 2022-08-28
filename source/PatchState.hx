@@ -105,6 +105,7 @@ class PatchState extends MusicBeatState
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Patch Notes'],
+			['0.5.0c',		'waidol',		'A-FNF+ Score Display, A-FNM Score Dispaly, A-Poison Modifier, A-Autopause Option, A-Gradient Time Bar, F-Main Menu Mouse Controls, F-Tankman Bugs, F-Healthbars, O-Healthbars, RFV-0.5.0c',							'wait till next update',	'3B4CB7'],
 			['0.5.0',		'waidol',		'A-Week 7, A-Mouse Controls to Menus, A-That Psych Crash Handler, A-Hscript (By _jorge), A-Stretch Icon Bop, A-Psych Philly Glow, A-Animation for Singing with the Spacebar, A-Scare Options, A-MS Timing Indicator, A-Texture Packer XML Support, A-Anti Crash for Invalid JSONs (by Toadette), A-Option to Toggle Flinching Icons, F-Flinching Icons, O-Score Texts, O-Health Icons, I-Static CrossFade, I-Camera Movement, I-Quartiz, I-Icon Animations, R-Blammed Lights, R-Gospel X, R-Unused Assets, RFV-0.5.0',							'wait till next update',	'3B4CB7'],
 			['0.4.0e',		'eidol',		'A-Time Text Boppin, A-Cutscene Options, A-Replay Cutscene Option in Pause Menu, A-Bar-less Time Bar Options, A-Pause Options, F-Song Card Appearing During Cutscenes, F-Healthbar Offsets, F-Positionings for Score Displays, F-Pixel GF Being Flipped, RFV-0.4.0e',							'wait till next update',	'998844'],
 			['0.4.0d',		'eidol',		'A-Increased Max and Min Zoom on Chara Editor, A-Increased Scale Max, F-Lag on Chart Editor, F-Tints, F-Chara Editor BPM, R-Skunked Pause Options, RFV-0.4.0d',							'wait till next update',	'998844'],
