@@ -88,7 +88,7 @@ class ChartingState extends MusicBeatState
 		['BM:Stage', "Triggers a stage specific event."],*/
 		['Camera Follow Pos', "Value 1: X\nValue 2: Y\n\nThe camera won't change the follow point\nafter using this, for getting it back\nto normal, leave both values blank."],
 		['Change Character', "Value 1: Character to change (Dad(1), BF(0), GF(2), Player4(3))\nValue 2: New character's name"],
-		['Change Mania', "Value 1: The new mania value (min: 0; max: 9)"],
+		['Change Mania', "Value 1: The new mania value (min: 0; max: 9)\nValue 2: Fade, blank/0 to not fade, 1 to fade."],
 		['Change Modchart', "Value 1: The new modchart name."],
 		['Change Scroll Speed', "Value 1: Scroll Speed Multiplier (1 is default)\nValue 2: Time it takes to change fully in seconds."],
 		['Flash Camera', "Value 1: Duration to fade.\nValue 2: Colour. (Write as '0xffffff')"],
@@ -181,11 +181,15 @@ class ChartingState extends MusicBeatState
 	var bgScroll:FlxBackdrop;
 	var bgScroll2:FlxBackdrop;
 	var gradient:FlxSprite;
+	var gradient2:FlxSprite;
+	var gradient3:FlxSprite;
 	var intendedColor:Int;
 	var colorTween:FlxTween;
 	var bgScrollColorTween:FlxTween;
 	var bgScroll2ColorTween:FlxTween;
 	var gradientColorTween:FlxTween;
+	var gradient2ColorTween:FlxTween;
+	var gradient3ColorTween:FlxTween;
 
 	#if !html5
 	var zoomList:Array<Float> = [
@@ -264,7 +268,8 @@ class ChartingState extends MusicBeatState
 				stage: 'stage',
 				modchart: 'none',
 				validScore: false,
-				mania: Note.defaultMania
+				mania: Note.defaultMania,
+				hardness: 1
 			};
 			addSection();
 			PlayState.SONG = _song;
@@ -303,7 +308,18 @@ class ChartingState extends MusicBeatState
 		gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
 		gradient.antialiasing = ClientPrefs.globalAntialiasing;
 		gradient.color = bg.color;
+		gradient.scrollFactor.set();
 		add(gradient);
+		gradient2 = new FlxSprite(0,-FlxG.height).loadGraphic(Paths.image('gradient'));
+		gradient2.antialiasing = ClientPrefs.globalAntialiasing;
+		gradient2.color = bg.color;
+		gradient2.scrollFactor.set();
+		add(gradient2);
+		gradient3 = new FlxSprite(0,FlxG.height).loadGraphic(Paths.image('gradient'));
+		gradient3.antialiasing = ClientPrefs.globalAntialiasing;
+		gradient3.color = bg.color;
+		gradient3.scrollFactor.set();
+		add(gradient3);
 		//gradient.screenCenter();
 		intendedColor = bg.color;
 
@@ -561,6 +577,11 @@ class ChartingState extends MusicBeatState
 		stepperSpeed.name = 'song_speed';
 		blockPressWhileTypingOnStepper.push(stepperSpeed);
 
+		var stepperHardness:FlxUINumericStepper = new FlxUINumericStepper(10, stepperSpeed.y + 35, 0.2, 0, 0, 10, 1);
+		stepperHardness.value = _song.hardness;
+		stepperHardness.name = 'song_hardness';
+		blockPressWhileTypingOnStepper.push(stepperHardness);
+
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
@@ -576,8 +597,10 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(loadEventJson);
 		tab_group_song.add(stepperBPM);
 		tab_group_song.add(stepperSpeed);
+		tab_group_song.add(stepperHardness);
 		tab_group_song.add(new FlxText(stepperBPM.x, stepperBPM.y - 15, 0, 'Song BPM:'));
 		tab_group_song.add(new FlxText(stepperSpeed.x, stepperSpeed.y - 15, 0, 'Song Speed:'));
+		tab_group_song.add(new FlxText(stepperHardness.x, stepperHardness.y - 15, 0, 'Song Hardness:'));
 
 		UI_box.addGroup(tab_group_song);
 
@@ -729,7 +752,7 @@ class ChartingState extends MusicBeatState
 			tempMap.clear();
 			var stageFile:Array<String> = CoolUtil.coolTextFile(SUtil.getPath() + Paths.txt('stageList'));
 			var stages:Array<String> = [];
-			var modcharts:Array<String> = ['none', 'disruption', 'unfairness', 'cheating', 'disability', 'wavy'];
+			var modcharts:Array<String> = ['none', 'disruption', 'disruption-noP4', 'disruption-opponent', 'disruption-player', 'disruption-player4', 'unfairness', 'unfairness-noP4', 'unfairness-opponent', 'unfairness-player', 'unfairness-player4', 'cheating', 'cheating-opponent', 'cheating-player', 'disability', 'disability-noP4', 'disability-opponent', 'disability-player', 'disability-player4', 'wavy', 'wavy-opponent', 'wavy-player'];
 			for (i in 0...stageFile.length) { //Prevent duplicates
 				var stageToCheck:String = stageFile[i];
 				if(!tempMap.exists(stageToCheck)) {
@@ -1625,6 +1648,10 @@ class ChartingState extends MusicBeatState
 			{
 				_song.speed = nums.value;
 			}
+			else if (wname == 'song_hardness')
+			{
+				_song.hardness = nums.value;
+			}
 			else if (wname == 'song_bpm')
 			{
 				tempBpm = nums.value;
@@ -1747,6 +1774,12 @@ class ChartingState extends MusicBeatState
 			if(gradientColorTween != null) {
 				gradientColorTween.cancel();
 			}
+			if(gradient2ColorTween != null) {
+				gradient2ColorTween.cancel();
+			}
+			if(gradient3ColorTween != null) {
+				gradient3ColorTween.cancel();
+			}
 			intendedColor = newColor;
 			colorTween = FlxTween.color(bg, 0.75, bg.color, intendedColor, {
 				onComplete: function(twn:FlxTween) {
@@ -1766,6 +1799,16 @@ class ChartingState extends MusicBeatState
 			gradientColorTween = FlxTween.color(gradient, 0.75, gradient.color, intendedColor, {
 					onComplete: function(twn:FlxTween) {
 					gradientColorTween = null;
+				}
+			});
+			gradient2ColorTween = FlxTween.color(gradient2, 0.75, gradient2.color, intendedColor, {
+					onComplete: function(twn:FlxTween) {
+					gradient2ColorTween = null;
+				}
+			});
+			gradient3ColorTween = FlxTween.color(gradient3, 0.75, gradient3.color, intendedColor, {
+					onComplete: function(twn:FlxTween) {
+					gradient3ColorTween = null;
 				}
 			});
 		}
@@ -2275,8 +2318,8 @@ class ChartingState extends MusicBeatState
 		}
 
 		bpmTxt.text = 
-		Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2)) + " / " + Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2)) +
-		"\nSection: " + curSection +
+		"Pos: " + Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2)) + "\n\nLength: " + Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2)) +
+		"\n\nSection: " + curSection +
 		"\n\nBeat: " + curBeat +
 		"\n\nStep: " + curStep +
 		"\n\nDifficulty: " + difficultyString +
@@ -3240,7 +3283,8 @@ class ChartingState extends MusicBeatState
 			stage: _song.stage,
 			modchart: _song.modchart,
 			validScore: false,
-			mania: _song.mania
+			mania: _song.mania,
+			hardness: _song.hardness
 		};
 		var json = {
 			"song": eventsSong

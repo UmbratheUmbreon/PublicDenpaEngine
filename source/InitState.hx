@@ -86,7 +86,19 @@ class InitState extends MusicBeatState
 
 		trace('loaded highscore');
 
-		FlxG.fullscreen = ClientPrefs.fullscreen;
+		if (FlxG.save.data.fullscreen != null) {
+			FlxG.fullscreen = FlxG.save.data.fullscreen;
+		} else {
+			FlxG.fullscreen = false;
+		}
+
+		if (FlxG.save.data.autoPause != null) {
+			FlxG.autoPause = FlxG.save.data.autoPause;
+		} else {
+			FlxG.autoPause = true;
+		}
+
+		//FlxG.fullscreen = ClientPrefs.fullscreen;
 
 		trace('LOADED FULLSCREEN SETTING!! (LIAR!!!)');
 

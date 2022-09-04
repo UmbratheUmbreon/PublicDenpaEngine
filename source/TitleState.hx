@@ -240,6 +240,11 @@ class TitleState extends MusicBeatState
 
 			if(FlxG.sound.music == null) {
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+				//9.694
+				//71.937
+				//lol these are wrong ^
+				FlxG.sound.music.loopTime = 71853;
+				FlxG.sound.music.endTime = null;
 
 				FlxG.sound.music.fadeIn(4, 0, 0.7);
 			}
@@ -610,11 +615,18 @@ class TitleState extends MusicBeatState
 		}
 	}
 
+	var zoomies:Float = 1.025;
 	private var sickBeats:Int = 0; //Basically curBeat but won't be skipped if you hold the tab or resize the screen
 	public static var closedState:Bool = false;
 	override function beatHit()
 	{
 		super.beatHit();
+
+		FlxG.camera.zoom = zoomies;
+
+		FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.crochet / 1300, {
+			ease: FlxEase.quadOut
+		});
 
 		if(logoBl != null) 
 			logoBl.animation.play('bump', true);
@@ -629,69 +641,77 @@ class TitleState extends MusicBeatState
 
 		if(!closedState) {
 			sickBeats++;
-			switch (sickBeats)
-			{
-				case 1:
-					//Conductor.changeBPM(150);
-					createCoolText(['Denpa Engine by'], -115);
-				case 3:
-					addMoreText('BlueVapor1234', -55);
-					addMoreText('Bethany Clone', -55);
-					addMoreText('Box', -55);
-					addMoreText('Thrifty', -55);
-					addMoreText('Toadette8394', -55);
-					addMoreText('Electrophyll II', -55);
-				case 4:
-					deleteCoolText();
-				case 5:
-					createCoolText([sexTop, sexMiddle], -115);
-				case 7:
-					addMoreText(sexBottom, -115);
-					ngSpr.visible = true;
-				case 8:
-					deleteCoolText();
-					ngSpr.visible = false;
-				case 9:
-					Conductor.changeBPM(150);
-					createCoolText([curWacky[0]]);
-				case 10:
-					addMoreText(curWacky[1]);
-				case 11:
-					deleteCoolText();
-					curWacky = FlxG.random.getObject(getIntroTextShit());
-				case 12:
-					createCoolText([curWacky[0]]);
-				case 13:
-					addMoreText(curWacky[1]);
-				case 14:
-					deleteCoolText();
-					Conductor.changeBPM(300);
-				case 17:
-					addMoreText('Drop');
-				case 18:
-					addMoreText('The');
-				case 19:
-					addMoreText('Beat');
-				case 20:
-					addMoreText('Drop');
-				case 21:
-					addMoreText('The');
-				case 22:
-					deleteCoolText();
-				case 23:
-					addMoreText('Drop');
-				case 24:
-					addMoreText('The');
-				case 25:
-					addMoreText('Beat');
-				case 26:
-					addMoreText('Drop');
-				case 27:
-					addMoreText('The');
-				case 28:
-					Conductor.changeBPM(100);
-					deleteCoolText();
-					skipIntro();
+			if (!skippedIntro) {
+				switch (sickBeats)
+				{
+					case 1:
+						zoomies = 1.1;
+						//Conductor.changeBPM(150);
+						createCoolText(['Denpa Engine by'], -115);
+					case 3:
+						addMoreText('BlueVapor1234', -55);
+						addMoreText('Bethany Clone', -55);
+						addMoreText('Box', -55);
+						addMoreText('Thrifty', -55);
+						addMoreText('Toadette8394', -55);
+						addMoreText('Electrophyll II', -55);
+						addMoreText('_Jorge', -55);
+					case 4:
+						deleteCoolText();
+					case 5:
+						createCoolText([sexTop, sexMiddle], -115);
+						zoomies = 1.2;
+					case 7:
+						addMoreText(sexBottom, -115);
+						ngSpr.visible = true;
+					case 8:
+						zoomies = 1.05;
+						deleteCoolText();
+						ngSpr.visible = false;
+					case 9:
+						Conductor.changeBPM(150);
+						createCoolText([curWacky[0]]);
+					case 10:
+						addMoreText(curWacky[1]);
+					case 11:
+						deleteCoolText();
+						curWacky = FlxG.random.getObject(getIntroTextShit());
+					case 12:
+						createCoolText([curWacky[0]]);
+					case 13:
+						addMoreText(curWacky[1]);
+					case 14:
+						zoomies = 1.13;
+						deleteCoolText();
+						Conductor.changeBPM(300);
+					case 17:
+						addMoreText('Drop');
+					case 18:
+						addMoreText('The');
+					case 19:
+						addMoreText('Beat');
+					case 20:
+						addMoreText('Drop');
+					case 21:
+						addMoreText('The');
+					case 22:
+						deleteCoolText();
+					case 23:
+						addMoreText('Drop');
+					case 24:
+						addMoreText('The');
+					case 25:
+						addMoreText('Beat');
+					case 26:
+						addMoreText('Drop');
+					case 27:
+						addMoreText('The');
+					case 28:
+						Conductor.changeBPM(100);
+						zoomies = 1.025;
+						deleteCoolText();
+						skipIntro();
+				}
 			}
 		}
 	}
@@ -702,6 +722,8 @@ class TitleState extends MusicBeatState
 	{
 		if (!skippedIntro)
 		{
+			zoomies = 1.025;
+			if (!SoundTestState.isPlaying) Conductor.changeBPM(100);
 			if (playJingle) //Ignore deez
 			{
 				var easteregg:String = FlxG.save.data.psychDevsEasterEgg;
@@ -760,7 +782,7 @@ class TitleState extends MusicBeatState
 			{
 				remove(ngSpr);
 				remove(credGroup);
-				FlxG.camera.flash(FlxColor.WHITE, 4);
+				FlxG.camera.flash(FlxColor.WHITE, 3);
 
 				var easteregg:String = FlxG.save.data.psychDevsEasterEgg;
 				if (easteregg == null) easteregg = '';

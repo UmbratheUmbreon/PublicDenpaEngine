@@ -1,5 +1,6 @@
 package;
 
+import flixel.tweens.FlxEase;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -28,6 +29,8 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
+
+	var enableBar:Bool = false;
 
 	var selector:FlxText;
 	private static var curSelected:Int = 0;
@@ -59,6 +62,34 @@ class FreeplayState extends MusicBeatState
 	var bgScrollColorTween:FlxTween;
 	var bgScroll2ColorTween:FlxTween;
 	var gradientColorTween:FlxTween;
+
+	var alphaArray:Array<Float> = [];
+	var funnySprite:FlxSprite;
+	var funnySprite2:FlxSprite;
+	var funnySprite3:FlxSprite;
+	var bar1:FlxSprite;
+	var bar2:FlxSprite;
+	var bar3:FlxSprite;
+	var bar4:FlxSprite;
+	var bar5:FlxSprite;
+	var bar6:FlxSprite;
+	var bar7:FlxSprite;
+	var bar8:FlxSprite;
+	var bar9:FlxSprite;
+	var bar10:FlxSprite;
+	var funnySpriteTween:FlxTween;
+	var funnySprite2Tween:FlxTween;
+	var funnySprite3Tween:FlxTween;
+	var bar1Tween:FlxTween;
+	var bar2Tween:FlxTween;
+	var bar3Tween:FlxTween;
+	var bar4Tween:FlxTween;
+	var bar5Tween:FlxTween;
+	var bar6Tween:FlxTween;
+	var bar7Tween:FlxTween;
+	var bar8Tween:FlxTween;
+	var bar9Tween:FlxTween;
+	var bar10Tween:FlxTween;
 
 	override function create()
 	{
@@ -132,6 +163,104 @@ class FreeplayState extends MusicBeatState
 		gradient.antialiasing = ClientPrefs.globalAntialiasing;
 		add(gradient);
 		gradient.screenCenter();
+
+		funnySprite = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/verybottom'));
+		funnySprite.antialiasing = ClientPrefs.globalAntialiasing;
+		funnySprite.scale.set(0.5,0.5);
+		funnySprite.updateHitbox();
+		add(funnySprite);
+
+		funnySprite2 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/bottom'));
+		funnySprite2.antialiasing = ClientPrefs.globalAntialiasing;
+		funnySprite2.scale.set(0.5,0.5);
+		funnySprite2.updateHitbox();
+		add(funnySprite2);
+
+		bar1 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/1'));
+		bar1.antialiasing = ClientPrefs.globalAntialiasing;
+		bar1.color = 0xff0055ff;
+		bar1.alpha = 0;
+		bar1.scale.set(0.5,0.5);
+		bar1.updateHitbox();
+		add(bar1);
+
+		bar2 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/2'));
+		bar2.antialiasing = ClientPrefs.globalAntialiasing;
+		bar2.color = 0xff00ffff;
+		bar2.alpha = 0;
+		bar2.scale.set(0.5,0.5);
+		bar2.updateHitbox();
+		add(bar2);
+
+		bar3 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/3'));
+		bar3.antialiasing = ClientPrefs.globalAntialiasing;
+		bar3.color = 0xff00ff55;
+		bar3.alpha = 0;
+		bar3.scale.set(0.5,0.5);
+		bar3.updateHitbox();
+		add(bar3);
+
+		bar4 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/4'));
+		bar4.antialiasing = ClientPrefs.globalAntialiasing;
+		bar4.color = 0xffaaff00;
+		bar4.alpha = 0;
+		bar4.scale.set(0.5,0.5);
+		bar4.updateHitbox();
+		add(bar4);
+
+		bar5 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/5'));
+		bar5.antialiasing = ClientPrefs.globalAntialiasing;
+		bar5.color = 0xffffff00;
+		bar5.alpha = 0;
+		bar5.scale.set(0.5,0.5);
+		bar5.updateHitbox();
+		add(bar5);
+
+		bar6 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/6'));
+		bar6.antialiasing = ClientPrefs.globalAntialiasing;
+		bar6.color = 0xffffaa00;
+		bar6.alpha = 0;
+		bar6.scale.set(0.5,0.5);
+		bar6.updateHitbox();
+		add(bar6);
+
+		bar7 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/7'));
+		bar7.antialiasing = ClientPrefs.globalAntialiasing;
+		bar7.color = 0xffff5500;
+		bar7.alpha = 0;
+		bar7.scale.set(0.5,0.5);
+		bar7.updateHitbox();
+		add(bar7);
+
+		bar8 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/8'));
+		bar8.antialiasing = ClientPrefs.globalAntialiasing;
+		bar8.color = 0xffff0000;
+		bar8.alpha = 0;
+		bar8.scale.set(0.5,0.5);
+		bar8.updateHitbox();
+		add(bar8);
+
+		bar9 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/9'));
+		bar9.antialiasing = ClientPrefs.globalAntialiasing;
+		bar9.color = 0xffff0055;
+		bar9.alpha = 0;
+		bar9.scale.set(0.5,0.5);
+		bar9.updateHitbox();
+		add(bar9);
+
+		bar10 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/10'));
+		bar10.antialiasing = ClientPrefs.globalAntialiasing;
+		bar10.color = 0xffd400ff;
+		bar10.alpha = 0;
+		bar10.scale.set(0.5,0.5);
+		bar10.updateHitbox();
+		add(bar10);
+
+		funnySprite3 = new FlxSprite(FlxG.width - 200,420).loadGraphic(Paths.image('diffbar/top'));
+		funnySprite3.antialiasing = ClientPrefs.globalAntialiasing;
+		funnySprite3.scale.set(0.5,0.5);
+		funnySprite3.updateHitbox();
+		add(funnySprite3);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
@@ -298,6 +427,58 @@ class FreeplayState extends MusicBeatState
 		var mult:Float = FlxMath.lerp(1, bg.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
 		bg.scale.set(mult, mult);
 		bg.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, funnySprite.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		funnySprite.scale.set(mult, mult);
+		funnySprite.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, funnySprite2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		funnySprite2.scale.set(mult, mult);
+		funnySprite2.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, funnySprite3.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		funnySprite3.scale.set(mult, mult);
+		funnySprite3.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar1.scale.set(mult, mult);
+		bar1.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar2.scale.set(mult, mult);
+		bar2.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar3.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar3.scale.set(mult, mult);
+		bar3.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar4.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar4.scale.set(mult, mult);
+		bar4.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar5.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar5.scale.set(mult, mult);
+		bar5.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar6.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar6.scale.set(mult, mult);
+		bar6.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar7.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar7.scale.set(mult, mult);
+		bar7.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar8.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar8.scale.set(mult, mult);
+		bar8.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar9.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar9.scale.set(mult, mult);
+		bar9.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(0.5, bar10.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		bar10.scale.set(mult, mult);
+		bar10.updateHitbox();
 		
 		for (i in 0...iconArray.length)
 		{
@@ -428,7 +609,7 @@ class FreeplayState extends MusicBeatState
 			#if desktop
 			if(instPlaying != curSelected)
 			{
-				if(sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))){
+				if(sys.FileSystem.exists(Paths.inst(songLowercase + '/' + poop)) || sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop)) || sys.FileSystem.exists(Paths.modsJson(songLowercase + '/' + poop))) {
 				#if PRELOAD_ALL
 				destroyFreeplayVocals();
 				FlxG.sound.music.volume = 0;
@@ -458,7 +639,7 @@ class FreeplayState extends MusicBeatState
 				//trace('bpm is' + PlayState.SONG.bpm);
 				#end
 				} else {
-					trace('The song doesn\'t exist dummy!');
+					trace(poop + '\'s .ogg does not exist!');
 					FlxG.sound.play(Paths.sound('invalidJSON'));
 					FlxG.camera.shake(0.05, 0.05);
 					var funnyText = new FlxText(12, FlxG.height - 24, 0, "Invalid Song!");
@@ -517,7 +698,7 @@ class FreeplayState extends MusicBeatState
 			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
 			var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
 			#if desktop
-			if(sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))){
+			if(sys.FileSystem.exists(Paths.modsJson(songLowercase + '/' + poop)) || sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))) {
 				trace(poop);
 
 				PlayState.SONG = Song.loadFromJson(poop, songLowercase);
@@ -547,9 +728,8 @@ class FreeplayState extends MusicBeatState
 				FlxG.sound.music.volume = 0;
 						
 				destroyFreeplayVocals();
-			}
-			else{
-				trace('The .json is wrong dummy!');
+			} else {
+				trace(poop + '.json does not exist!');
 				FlxG.sound.play(Paths.sound('invalidJSON'));
 				FlxG.camera.shake(0.05, 0.05);
 				var funnyText = new FlxText(12, FlxG.height - 24, 0, "Invalid JSON!");
@@ -645,6 +825,8 @@ class FreeplayState extends MusicBeatState
 		} else {
 			diffText.text = '<<< ' + CoolUtil.difficultyString() + ' >>>';
 		}
+
+		alphaBullshit();
 		
 		positionHighscore();
 	}
@@ -772,6 +954,345 @@ class FreeplayState extends MusicBeatState
 		{
 			curDifficulty = newPos;
 		}
+
+		alphaBullshit();
+	}
+
+	function setAlpha(sprite:FlxSprite, feed:Int) {
+		sprite.alpha = alphaArray[feed];
+	}
+
+	function setPositions(sprite:FlxSprite) {
+		sprite.x = FlxG.width + 150;
+		sprite.angle = 180;
+	}
+
+	function alphaBullshit() {
+		var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
+		var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+		if ((sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop)) || sys.FileSystem.exists(Paths.modsJson(songLowercase + '/' + poop))) && enableBar) {
+			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+			var short:Null<Float> = PlayState.SONG.hardness;
+			var fuck:Int = 0;
+			if (short != null) {
+				//alphaArray = [short,short-1,short-2,short-3,short-4,short-5,short-6,short-7,short-8,short-9];
+				alphaArray = [short+1,short,short-1,short-2,short-3,short-4,short-5,short-6,short-7,short-8];
+				for (i in 0...alphaArray.length) {
+					var float:Float = alphaArray[fuck];
+					if (float > 1) float = 1;
+					if (float < 0) float = 0;
+					alphaArray[fuck] = float;
+					fuck++;
+				}
+				fuck = 0;
+				for (i in 0...10) {
+					switch (i) {
+						case 1:
+							setAlpha(bar1, fuck);
+						case 2:
+							setAlpha(bar2, fuck);
+						case 3:
+							setAlpha(bar3, fuck);
+						case 4:
+							setAlpha(bar4, fuck);
+						case 5:
+							setAlpha(bar5, fuck);
+						case 6:
+							setAlpha(bar6, fuck);
+						case 7:
+							setAlpha(bar7, fuck);
+						case 8:
+							setAlpha(bar8, fuck);
+						case 9:
+							setAlpha(bar9, fuck);
+						case 10:
+							setAlpha(bar10, fuck);
+					}
+					fuck++;
+				}
+			} else {
+				alphaArray = [0,0-1,0-2,0-3,0-4,0-5,0-6,0-7,0-8,0-9];
+				for (i in 0...alphaArray.length) {
+					var float:Float = alphaArray[i-1];
+					if (float > 1) float = 1;
+					if (float < 0) float = 0;
+					alphaArray[fuck] = float;
+				}
+				fuck = 0;
+				for (i in 0...10) {
+					switch (i) {
+						case 1:
+							setAlpha(bar1, fuck);
+						case 2:
+							setAlpha(bar2, fuck);
+						case 3:
+							setAlpha(bar3, fuck);
+						case 4:
+							setAlpha(bar4, fuck);
+						case 5:
+							setAlpha(bar5, fuck);
+						case 6:
+							setAlpha(bar6, fuck);
+						case 7:
+							setAlpha(bar7, fuck);
+						case 8:
+							setAlpha(bar8, fuck);
+						case 9:
+							setAlpha(bar9, fuck);
+						case 10:
+							setAlpha(bar10, fuck);
+					}
+					fuck++;
+				}
+			}
+			if (funnySpriteTween != null) {
+				funnySpriteTween.cancel();
+				funnySpriteTween = null;
+			}
+			if (funnySprite2Tween != null) {
+				funnySprite2Tween.cancel();
+				funnySprite2Tween = null;
+			}
+			if (funnySprite3Tween != null) {
+				funnySprite3Tween.cancel();
+				funnySprite3Tween = null;
+			}
+			if (bar1Tween != null) {
+				bar1Tween.cancel();
+				bar1Tween = null;
+			}
+			if (bar2Tween != null) {
+				bar2Tween.cancel();
+				bar2Tween = null;
+			}
+			if (bar3Tween != null) {
+				bar3Tween.cancel();
+				bar3Tween = null;
+			}
+			if (bar4Tween != null) {
+				bar4Tween.cancel();
+				bar4Tween = null;
+			}
+			if (bar5Tween != null) {
+				bar5Tween.cancel();
+				bar5Tween = null;
+			}
+			if (bar6Tween != null) {
+				bar6Tween.cancel();
+				bar6Tween = null;
+			}
+			if (bar7Tween != null) {
+				bar7Tween.cancel();
+				bar7Tween = null;
+			}
+			if (bar8Tween != null) {
+				bar8Tween.cancel();
+				bar8Tween = null;
+			}
+			if (bar9Tween != null) {
+				bar9Tween.cancel();
+				bar9Tween = null;
+			}
+			if (bar10Tween != null) {
+				bar10Tween.cancel();
+				bar10Tween = null;
+			}
+			for (i in 0...14) {
+				switch (i) {
+					case 1:
+						setPositions(bar1);
+					case 2:
+						setPositions(bar2);
+					case 3:
+						setPositions(bar3);
+					case 4:
+						setPositions(bar4);
+					case 5:
+						setPositions(bar5);
+					case 6:
+						setPositions(bar6);
+					case 7:
+						setPositions(bar7);
+					case 8:
+						setPositions(bar8);
+					case 9:
+						setPositions(bar9);
+					case 10:
+						setPositions(bar10);
+					case 11:
+						setPositions(funnySprite);
+					case 12:
+						setPositions(funnySprite2);
+					case 13:
+						setPositions(funnySprite3);
+				}
+			}
+			funnySpriteTween = FlxTween.tween(funnySprite, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut
+			});
+			funnySprite2Tween = FlxTween.tween(funnySprite2, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut
+			});
+			funnySprite3Tween = FlxTween.tween(funnySprite3, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut
+			});
+			bar1Tween = FlxTween.tween(bar1, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut
+			});
+			bar2Tween = FlxTween.tween(bar2, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.01
+			});
+			bar3Tween = FlxTween.tween(bar3, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.02
+			});
+			bar4Tween = FlxTween.tween(bar4, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.03
+			});
+			bar5Tween = FlxTween.tween(bar5, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.04
+			});
+			bar6Tween = FlxTween.tween(bar6, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.05
+			});
+			bar7Tween = FlxTween.tween(bar7, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.06
+			});
+			bar8Tween = FlxTween.tween(bar8, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.07
+			});
+			bar9Tween = FlxTween.tween(bar9, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.08
+			});
+			bar10Tween = FlxTween.tween(bar10, {x: FlxG.width - 200, angle: 0}, 0.25, {
+				ease: FlxEase.quadOut,
+				startDelay: 0.09
+			});
+		} else {
+			var fuck:Int = 0;
+			alphaArray = [0,0-1,0-2,0-3,0-4,0-5,0-6,0-7,0-8,0-9];
+			for (i in 0...alphaArray.length) {
+				var float:Float = alphaArray[i-1];
+				if (float > 1) float = 1;
+				if (float < 0) float = 0;
+				alphaArray[fuck] = float;
+			}
+			fuck = 0;
+			for (i in 0...10) {
+				switch (i) {
+					case 1:
+						setAlpha(bar1, fuck);
+					case 2:
+						setAlpha(bar2, fuck);
+					case 3:
+						setAlpha(bar3, fuck);
+					case 4:
+						setAlpha(bar4, fuck);
+					case 5:
+						setAlpha(bar5, fuck);
+					case 6:
+						setAlpha(bar6, fuck);
+					case 7:
+						setAlpha(bar7, fuck);
+					case 8:
+						setAlpha(bar8, fuck);
+					case 9:
+						setAlpha(bar9, fuck);
+					case 10:
+						setAlpha(bar10, fuck);
+				}
+				fuck++;
+			}
+			if (funnySpriteTween != null) {
+				funnySpriteTween.cancel();
+				funnySpriteTween = null;
+			}
+			if (funnySprite2Tween != null) {
+				funnySprite2Tween.cancel();
+				funnySprite2Tween = null;
+			}
+			if (funnySprite3Tween != null) {
+				funnySprite3Tween.cancel();
+				funnySprite3Tween = null;
+			}
+			if (bar1Tween != null) {
+				bar1Tween.cancel();
+				bar1Tween = null;
+			}
+			if (bar2Tween != null) {
+				bar2Tween.cancel();
+				bar2Tween = null;
+			}
+			if (bar3Tween != null) {
+				bar3Tween.cancel();
+				bar3Tween = null;
+			}
+			if (bar4Tween != null) {
+				bar4Tween.cancel();
+				bar4Tween = null;
+			}
+			if (bar5Tween != null) {
+				bar5Tween.cancel();
+				bar5Tween = null;
+			}
+			if (bar6Tween != null) {
+				bar6Tween.cancel();
+				bar6Tween = null;
+			}
+			if (bar7Tween != null) {
+				bar7Tween.cancel();
+				bar7Tween = null;
+			}
+			if (bar8Tween != null) {
+				bar8Tween.cancel();
+				bar8Tween = null;
+			}
+			if (bar9Tween != null) {
+				bar9Tween.cancel();
+				bar9Tween = null;
+			}
+			if (bar10Tween != null) {
+				bar10Tween.cancel();
+				bar10Tween = null;
+			}
+			for (i in 0...14) {
+				switch (i) {
+					case 1:
+						setPositions(bar1);
+					case 2:
+						setPositions(bar2);
+					case 3:
+						setPositions(bar3);
+					case 4:
+						setPositions(bar4);
+					case 5:
+						setPositions(bar5);
+					case 6:
+						setPositions(bar6);
+					case 7:
+						setPositions(bar7);
+					case 8:
+						setPositions(bar8);
+					case 9:
+						setPositions(bar9);
+					case 10:
+						setPositions(bar10);
+					case 11:
+						setPositions(funnySprite);
+					case 12:
+						setPositions(funnySprite2);
+					case 13:
+						setPositions(funnySprite3);
+				}
+			}
+		}
 	}
 
 	private function positionHighscore() {
@@ -800,6 +1321,21 @@ class FreeplayState extends MusicBeatState
 			//trace('BEAT HIT: ' + curBeat + ', LAST HIT: ' + lastBeatHit);
 			//return;
 		//}
+		if (curBeat % 2 == 0) {
+			funnySprite.scale.set(0.52,0.52);
+			funnySprite2.scale.set(0.52,0.52);
+			funnySprite3.scale.set(0.52,0.52);
+			bar1.scale.set(0.52,0.52);
+			bar2.scale.set(0.52,0.52);
+			bar3.scale.set(0.52,0.52);
+			bar4.scale.set(0.52,0.52);
+			bar5.scale.set(0.52,0.52);
+			bar6.scale.set(0.52,0.52);
+			bar7.scale.set(0.52,0.52);
+			bar8.scale.set(0.52,0.52);
+			bar9.scale.set(0.52,0.52);
+			bar10.scale.set(0.52,0.52);
+		}
 		bg.scale.set(1.06,1.06);
 		bg.updateHitbox();
 		for (i in 0...iconArray.length)
@@ -810,6 +1346,21 @@ class FreeplayState extends MusicBeatState
 		if (PlayState.SONG != null) {
 			if (PlayState.SONG.song == 'Zavodila')  {
 				FlxG.camera.shake(0.0075, 0.2);
+				if (curBeat % 2 == 0) {
+					funnySprite.scale.set(0.52,0.52);
+					funnySprite2.scale.set(0.52,0.52);
+					funnySprite3.scale.set(0.52,0.52);
+					bar1.scale.set(0.52,0.52);
+					bar2.scale.set(0.52,0.52);
+					bar3.scale.set(0.52,0.52);
+					bar4.scale.set(0.52,0.52);
+					bar5.scale.set(0.52,0.52);
+					bar6.scale.set(0.52,0.52);
+					bar7.scale.set(0.52,0.52);
+					bar8.scale.set(0.52,0.52);
+					bar9.scale.set(0.52,0.52);
+					bar10.scale.set(0.52,0.52);
+				}
 				bg.scale.set(1.16,1.16);
 				bg.updateHitbox();
 				for (i in 0...iconArray.length)

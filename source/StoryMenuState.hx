@@ -267,11 +267,12 @@ class StoryMenuState extends MusicBeatState
 				var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
 
 				#if desktop
-				if(sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))){
+				if(sys.FileSystem.exists(Paths.modsJson(songLowercase + '/' + poop)) || sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))){
 					selectWeek();
 				}
-				else{
-					trace('The .json is wrong dummy!');
+				else
+				{
+					trace(poop + '.json does not exist!');
 					FlxG.sound.play(Paths.sound('invalidJSON'));
 					FlxG.camera.shake(0.05, 0.05);
 					var funnyText = new FlxText(12, FlxG.height - 24, 0, "Invalid JSON!");

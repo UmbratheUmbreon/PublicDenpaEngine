@@ -85,6 +85,7 @@ class ClientPrefs {
 		'practice' => false,
 		'botplay' => false,
 		'poison' => false,
+		'sickonly' => false,
 		'opponentplay' => false
 	];
 

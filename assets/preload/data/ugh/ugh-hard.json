@@ -3060,6 +3060,7 @@
 		"allowBot": true,
 		"needsVoices": true,
 		"allowGhostTapping": true,
-		"bpm": 160
+		"bpm": 160,
+		"hardness": 5.5
 	}
 }

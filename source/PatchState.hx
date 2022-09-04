@@ -28,7 +28,7 @@ class PatchState extends MusicBeatState
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var iconArray:Array<AttachedSprite> = [];
-	private var creditsStuff:Array<Array<String>> = [];
+	private var patchStuff:Array<Array<String>> = [];
 
 	var bg:FlxSprite;
 	var bgScroll:FlxBackdrop;
@@ -87,7 +87,7 @@ class PatchState extends MusicBeatState
 					if(!Paths.ignoreModFolders.contains(modSplit[0].toLowerCase()) && !modsAdded.contains(modSplit[0]))
 					{
 						if(modSplit[1] == '1')
-							pushModCreditsToList(modSplit[0]);
+							pushModPatchToList(modSplit[0]);
 						else
 							modsAdded.push(modSplit[0]);
 					}
@@ -99,12 +99,13 @@ class PatchState extends MusicBeatState
 		arrayOfFolders.push('');
 		for (folder in arrayOfFolders)
 		{
-			pushModCreditsToList(folder);
+			pushModPatchToList(folder);
 		}
 		#end
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Patch Notes'],
+			['0.5.0d',		'waidol',		'A-NPS, A-Bopeebo and Fresh Insanity Charts, U-Credits, I-Modcharts, I-Kade Score Display, I-Title Screen, I-Chart Editor Position Display, F-Third Strum Bug, F-Multikey Input Bug, F-Crash Handler Not Showing Up, F-Null Bitmap Reference in Offset Editor, F-Invalid JSON Detector, F-Title Screen Sync, F-Invalid Song Detector, F-Incorrect BPMs When Changing Menus, RFV-0.5.0d',							'wait till next update',	'3B4CB7'],
 			['0.5.0c',		'waidol',		'A-FNF+ Score Display, A-FNM Score Dispaly, A-Poison Modifier, A-Autopause Option, A-Gradient Time Bar, F-Main Menu Mouse Controls, F-Tankman Bugs, F-Healthbars, O-Healthbars, RFV-0.5.0c',							'wait till next update',	'3B4CB7'],
 			['0.5.0',		'waidol',		'A-Week 7, A-Mouse Controls to Menus, A-That Psych Crash Handler, A-Hscript (By _jorge), A-Stretch Icon Bop, A-Psych Philly Glow, A-Animation for Singing with the Spacebar, A-Scare Options, A-MS Timing Indicator, A-Texture Packer XML Support, A-Anti Crash for Invalid JSONs (by Toadette), A-Option to Toggle Flinching Icons, F-Flinching Icons, O-Score Texts, O-Health Icons, I-Static CrossFade, I-Camera Movement, I-Quartiz, I-Icon Animations, R-Blammed Lights, R-Gospel X, R-Unused Assets, RFV-0.5.0',							'wait till next update',	'3B4CB7'],
 			['0.4.0e',		'eidol',		'A-Time Text Boppin, A-Cutscene Options, A-Replay Cutscene Option in Pause Menu, A-Bar-less Time Bar Options, A-Pause Options, F-Song Card Appearing During Cutscenes, F-Healthbar Offsets, F-Positionings for Score Displays, F-Pixel GF Being Flipped, RFV-0.4.0e',							'wait till next update',	'998844'],
@@ -141,13 +142,13 @@ class PatchState extends MusicBeatState
 		];
 		
 		for(i in pisspoop){
-			creditsStuff.push(i);
+			patchStuff.push(i);
 		}
 	
-		for (i in 0...creditsStuff.length)
+		for (i in 0...patchStuff.length)
 		{
 			var isSelectable:Bool = !unselectableCheck(i);
-			var optionText:Alphabet = new Alphabet(0, 70 * i, creditsStuff[i][0], !isSelectable, false);
+			var optionText:Alphabet = new Alphabet(0, 70 * i, patchStuff[i][0], !isSelectable, false);
 			optionText.isMenuItem = true;
 			optionText.screenCenter(X);
 			optionText.yAdd -= 70;
@@ -160,12 +161,12 @@ class PatchState extends MusicBeatState
 			grpOptions.add(optionText);
 
 			if(isSelectable) {
-				if(creditsStuff[i][5] != null)
+				if(patchStuff[i][5] != null)
 				{
-					Paths.currentModDirectory = creditsStuff[i][5];
+					Paths.currentModDirectory = patchStuff[i][5];
 				}
 
-				var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
+				var icon:AttachedSprite = new AttachedSprite('patch/' + patchStuff[i][1]);
 				icon.xAdd = optionText.width + 10;
 				icon.sprTracker = optionText;
 	
@@ -222,7 +223,7 @@ class PatchState extends MusicBeatState
 
 		if(!quitting)
 		{
-			if(creditsStuff.length > 1)
+			if(patchStuff.length > 1)
 			{
 				var shiftMult:Int = 1;
 				if(FlxG.keys.pressed.SHIFT) shiftMult = 3;
@@ -260,7 +261,7 @@ class PatchState extends MusicBeatState
 			}
 
 			if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
-				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
+				CoolUtil.browserLoad(patchStuff[curSelected][3]);
 			}
 			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 			{
@@ -311,8 +312,8 @@ class PatchState extends MusicBeatState
 		do {
 			curSelected += change;
 			if (curSelected < 0)
-				curSelected = creditsStuff.length - 1;
-			if (curSelected >= creditsStuff.length)
+				curSelected = patchStuff.length - 1;
+			if (curSelected >= patchStuff.length)
 				curSelected = 0;
 		} while(unselectableCheck(curSelected));
 
@@ -368,7 +369,7 @@ class PatchState extends MusicBeatState
 			}
 		}
 
-		descText.text = creditsStuff[curSelected][2];
+		descText.text = patchStuff[curSelected][2];
 		descText.y = FlxG.height - descText.height + offsetThing - 60;
 
 		if(moveTween != null) moveTween.cancel();
@@ -380,31 +381,31 @@ class PatchState extends MusicBeatState
 
 	#if MODS_ALLOWED
 	private var modsAdded:Array<String> = [];
-	function pushModCreditsToList(folder:String)
+	function pushModPatchToList(folder:String)
 	{
 		if(modsAdded.contains(folder)) return;
 
-		var creditsFile:String = null;
-		if(folder != null && folder.trim().length > 0) creditsFile = Paths.mods(folder + '/data/credits.txt');
-		else creditsFile = Paths.mods('data/credits.txt');
+		var patchFile:String = null;
+		if(folder != null && folder.trim().length > 0) patchFile = Paths.mods(folder + '/data/patch.txt');
+		else patchFile = Paths.mods('data/patch.txt');
 
-		if (FileSystem.exists(creditsFile))
+		if (FileSystem.exists(patchFile))
 		{
-			var firstarray:Array<String> = File.getContent(creditsFile).split('\n');
+			var firstarray:Array<String> = File.getContent(patchFile).split('\n');
 			for(i in firstarray)
 			{
 				var arr:Array<String> = i.replace('\\n', '\n').split("::");
 				if(arr.length >= 5) arr.push(folder);
-				creditsStuff.push(arr);
+				patchStuff.push(arr);
 			}
-			creditsStuff.push(['']);
+			patchStuff.push(['']);
 		}
 		modsAdded.push(folder);
 	}
 	#end
 
 	function getCurrentBGColor() {
-		var bgColor:String = creditsStuff[curSelected][4];
+		var bgColor:String = patchStuff[curSelected][4];
 		if(!bgColor.startsWith('0x')) {
 			bgColor = '0xFF' + bgColor;
 		}
@@ -412,7 +413,7 @@ class PatchState extends MusicBeatState
 	}
 
 	private function unselectableCheck(num:Int):Bool {
-		return creditsStuff[num].length <= 1;
+		return patchStuff[num].length <= 1;
 	}
 
 	override function beatHit() {

@@ -4370,6 +4370,7 @@
 		"stage": "tank",
 		"needsVoices": true,
 		"bpm": 178,
-		"allowGhostTapping": true
+		"allowGhostTapping": true,
+		"hardness": 6
 	}
 }

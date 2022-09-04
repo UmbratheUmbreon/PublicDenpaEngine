@@ -900,7 +900,18 @@ class EditorPlayState extends MusicBeatState
 		var daLoop:Int = 0;
 		for (i in seperatedScore)
 		{
-			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2 + skinShit));
+			var extraShit:String = "";
+			var extraShit2:String = "";
+
+			if (!PlayState.isPixelStage) extraShit = "nums/";
+			if (skinShit == '-kade') {
+				extraShit2 = '-fnf';
+				//trace('swapped to -fnf to save resources');
+			} else {
+				extraShit2 = skinShit;
+				//trace('did not swap to -fnf to save resources');
+			}
+			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(extraShit + pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2 + extraShit2));
 			numScore.screenCenter();
 			numScore.x = coolText.x + (43 * daLoop) - 90;
 			numScore.y += 80;

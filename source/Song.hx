@@ -32,6 +32,7 @@ typedef SwagSong =
 	var tintRed:Null<Int>;
 	var tintGreen:Null<Int>;
 	var tintBlue:Null<Int>;
+	var hardness:Float;
 
 	var player1:String;
 	var player2:String;
@@ -72,6 +73,7 @@ class Song
 	public var tintRed:Null<Int> = 255;
 	public var tintGreen:Null<Int> = 255;
 	public var tintBlue:Null<Int> = 255;
+	public var hardness:Float = 1;
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';

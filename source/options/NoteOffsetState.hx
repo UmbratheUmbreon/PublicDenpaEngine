@@ -44,6 +44,7 @@ class NoteOffsetState extends MusicBeatState
 
 	override public function create()
 	{
+		SoundTestState.isPlaying = false;
 		// Cameras
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
@@ -132,7 +133,7 @@ class NoteOffsetState extends MusicBeatState
 		var daLoop:Int = 0;
 		for (i in seperatedScore)
 		{
-			var numScore:FlxSprite = new FlxSprite(43 * daLoop).loadGraphic(Paths.image('num' + i + '-fnf'));
+			var numScore:FlxSprite = new FlxSprite(43 * daLoop).loadGraphic(Paths.image('nums/num' + i + '-fnf'));
 			numScore.cameras = [camHUD];
 			numScore.setGraphicSize(Std.int(numScore.width * 0.5));
 			numScore.updateHitbox();

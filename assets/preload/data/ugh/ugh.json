@@ -2761,6 +2761,7 @@
 		"needsVoices": true,
 		"stage": "tank",
 		"bpm": 160,
-		"allowGhostTapping": true
+		"allowGhostTapping": true,
+		"hardness": 5
 	}
 }

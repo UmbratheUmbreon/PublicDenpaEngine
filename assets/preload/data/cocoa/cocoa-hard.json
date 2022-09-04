@@ -2582,6 +2582,7 @@
 		"autoIdles": true,
 		"autoIcons": true,
 		"allowBot": true,
-		"allowGhostTapping": true
+		"allowGhostTapping": true,
+		"hardness": 4.3
 	}
 }

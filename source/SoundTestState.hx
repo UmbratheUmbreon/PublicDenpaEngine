@@ -26,6 +26,7 @@ class SoundTestState extends MusicBeatState
 {
 	public static var disk:Int = 0;
 	public static var track:Int = 0;
+	public static var isPlaying:Bool = false;
 	var lastDisk:Int = 0;
 	var lastTrack:Int = 0;
 	var diskName:String = '';
@@ -34,6 +35,7 @@ class SoundTestState extends MusicBeatState
 	var totalTracks:Int = 0;
 	var leftOrRight:String = '';
 	var upOrDown:String = '';
+	var paused:Bool = false;
 
 	var albumCover:FlxSprite;
 	var diskTxt:FlxText;
@@ -60,6 +62,7 @@ class SoundTestState extends MusicBeatState
 
 	override function create()
 	{
+		isPlaying = false;
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("On the Sound Test Menu", null);
@@ -200,6 +203,18 @@ class SoundTestState extends MusicBeatState
 				track -= 1;
 				upOrDown = 'down';
 			}
+			
+		if (FlxG.keys.justPressed.SPACE)
+			{
+				FlxG.sound.play(Paths.sound('scrollMenu'));
+				if (!paused) {
+					FlxG.sound.music.pause();
+					paused = true;
+				} else {
+					FlxG.sound.music.play(false);
+					paused = false;
+				}
+			}
 		
 		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 		{
@@ -242,6 +257,7 @@ class SoundTestState extends MusicBeatState
 
 	function setMusic(epicDisk:Int, epicTrack:Int)
 	{
+		isPlaying = true;
 		switch (epicDisk)
 		{
 			case 0:
@@ -828,7 +844,7 @@ class SoundTestState extends MusicBeatState
 			setMusic(supaDisk, supaTrack);
 			#if desktop
 			// Updating Discord Rich Presence.
-			DiscordClient.changePresence("Album: " + diskName, "Track: " + trackName, imgName);
+			DiscordClient.changePresence("Album: " + diskName, "Track: " + trackName, imgName, true);
 			#end
 		} else {
 			lastTrack = supaTrack;
@@ -836,7 +852,7 @@ class SoundTestState extends MusicBeatState
 			setMusic(supaDisk, supaTrack);
 			#if desktop
 			// Updating Discord Rich Presence.
-			DiscordClient.changePresence("Album: " + diskName, "Track: " + trackName, imgName);
+			DiscordClient.changePresence("Album: " + diskName, "Track: " + trackName, imgName, true);
 			#end
 		}
 	}
