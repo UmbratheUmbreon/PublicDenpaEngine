@@ -143,15 +143,25 @@ And of course, all of Psych's 0.5.2h features (not 0.6+, that is GARBO)
 2) MAKE SURE YOUR HAXE IS 4.2.5 OR HIGHER!!!
 
 3) Have the following dependencies:
+
     -discord_rpc
+    
     -flixel
+    
     -flixel-addons
+    
     -flixel-ui
+    
     -hscript
+    
     -hxcpp
+    
     -lime
+    
     -linc luajit
+    
     -openfl
+    
     -haxe
 
 4) Do all da shits for compiling Psych engine that arent stated on the FNF compiling tutorial
