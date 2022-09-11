@@ -77,14 +77,6 @@ class InitState extends MusicBeatState
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 
 		trace('binded save');
-		
-		ClientPrefs.loadPrefs();
-		
-		trace('loaded prefs');
-
-		Highscore.load();
-
-		trace('loaded highscore');
 
 		if (FlxG.save.data.fullscreen != null) {
 			FlxG.fullscreen = FlxG.save.data.fullscreen;
@@ -98,9 +90,15 @@ class InitState extends MusicBeatState
 			FlxG.autoPause = true;
 		}
 
-		//FlxG.fullscreen = ClientPrefs.fullscreen;
-
 		trace('LOADED FULLSCREEN SETTING!! (LIAR!!!)');
+		
+		ClientPrefs.loadPrefs();
+		
+		trace('loaded prefs');
+
+		Highscore.load();
+
+		trace('loaded highscore');
 
 		if (FlxG.save.data.weekCompleted != null)
 		{

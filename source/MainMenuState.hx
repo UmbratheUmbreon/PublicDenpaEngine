@@ -27,9 +27,9 @@ using StringTools;
 class MainMenuState extends MusicBeatState
 {
 	#if !debug
-	public static var denpaEngineVersion:String = '0.5.0d'; //This is also used for Discord RPC
+	public static var denpaEngineVersion:String = '0.5.1'; //This is also used for Discord RPC
 	#else
-	public static var denpaEngineVersion:String = '0.5.0d Nightly'; //For declaring "HEY THIS ISNT FINAL"
+	public static var denpaEngineVersion:String = '0.5.1 Nightly'; //For declaring "HEY THIS ISNT FINAL"
 	#end
 	public static var baseVersion:String = '0.5.2h'; //For those wondering what this engine is based on
 	public static var curSelected:Int = 0;
@@ -437,7 +437,7 @@ class MainMenuState extends MusicBeatState
 								case 'story_mode':
 									MusicBeatState.switchState(new StoryMenuState());
 								case 'freeplay':
-									MusicBeatState.switchState(new FreeplayState());
+									MusicBeatState.switchState(new FreeplaySectionState());
 								case 'credits':
 									MusicBeatState.switchState(new CreditsState());
 								case 'options':

@@ -34,7 +34,7 @@ The Public Denpa Engine Repo. Will be updated occasionally, but only when an act
 
 -[Toggleable OG Healthbar] Did you like not having healthbar colours? Bam, there you go.
 
--[Toggleable Winning Icons] These are *kinda* broken but they still work... mostly
+-[Dynamic Icons] Have you got a winning icon sheet? Can't use it in that other engine you were using? Well its your lucky day! Our engine allows for the use of 150x150, 300x150, and 450x150 icon sheets, all simultaneously!
 
 -[Lots of Icon Animations to Choose From] Come get em! We got Gapple's icon swing, the broken old one, angle snap, we even got boring bopping!
 
@@ -133,6 +133,10 @@ The Public Denpa Engine Repo. Will be updated occasionally, but only when an act
 -[Player 4] Ever wanted to have 2 opponents? With seperate strum lines? And completely seperate properties? And an extra icon for them? And a loving spouse? Well with Player 4, All but one of those problems can be solved easily and gracefully!
 
 -[Accuracy Modes] Maybe to you, the accuracy in base FNF doesn't cut it. Maybe you want some uber accurate accuracy system. Fortunately for you, hyperspecific person out there, Denpa Engine comes packaged with 2 accuracy modes to choose from, Simple and Complex! Complex is so accurate, it rivals other- (Our legal team has advised us to stop there).
+
+-[Streamlined Charting] Ever had trouble charting in FNF? Not anymore my friend! We've got you covered with easy access keybinds and a streamlined UI to help YOU chart your songs!
+
+-[Freeplay Sections] Is there anything much to explain here?
 
 And of course, all of Psych's 0.5.2h features (not 0.6+, that is GARBO)
 

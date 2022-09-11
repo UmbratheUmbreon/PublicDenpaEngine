@@ -379,7 +379,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		boyfriend.setGraphicSize(Std.int(boyfriend.width * 0.75));
 		boyfriend.updateHitbox();
 		boyfriend.dance();
-		insert(1, boyfriend);
+		insert(3, boyfriend);
 		boyfriend.visible = wasVisible;
 	}
 

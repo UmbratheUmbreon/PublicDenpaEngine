@@ -62,6 +62,9 @@ class SoundTestState extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+
 		isPlaying = false;
 		#if desktop
 		// Updating Discord Rich Presence

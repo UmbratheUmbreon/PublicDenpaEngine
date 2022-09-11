@@ -1139,7 +1139,9 @@ class CharacterEditorState extends MusicBeatState
 		"scare_bf": false,
 		"scare_gf": false,
 		"scale": 1,
-		"flixel_trail": false
+		"flixel_trail": false,
+		"drain_kill": false,
+		"drain_floor": 0.1
 		}';
 
 	var charDropDown:FlxUIDropDownMenuCustom;
@@ -1249,6 +1251,7 @@ class CharacterEditorState extends MusicBeatState
 	var trailDelayStepper:FlxUINumericStepper;
 	var trailAlphaStepper:FlxUINumericStepper;
 	var trailDiffStepper:FlxUINumericStepper;
+	var drainFloorStepper:FlxUINumericStepper;
 	var positionXStepper:FlxUINumericStepper;
 	var positionYStepper:FlxUINumericStepper;
 	var positionCameraXStepper:FlxUINumericStepper;
@@ -1262,6 +1265,7 @@ class CharacterEditorState extends MusicBeatState
 	var scareBfCheckBox:FlxUICheckBox;
 	var scareGfCheckBox:FlxUICheckBox;
 	var healthDrainCheckBox:FlxUICheckBox;
+	var drainKillCheckBox:FlxUICheckBox;
 	var noAntialiasingCheckBox:FlxUICheckBox;
 
 	var healthColorStepperR:FlxUINumericStepper;
@@ -1292,8 +1296,10 @@ class CharacterEditorState extends MusicBeatState
 		});
 
 		singDurationStepper = new FlxUINumericStepper(15, imageInputText.y + 45, 0.1, 4, 0, 999, 1);
+		if (Reflect.getProperty(singDurationStepper, 'name') == null) Reflect.setProperty(singDurationStepper, 'name', 'singDurationStepper');
 
 		scaleStepper = new FlxUINumericStepper(15, singDurationStepper.y + 40, 0.1, 1, 0.05, 20, 1);
+		if (Reflect.getProperty(scaleStepper, 'name') == null) Reflect.setProperty(scaleStepper, 'name', 'scaleStepper');
 
 		flipXCheckBox = new FlxUICheckBox(singDurationStepper.x + 80, singDurationStepper.y, null, null, "Flip X", 50);
 		flipXCheckBox.checked = char.flipX;
@@ -1318,10 +1324,14 @@ class CharacterEditorState extends MusicBeatState
 		};
 
 		positionXStepper = new FlxUINumericStepper(flipXCheckBox.x + 110, flipXCheckBox.y, 10, char.positionArray[0], -9000, 9000, 0);
+		if (Reflect.getProperty(positionXStepper, 'name') == null) Reflect.setProperty(positionXStepper, 'name', 'positionXStepper');
 		positionYStepper = new FlxUINumericStepper(positionXStepper.x + 60, positionXStepper.y, 10, char.positionArray[1], -9000, 9000, 0);
+		if (Reflect.getProperty(positionYStepper, 'name') == null) Reflect.setProperty(positionYStepper, 'name', 'positionYStepper');
 		
 		positionCameraXStepper = new FlxUINumericStepper(positionXStepper.x, positionXStepper.y + 40, 10, char.cameraPosition[0], -9000, 9000, 0);
+		if (Reflect.getProperty(positionCameraXStepper, 'name') == null) Reflect.setProperty(positionCameraXStepper, 'name', 'positionCameraXStepper');
 		positionCameraYStepper = new FlxUINumericStepper(positionYStepper.x, positionYStepper.y + 40, 10, char.cameraPosition[1], -9000, 9000, 0);
+		if (Reflect.getProperty(positionCameraYStepper, 'name') == null) Reflect.setProperty(positionCameraYStepper, 'name', 'positionCameraYStepper');
 
 		var saveCharacterButton:FlxButton = new FlxButton(reloadImage.x, noAntialiasingCheckBox.y + 40, "Save Character", function() {
 			saveCharacter();
@@ -1381,18 +1391,28 @@ class CharacterEditorState extends MusicBeatState
 		healthIconInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;
 
 		hpBarCountStepper = new FlxUINumericStepper(decideIconColor.x, healthIconInputText.y + 45, 1, 1, 1, 3, 0);
+		if (Reflect.getProperty(hpBarCountStepper, 'name') == null) Reflect.setProperty(hpBarCountStepper, 'name', 'hpBarCountStepper');
 
 		healthColorStepperR = new FlxUINumericStepper(15, healthIconInputText.y + 45, 20, char.healthColorArray[0], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperR, 'name') == null) Reflect.setProperty(healthColorStepperR, 'name', 'healthColorStepperR');
 		healthColorStepperG = new FlxUINumericStepper(80, healthIconInputText.y + 45, 20, char.healthColorArray[1], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperG, 'name') == null) Reflect.setProperty(healthColorStepperG, 'name', 'healthColorStepperG');
 		healthColorStepperB = new FlxUINumericStepper(145, healthIconInputText.y + 45, 20, char.healthColorArray[2], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperB, 'name') == null) Reflect.setProperty(healthColorStepperB, 'name', 'healthColorStepperB');
 
 		healthColorStepperRM = new FlxUINumericStepper(15, healthColorStepperR.y + 20, 20, char.healthColorArrayMiddle[0], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperRM, 'name') == null) Reflect.setProperty(healthColorStepperRM, 'name', 'healthColorStepperRM');
 		healthColorStepperGM = new FlxUINumericStepper(80, healthColorStepperR.y + 20, 20, char.healthColorArrayMiddle[1], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperGM, 'name') == null) Reflect.setProperty(healthColorStepperGM, 'name', 'healthColorStepperGM');
 		healthColorStepperBM = new FlxUINumericStepper(145, healthColorStepperR.y + 20, 20, char.healthColorArrayMiddle[2], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperBM, 'name') == null) Reflect.setProperty(healthColorStepperBM, 'name', 'healthColorStepperBM');
 
 		healthColorStepperRB = new FlxUINumericStepper(15, healthColorStepperRM.y + 20, 20, char.healthColorArrayBottom[0], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperRB, 'name') == null) Reflect.setProperty(healthColorStepperRB, 'name', 'healthColorStepperRB');
 		healthColorStepperGB = new FlxUINumericStepper(80, healthColorStepperRM.y + 20, 20, char.healthColorArrayBottom[1], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperGB, 'name') == null) Reflect.setProperty(healthColorStepperGB, 'name', 'healthColorStepperGB');
 		healthColorStepperBB = new FlxUINumericStepper(145, healthColorStepperRM.y + 20, 20, char.healthColorArrayBottom[2], 0, 255, 0);
+		if (Reflect.getProperty(healthColorStepperBB, 'name') == null) Reflect.setProperty(healthColorStepperBB, 'name', 'healthColorStepperBB');
 
 		tab_group.add(new FlxText(15, healthIconInputText.y - 18, 0, 'Health icon name:'));
 		tab_group.add(new FlxText(hpBarCountStepper.x, hpBarCountStepper.y - 18, 0, 'HP Bars:'));
@@ -1428,6 +1448,7 @@ class CharacterEditorState extends MusicBeatState
 		};
 
 		floatMagnitudeStepper = new FlxUINumericStepper(255, sarventeFloatingCheckBox.y, 0.05, 0.05, 0.05, 10, 2);
+		if (Reflect.getProperty(floatMagnitudeStepper, 'name') == null) Reflect.setProperty(floatMagnitudeStepper, 'name', 'floatMagnitudeStepper');
 
 		flixelTrailCheckBox = new FlxUICheckBox(sarventeFloatingCheckBox.x, sarventeFloatingCheckBox.y + 40, null, null, "Flixel Trail", 50);
 		flixelTrailCheckBox.checked = char.flixelTrail;
@@ -1441,12 +1462,13 @@ class CharacterEditorState extends MusicBeatState
 		};
 
 		trailLengthStepper = new FlxUINumericStepper(flixelTrailCheckBox.x + 60, flixelTrailCheckBox.y, 1, 4, 1, 24, 1);
-
+		if (Reflect.getProperty(trailLengthStepper, 'name') == null) Reflect.setProperty(trailLengthStepper, 'name', 'trailLengthStepper');
 		trailDelayStepper = new FlxUINumericStepper(trailLengthStepper.x + 70, flixelTrailCheckBox.y, 1, 24, 0, 90, 1);
-
+		if (Reflect.getProperty(trailDelayStepper, 'name') == null) Reflect.setProperty(trailDelayStepper, 'name', 'trailDelayStepper');
 		trailAlphaStepper = new FlxUINumericStepper(trailDelayStepper.x + 70, flixelTrailCheckBox.y, 0.1, 0.3, 0, 1, 3);
-
+		if (Reflect.getProperty(trailAlphaStepper, 'name') == null) Reflect.setProperty(trailAlphaStepper, 'name', 'trailAlphaStepper');
 		trailDiffStepper = new FlxUINumericStepper(trailAlphaStepper.x + 70, flixelTrailCheckBox.y, 0.05, 0.069, 0, 1, 4);
+		if (Reflect.getProperty(trailDiffStepper, 'name') == null) Reflect.setProperty(trailDiffStepper, 'name', 'trailDiffStepper');
 
 		orbitCheckBox = new FlxUICheckBox(sarventeFloatingCheckBox.x, flixelTrailCheckBox.y + 40, null, null, "Orbit BF", 50);
 		orbitCheckBox.checked = char.orbit;
@@ -1503,16 +1525,32 @@ class CharacterEditorState extends MusicBeatState
 			ghostChar.healthDrain = char.healthDrain;
 		};
 
+		drainKillCheckBox = new FlxUICheckBox(healthDrainCheckBox.x + 80, healthDrainCheckBox.y, null, null, "Can Kill", 50);
+		drainKillCheckBox.checked = char.drainKill;
+		drainKillCheckBox.callback = function() {
+			char.drainKill = false;
+			if(drainKillCheckBox.checked) {
+				char.drainKill = true;
+			}
+			char.drainKill = drainKillCheckBox.checked;
+			ghostChar.drainKill = char.drainKill;
+		};
+
+		drainFloorStepper = new FlxUINumericStepper(drainKillCheckBox.x + 80, healthDrainCheckBox.y, 0.05, 0.1, 0, 2, 3);
+		if (Reflect.getProperty(drainFloorStepper, 'name') == null) Reflect.setProperty(drainFloorStepper, 'name', 'drainFloorStepper');
+
 		tab_group.add(new FlxText(floatMagnitudeStepper.x, floatMagnitudeStepper.y - 18, 0, 'Float Magnitude:'));
 		tab_group.add(new FlxText(trailLengthStepper.x, trailLengthStepper.y - 18, 0, 'Trail Length:'));
 		tab_group.add(new FlxText(trailDelayStepper.x, trailDelayStepper.y - 18, 0, 'Trail Delay:'));
 		tab_group.add(new FlxText(trailAlphaStepper.x, trailAlphaStepper.y - 18, 0, 'Trail Alpha:'));
 		tab_group.add(new FlxText(trailDiffStepper.x, trailDiffStepper.y - 18, 0, 'Trail Diff:'));
+		tab_group.add(new FlxText(drainFloorStepper.x, drainFloorStepper.y - 18, 0, 'Minimum Health:'));
 		tab_group.add(floatMagnitudeStepper);
 		tab_group.add(trailLengthStepper);
 		tab_group.add(trailDelayStepper);
 		tab_group.add(trailAlphaStepper);
 		tab_group.add(trailDiffStepper);
+		tab_group.add(drainFloorStepper);
 		tab_group.add(sarventeFloatingCheckBox);
 		tab_group.add(flixelTrailCheckBox);
 		tab_group.add(orbitCheckBox);
@@ -1520,6 +1558,7 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(scareBfCheckBox);
 		tab_group.add(scareGfCheckBox);
 		tab_group.add(healthDrainCheckBox);
+		tab_group.add(drainKillCheckBox);
 		UI_characterbox.addGroup(tab_group);
 	}
 
@@ -1691,114 +1730,82 @@ class CharacterEditorState extends MusicBeatState
 				char.imageFile = imageInputText.text;
 			}
 		} else if(id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper)) {
-			if (sender == scaleStepper)
-			{
-				reloadCharacterImage();
-				char.jsonScale = sender.value;
-				char.setGraphicSize(Std.int(char.width * char.jsonScale));
-				char.updateHitbox();
-				reloadGhost();
-				updatePointerPos();
-
-				if(char.animation.curAnim != null) {
-					char.playAnim(char.animation.curAnim.name, true);
-				}
-			}
-			else if(sender == positionXStepper)
-			{
-				char.positionArray[0] = positionXStepper.value;
-				char.x = xPositioningOffset + char.positionArray[0] + OFFSET_X + 100;
-				updatePointerPos();
-			}
-			else if(sender == singDurationStepper)
-			{
-				char.singDuration = singDurationStepper.value;//ermm you forgot this??
-			}
-			else if(sender == positionYStepper)
-			{
-				char.positionArray[1] = positionYStepper.value;
-				char.y = yPositioningOffset + char.positionArray[1];
-				updatePointerPos();
-			}
-			else if(sender == positionCameraXStepper)
-			{
-				char.cameraPosition[0] = positionCameraXStepper.value;
-				updatePointerPos();
-			}
-			else if(sender == positionCameraYStepper)
-			{
-				char.cameraPosition[1] = positionCameraYStepper.value;
-				updatePointerPos();
-			}
-			else if(sender == healthColorStepperR)
-			{
-				char.healthColorArray[0] = Math.round(healthColorStepperR.value);
-				healthBarBG.color = FlxColor.fromRGB(char.healthColorArray[0], char.healthColorArray[1], char.healthColorArray[2]);
-			}
-			else if(sender == healthColorStepperG)
-			{
-				char.healthColorArray[1] = Math.round(healthColorStepperG.value);
-				healthBarBG.color = FlxColor.fromRGB(char.healthColorArray[0], char.healthColorArray[1], char.healthColorArray[2]);
-			}
-			else if(sender == healthColorStepperB)
-			{
-				char.healthColorArray[2] = Math.round(healthColorStepperB.value);
-				healthBarBG.color = FlxColor.fromRGB(char.healthColorArray[0], char.healthColorArray[1], char.healthColorArray[2]);
-			}
-			else if(sender == healthColorStepperRM)
-				{
+			//fuck you lmao we doin reflects
+			//else ifs can eat my ass
+			//trace (Reflect.getProperty(sender, 'name'));
+			//do note that fps doesnt give a shit about this specific function so it can be null
+			var idkSex:String = Reflect.getProperty(sender, 'name');
+			switch(idkSex) {
+				case 'scaleStepper':
+					reloadCharacterImage();
+					char.jsonScale = scaleStepper.value;
+					char.setGraphicSize(Std.int(char.width * char.jsonScale));
+					char.updateHitbox();
+					reloadGhost();
+					updatePointerPos();
+	
+					if(char.animation.curAnim != null) {
+						char.playAnim(char.animation.curAnim.name, true);
+					}
+				case 'positionXStepper':
+					char.positionArray[0] = positionXStepper.value;
+					char.x = xPositioningOffset + char.positionArray[0] + OFFSET_X + 100;
+					updatePointerPos();
+				case 'positionYStepper':
+					char.positionArray[1] = positionYStepper.value;
+					char.y = yPositioningOffset + char.positionArray[1];
+					updatePointerPos();
+				case 'singDurationStepper':
+					char.singDuration = singDurationStepper.value;//ermm you forgot this??
+				case 'positionCameraXStepper':
+					char.cameraPosition[0] = positionCameraXStepper.value;
+					updatePointerPos();
+				case 'positionCameraYStepper':
+					char.cameraPosition[1] = positionCameraYStepper.value;
+					updatePointerPos();
+				case 'healthColorStepperR':
+					char.healthColorArray[0] = Math.round(healthColorStepperR.value);
+					healthBarBG.color = FlxColor.fromRGB(char.healthColorArray[0], char.healthColorArray[1], char.healthColorArray[2]);
+				case 'healthColorStepperG':
+					char.healthColorArray[1] = Math.round(healthColorStepperG.value);
+					healthBarBG.color = FlxColor.fromRGB(char.healthColorArray[0], char.healthColorArray[1], char.healthColorArray[2]);
+				case 'healthColorStepperB':
+					char.healthColorArray[2] = Math.round(healthColorStepperB.value);
+					healthBarBG.color = FlxColor.fromRGB(char.healthColorArray[0], char.healthColorArray[1], char.healthColorArray[2]);
+				case 'healthColorStepperRM':
 					char.healthColorArrayMiddle[0] = Math.round(healthColorStepperRM.value);
 					healthBarBGM.color = FlxColor.fromRGB(char.healthColorArrayMiddle[0], char.healthColorArrayMiddle[1], char.healthColorArrayMiddle[2]);
-				}
-			else if(sender == healthColorStepperGM)
-				{
+				case 'healthColorStepperGM':
 					char.healthColorArrayMiddle[1] = Math.round(healthColorStepperGM.value);
 					healthBarBGM.color = FlxColor.fromRGB(char.healthColorArrayMiddle[0], char.healthColorArrayMiddle[1], char.healthColorArrayMiddle[2]);
-				}
-			else if(sender == healthColorStepperBM)
-				{
+				case 'healthColorStepperBM':
 					char.healthColorArrayMiddle[2] = Math.round(healthColorStepperBM.value);
 					healthBarBGM.color = FlxColor.fromRGB(char.healthColorArrayMiddle[0], char.healthColorArrayMiddle[1], char.healthColorArrayMiddle[2]);
-				}
-			else if(sender == healthColorStepperRB)
-				{
+				case 'healthColorStepperRB':
 					char.healthColorArrayBottom[0] = Math.round(healthColorStepperRB.value);
 					healthBarBGB.color = FlxColor.fromRGB(char.healthColorArrayBottom[0], char.healthColorArrayBottom[1], char.healthColorArrayBottom[2]);
-				}
-			else if(sender == healthColorStepperGB)
-				{
+				case 'healthColorStepperGB':
 					char.healthColorArrayBottom[1] = Math.round(healthColorStepperGB.value);
 					healthBarBGB.color = FlxColor.fromRGB(char.healthColorArrayMiddle[0], char.healthColorArrayBottom[1], char.healthColorArrayBottom[2]);
-				}
-			else if(sender == healthColorStepperBB)
-				{
+				case 'healthColorStepperBB':
 					char.healthColorArrayBottom[2] = Math.round(healthColorStepperBB.value);
 					healthBarBGB.color = FlxColor.fromRGB(char.healthColorArrayBottom[0], char.healthColorArrayBottom[1], char.healthColorArrayBottom[2]);
-				} 
-			else if(sender == hpBarCountStepper)
-				{
+				case 'hpBarCountStepper':
 					char.healthBarCount = Math.round(hpBarCountStepper.value);
-				}
-			else if(sender == floatMagnitudeStepper)
-				{
-					char.floatMagnitude = Math.round(floatMagnitudeStepper.value);
-				}
-			else if(sender == trailLengthStepper)
-				{
+				case 'floatMagnitudeStepper':
+					char.floatMagnitude = floatMagnitudeStepper.value;
+				case 'trailLengthStepper':
 					char.trailLength = Math.round(trailLengthStepper.value);
-				}
-			else if(sender == trailDelayStepper)
-				{
+				case 'trailDelayStepper':
 					char.trailDelay = Math.round(trailDelayStepper.value);
-				}
-			else if(sender == trailAlphaStepper)
-				{
-					char.trailAlpha = Math.round(trailAlphaStepper.value);
-				}
-			else if(sender == trailDiffStepper)
-				{
-					char.trailDiff = Math.round(trailDiffStepper.value);
-				}
+				case 'trailAlphaStepper':
+					char.trailAlpha = trailAlphaStepper.value;
+				case 'trailDiffStepper':
+					char.trailDiff = trailDiffStepper.value;
+				case 'drainFloorStepper':
+					char.drainFloor = drainFloorStepper.value;
+					
+			}
 		}
 	}
 
@@ -1966,6 +1973,7 @@ class CharacterEditorState extends MusicBeatState
 			trailDelayStepper.value = char.trailDelay;
 			trailAlphaStepper.value = char.trailAlpha;
 			trailDiffStepper.value = char.trailDiff;
+			drainFloorStepper.value = char.drainFloor;
 			flipXCheckBox.checked = char.originalFlipX;
 			noAntialiasingCheckBox.checked = char.noAntialiasing;
 			sarventeFloatingCheckBox.checked = char.sarventeFloating;
@@ -1975,6 +1983,7 @@ class CharacterEditorState extends MusicBeatState
 			scareBfCheckBox.checked = char.scareBf;
 			scareGfCheckBox.checked = char.scareGf;
 			healthDrainCheckBox.checked = char.healthDrain;
+			drainKillCheckBox.checked = char.drainKill;
 			resetHealthBarColor();
 			leHealthIcon.changeIcon(healthIconInputText.text);
 			positionXStepper.value = char.positionArray[0];
@@ -2150,6 +2159,7 @@ class CharacterEditorState extends MusicBeatState
 				} else {
 					MusicBeatState.switchState(new editors.MasterEditorMenu());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					Conductor.changeBPM(100);
 				}
 				FlxG.mouse.visible = false;
 				return;
@@ -2319,6 +2329,8 @@ class CharacterEditorState extends MusicBeatState
 			"trail_delay": char.trailDelay,
 			"trail_alpha": char.trailAlpha,
 			"trail_diff": char.trailDiff,
+			"drain_floor": char.drainFloor,
+			"drain_kill": char.drainKill,
 			"healthicon": char.healthIcon,
 		
 			"position":	char.positionArray,

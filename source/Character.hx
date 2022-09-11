@@ -31,6 +31,8 @@ typedef CharacterFile = {
 	var trail_delay:Null<Int>;
 	var trail_alpha:Null<Float>;
 	var trail_diff:Null<Float>;
+	var drain_floor:Null<Float>;
+	var drain_kill:Null<Bool>;
 	var healthicon:String;
 
 	var position:Array<Float>;
@@ -80,6 +82,8 @@ class Character extends FlxSprite
 	public var trailDelay:Null<Int> = 24; //flxtrail shit
 	public var trailAlpha:Null<Float> = 0.3; //flxtrail shit
 	public var trailDiff:Null<Float> = 0.069; //flxtrail shit
+	public var drainFloor:Null<Float> = 0.1; //healthdrain shit
+	public var drainKill:Null<Bool> = false; //healthdrain shit
 	public var idleSuffix:String = '';
 	public var danceIdle:Bool = false; //Character use "danceLeft" and "danceRight" instead of "idle"
 	public var skipDance:Bool = false;

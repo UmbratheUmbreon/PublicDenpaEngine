@@ -105,6 +105,7 @@ class PatchState extends MusicBeatState
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Patch Notes'],
+			['0.5.1',		'waidol',		'A-Freeplay Sections, A-Dynamic Icons, A-Volume Controllers per Song, A-Option to Toggle Old Score Popup, I-Modcharts, I-Chart Editor, I-Song Credits, I-Kade Engine Score Display, I-CrossFade Auto Colouring, I-Stage Layering, F-Duet Notes, F-Minor GF Section Icon Bug, O-Stepper Code In Chara Editor, R-Deprecated Pulse Shader Code, R-Winning Icons Option, RFV-0.5.1',							'wait till next update',	'3B4CB7'],
 			['0.5.0d',		'waidol',		'A-NPS, A-Bopeebo and Fresh Insanity Charts, U-Credits, I-Modcharts, I-Kade Score Display, I-Title Screen, I-Chart Editor Position Display, F-Third Strum Bug, F-Multikey Input Bug, F-Crash Handler Not Showing Up, F-Null Bitmap Reference in Offset Editor, F-Invalid JSON Detector, F-Title Screen Sync, F-Invalid Song Detector, F-Incorrect BPMs When Changing Menus, RFV-0.5.0d',							'wait till next update',	'3B4CB7'],
 			['0.5.0c',		'waidol',		'A-FNF+ Score Display, A-FNM Score Dispaly, A-Poison Modifier, A-Autopause Option, A-Gradient Time Bar, F-Main Menu Mouse Controls, F-Tankman Bugs, F-Healthbars, O-Healthbars, RFV-0.5.0c',							'wait till next update',	'3B4CB7'],
 			['0.5.0',		'waidol',		'A-Week 7, A-Mouse Controls to Menus, A-That Psych Crash Handler, A-Hscript (By _jorge), A-Stretch Icon Bop, A-Psych Philly Glow, A-Animation for Singing with the Spacebar, A-Scare Options, A-MS Timing Indicator, A-Texture Packer XML Support, A-Anti Crash for Invalid JSONs (by Toadette), A-Option to Toggle Flinching Icons, F-Flinching Icons, O-Score Texts, O-Health Icons, I-Static CrossFade, I-Camera Movement, I-Quartiz, I-Icon Animations, R-Blammed Lights, R-Gospel X, R-Unused Assets, RFV-0.5.0',							'wait till next update',	'3B4CB7'],
@@ -130,15 +131,9 @@ class PatchState extends MusicBeatState
 			['0.2.0',		'power',			'A-Crossfade, RFV-0.2.0',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/54e3f231b38e59a6c1537559cc7036de9491c1ed',			'DF6C21'],
 			['0.1.3b',		'ap',			'A-CrossFade (Broken), A-CrossFade Test Song, RFV-0.1.3b',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/2b436771dceaa00205d4ac2f563bfb401766e89d',			'0088A0'],
 			['0.1.3',		'ap',			'R-Test Code, A-Modapps Disruption, U-MM Graphics/Layout, F-Credits Text, RFV-0.1.3',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/61273847c77579d227a2d6cbc35a9e28e56aee70',			'0088A0'],
-			['0.1.2',		'torb',			'A-Test Song For SecVoices, A-Credits Text, A-SecVoices, RFV-0.1.2',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/4cb67777c939f33f261ff715eeaec2d75931d1dc',			'99AA0D'],
-			['0.1.1',		'horb',			'Too much to list',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/012f915b2beefde8dd178960e57ff2f61b8c8625',			'064079'],
-			['0.1.0',		'dorb',			'Too much to list',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/2b553ddaf64dcd1160996f164b271901ae02011f',			'370048'],
-			[''],
-			[''],
-			[''],
-			[''],
-			[''],
-			['hi',			'dorb',			'this is the end of the list',					'sex',			'370048']
+			['0.1.2',		'torb',			'A-Test Song For SecVoices, A-Credits Text, A-SecVoices, RFV-0.1.2',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/4cb67777c939f33f261ff715eeaec2d75931d1dc',			'99AA0D']
+			//['0.1.1',		'horb',			'Too much to list',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/012f915b2beefde8dd178960e57ff2f61b8c8625',			'064079'],
+			//['0.1.0',		'dorb',			'Too much to list',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/2b553ddaf64dcd1160996f164b271901ae02011f',			'370048']
 		];
 		
 		for(i in pisspoop){

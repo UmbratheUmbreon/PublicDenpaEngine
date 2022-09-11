@@ -39,5 +39,6 @@
 	"weekName": "Week 7",
 	"hideStoryMode": false,
 	"weekBefore": "week6",
-	"startUnlocked": true
+	"startUnlocked": true,
+	"sections": ["All", "Vanilla"]
 }

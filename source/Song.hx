@@ -18,6 +18,9 @@ typedef SwagSong =
 	var notes:Array<SwagSection>;
 	var events:Array<Dynamic>;
 	var bpm:Float;
+	var instVolume:Null<Float>;
+	var vocalsVolume:Null<Float>;
+	var secVocalsVolume:Null<Float>;
 	var needsVoices:Bool;
 	var autoIcons:Bool;
 	var autoIdles:Bool;
@@ -41,6 +44,10 @@ typedef SwagSong =
 	var gfVersion:String;
 	var stage:String;
 	var modchart:String;
+	var dadModchart:String;
+	var p4Modchart:String;
+	var credits:String;
+	var remixCreds:String;
 
 	var mania:Null<Int>;
 
@@ -55,6 +62,9 @@ class Song
 	public var notes:Array<SwagSection>;
 	public var events:Array<Dynamic>;
 	public var bpm:Float;
+	public var instVolume:Null<Float> = 1;
+	public var vocalsVolume:Null<Float> = 1;
+	public var secVocalsVolume:Null<Float> = 1;
 	public var needsVoices:Bool = true;
 	public var autoIcons:Bool = true;
 	public var autoIdles:Bool = true;
@@ -70,6 +80,10 @@ class Song
 	public var speed:Float = 1;
 	public var stage:String;
 	public var modchart:String;
+	public var dadModchart:String;
+	public var p4Modchart:String;
+	public var credits:String;
+	public var remixCreds:String;
 	public var tintRed:Null<Int> = 255;
 	public var tintGreen:Null<Int> = 255;
 	public var tintBlue:Null<Int> = 255;

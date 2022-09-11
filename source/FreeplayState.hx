@@ -91,6 +91,8 @@ class FreeplayState extends MusicBeatState
 	var bar9Tween:FlxTween;
 	var bar10Tween:FlxTween;
 
+	var section:String = '';
+
 	override function create()
 	{
 		Paths.clearStoredMemory();
@@ -104,11 +106,35 @@ class FreeplayState extends MusicBeatState
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
-		
+
+		section = FreeplaySectionState.daSection;
+
+		if (section == null || section == '') section = 'All';
+
+		var doFunnyContinue = false;
+
 		for (i in 0...WeekData.weeksList.length) {
 			if(weekIsLocked(WeekData.weeksList[i])) continue;
 
 			var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
+			if (leWeek.sections != null) {
+				for (sex in leWeek.sections) {
+					if (sex != section) {
+						doFunnyContinue = true;
+					} else {
+						doFunnyContinue = false;
+						break;
+					}	
+				}
+			} else {
+				if (section != "All") {
+					doFunnyContinue = true;
+				}
+			}
+			if (doFunnyContinue) {
+				doFunnyContinue = false;
+				continue;
+			}
 			var leSongs:Array<String> = [];
 			var leChars:Array<String> = [];
 
@@ -130,6 +156,12 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 		WeekData.loadTheFirstEnabledMod();
+
+		//Unclear whether i need this or not
+		//Gonna leave it unused unless shit goes down
+		//if (songs == null) {
+		//	addSong("Tutorial", 1, "gf", FlxColor.fromRGB(165, 0, 77));
+		//}
 
 		/*		//KIND OF BROKEN NOW AND ALSO PRETTY USELESS//
 
@@ -594,7 +626,7 @@ class FreeplayState extends MusicBeatState
 				gradientColorTween.cancel();
 			}
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new MainMenuState());
+			MusicBeatState.switchState(new FreeplaySectionState());
 		}
 
 		if(ctrl)

@@ -51,12 +51,12 @@ class ClientPrefs {
 	public static var watermarks:Bool = true;
 	public static var ratingsDisplay:Bool = true;
 	public static var gsmiss:Bool = true;
-	public static var winningicons:Bool = true;
 	public static var changeTBcolour:Bool = true;
 	public static var greenhp:Bool = false;
 	public static var newHP:Bool = true;
 	public static var sarvAccuracy:Bool = false;
 	public static var comboPopup:Bool = true;
+	public static var wrongCamera:Bool = false;
 	public static var msPopup:Bool = true;
 	public static var msPrecision:Int = 2;
 	public static var flinchy:Bool = true;
@@ -251,9 +251,9 @@ class ClientPrefs {
 		FlxG.save.data.newHP = newHP;
 		FlxG.save.data.sarvAccuracy = sarvAccuracy;
 		FlxG.save.data.comboPopup = comboPopup;
+		FlxG.save.data.wrongCamera = wrongCamera;
 		FlxG.save.data.msPopup = msPopup;
 		FlxG.save.data.msPrecision = msPrecision;
-		FlxG.save.data.winningicons = winningicons;
 		FlxG.save.data.changeTBcolour = changeTBcolour;
 		FlxG.save.data.ratingOffset = ratingOffset;
 		FlxG.save.data.perfectWindow = perfectWindow;
@@ -502,6 +502,10 @@ class ClientPrefs {
 			{
 				comboPopup = FlxG.save.data.comboPopup;
 			}
+		if (FlxG.save.data.wrongCamera != null)
+			{
+				wrongCamera = FlxG.save.data.wrongCamera;
+			}
 		if (FlxG.save.data.msPopup != null)
 			{
 				msPopup = FlxG.save.data.msPopup;
@@ -509,10 +513,6 @@ class ClientPrefs {
 		if (FlxG.save.data.msPrecision != null)
 			{
 				msPrecision = FlxG.save.data.msPrecision;
-			}
-		if (FlxG.save.data.winningicons != null)
-			{
-				winningicons = FlxG.save.data.winningicons;
 			}
 		if (FlxG.save.data.changeTBcolour != null)
 			{

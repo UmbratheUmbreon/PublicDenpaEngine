@@ -16,5 +16,6 @@
 	"startUnlocked": true,
 
 	"hideStoryMode": false,
-	"hideFreeplay": false
+	"hideFreeplay": false,
+	"sections": ["All", "Vanilla"]
 }

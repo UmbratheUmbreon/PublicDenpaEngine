@@ -95,6 +95,7 @@ class CrossFade extends FlxSprite
 					antialiasing = FlxG.save.data.globalAntialiasing;
 				default:
 					color = FlxColor.fromRGB(character.healthColorArray[0], character.healthColorArray[1], character.healthColorArray[2]);
+					color = FlxColor.subtract(color, 0x00333333);
 					antialiasing = FlxG.save.data.globalAntialiasing;
 			}
 		} else {

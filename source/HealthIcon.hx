@@ -12,6 +12,7 @@ class HealthIcon extends FlxSprite
 	private var isPlayer:Bool = false;
 	private var char:String = '';
 	private var fileName:String = '';
+	public var widthThing:Float = 0;
 
 	public function new(char:String = 'bf', isPlayer:Bool = false)
 	{
@@ -40,41 +41,40 @@ class HealthIcon extends FlxSprite
 		if(this.char != char) {
 			var name:String = 'icons/' + char;
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-' + char; //Older versions of psych engine's support
-			/*if (ClientPrefs.winningicons) {
-				if(!Paths.fileExists('images/' + name + '-winning' + '.png', IMAGE)) {
-					name = 'icons/' + char; //winning icons
-				} else {
-					name = 'icons/' + char + '-winning'; //winning icons
-				}
-			}*/
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-face'; //Prevents crash from missing icon
-			//if(Paths.fileExists('images/' + name + '-winning' + '.png', IMAGE) && ClientPrefs.winningicons) name = 'icons/' + char + '-winning';
 			fileName = name;
 			var file:Dynamic = Paths.image(name);
 
 			loadGraphic(file); //Load stupidly first for getting the file size
-			if (ClientPrefs.winningicons && name.endsWith('-winning'))
-				{
+			this.widthThing = width;
+			switch(width) {
+				case 150:
+					loadGraphic(file, true, Math.floor(width), Math.floor(height)); //Then load it fr
+					iconOffsets[0] = (width - 150);
+					updateHitbox();
+		
+					animation.add(char, [0], 0, false, isPlayer);
+					animation.play(char);
+					this.char = char;
+				case 300:
+					loadGraphic(file, true, Math.floor(width / 2), Math.floor(height)); //Then load it fr
+					iconOffsets[0] = (width - 150) / 2;
+					iconOffsets[1] = (width - 150) / 2;
+					updateHitbox();
+		
+					animation.add(char, [0, 1], 0, false, isPlayer);
+					animation.play(char);
+					this.char = char;
+				case 450:
 					loadGraphic(file, true, Math.floor(width / 3), Math.floor(height)); //Then load it fr
 					iconOffsets[0] = (width - 150) / 3;
 					iconOffsets[1] = (width - 150) / 3;
 					iconOffsets[2] = (width - 150) / 3;
 					updateHitbox();
-		
+			
 					animation.add(char, [0, 1, 2], 0, false, isPlayer);
 					animation.play(char);
 					this.char = char;
-				}
-			else
-			{
-				loadGraphic(file, true, Math.floor(width / 2), Math.floor(height)); //Then load it fr
-				iconOffsets[0] = (width - 150) / 2;
-				iconOffsets[1] = (width - 150) / 2;
-				updateHitbox();
-	
-				animation.add(char, [0, 1], 0, false, isPlayer);
-				animation.play(char);
-				this.char = char;
 			}
 
 			antialiasing = ClientPrefs.globalAntialiasing;
@@ -93,9 +93,5 @@ class HealthIcon extends FlxSprite
 
 	public function getCharacter():String {
 		return char;
-	}
-
-	public function getFileName():String {
-		return fileName;
 	}
 }

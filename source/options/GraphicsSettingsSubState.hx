@@ -117,13 +117,6 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
-		var option:Option = new Option('Winning Icons',
-			"If checked, Winning Icons will be enabled. If unckecked, vanilla icons will be used.",
-			'winningicons',
-			'bool',
-			true);
-		addOption(option);
-
 		var option:Option = new Option('Icon Flinching',
 			"If checked, Missing will cause the player's icon to show the dying animation temporarily.",
 			'flinchy',
@@ -178,6 +171,13 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'comboPopup',
 			'bool',
 			true);
+		addOption(option);
+
+		var option:Option = new Option('Use Wrong Camera',
+			'If checked, the rating popups will be in the game camera, not the HUD.',
+			'wrongCamera',
+			'bool',
+			false);
 		addOption(option);
 
 		var option:Option = new Option('MS Timing Text',
