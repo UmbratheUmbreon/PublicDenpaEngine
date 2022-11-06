@@ -1,7 +1,9 @@
 stage
 spooky
+streetlight
 philly
 limo
+limoNight
 mall
 mallEvil
 school

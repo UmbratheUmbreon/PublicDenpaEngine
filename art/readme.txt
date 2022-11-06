@@ -1,3 +1,30 @@
+<-------------------------------------------------------------------------------------------------------------------------->
+
+Sup!
+Thank you for downloading DENPA Engine!
+We hope you enjoy your time with this mod that we poured our blood sweat and tears into!
+If you ever want to, leave a like or a post on the gamebanana page!
+It really helps out :D
+
+Oh, and if you downloaded this from anywhere other than Gamebanana, Gamejolt, or Github, DELETE THE DOWNLOAD AND RUN AN ANTIVIRUS SCAN.
+Anywhere but those three sites are NOT officially endorsed, affiliated, nor supported by us.
+Downloading from them can lead to malware getting in your computer!!!
+Go find one of the official pages and download from there!
+
+Well, that's all we got for ya, DENPA Engine team OUT...
+
+ ________  _______   ________   ________  ________          _______   ________   ________  ___  ________   _______      
+|\   ___ \|\  ___ \ |\   ___  \|\   __  \|\   __  \        |\  ___ \ |\   ___  \|\   ____\|\  \|\   ___  \|\  ___ \     
+\ \  \_|\ \ \   __/|\ \  \\ \  \ \  \|\  \ \  \|\  \       \ \   __/|\ \  \\ \  \ \  \___|\ \  \ \  \\ \  \ \   __/|    
+ \ \  \ \\ \ \  \_|/_\ \  \\ \  \ \   ____\ \   __  \       \ \  \_|/_\ \  \\ \  \ \  \  __\ \  \ \  \\ \  \ \  \_|/__  
+  \ \  \_\\ \ \  \_|\ \ \  \\ \  \ \  \___|\ \  \ \  \       \ \  \_|\ \ \  \\ \  \ \  \|\  \ \  \ \  \\ \  \ \  \_|\ \ 
+   \ \_______\ \_______\ \__\\ \__\ \__\    \ \__\ \__\       \ \_______\ \__\\ \__\ \_______\ \__\ \__\\ \__\ \_______\
+    \|_______|\|_______|\|__| \|__|\|__|     \|__|\|__|        \|_______|\|__| \|__|\|_______|\|__|\|__| \|__|\|_______|
+
+
+<-------------------------------------------------------------------------------------------------------------------------->
+
+
  __                 /                                  
 / _   _ |_ |_ .  _                                     
 \__) (- |_ |_ | | )                                    

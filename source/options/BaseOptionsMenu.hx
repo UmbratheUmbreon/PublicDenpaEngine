@@ -4,18 +4,15 @@ package options;
 import Discord.DiscordClient;
 #end
 import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
 import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxSave;
 import haxe.Json;
@@ -25,9 +22,13 @@ import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
+import Alphabet;
 
 using StringTools;
 
+/**
+* Base substate for all options substates.
+*/
 class BaseOptionsMenu extends MusicBeatSubstate
 {
 	private var curOption:Option = null;
@@ -94,37 +95,51 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		checkboxGroup = new FlxTypedGroup<CheckboxThingie>();
 		add(checkboxGroup);
 
-		descBox = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
-		descBox.alpha = 0.6;
-		add(descBox);
-
-		var titleText:Alphabet = new Alphabet(0, 0, title, true, false, 0, 0.6);
+		/*var titleText:Alphabet = new Alphabet(0, 0, title, true, false, 0, 0.6);
 		titleText.x += 60;
 		titleText.y += 40;
-		titleText.alpha = 0.4;
+		titleText.alpha = 0.4;*/
+		var titleText:FlxText = new FlxText(0, 20, 0, title, 24);
+		titleText.setFormat(Paths.font("calibri-regular.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xff59136d);
+		titleText.x += 22;
+		titleText.y -= 3;
+
+		var titleBG:FlxSprite = new FlxSprite(0,30).loadGraphic(Paths.image('oscillators/optionsbg'));
+		titleBG.setGraphicSize(Std.int(titleText.width*1.225), Std.int(titleText.height/1.26));
+		titleBG.updateHitbox();
+		add(titleBG);
 		add(titleText);
 
-		descText = new FlxText(50, 600, 1180, "", 32);
-		descText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		descText = new FlxText(FlxG.width - 600, 600, 550, "", 24);
+		descText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT/*, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK*/);
 		descText.scrollFactor.set();
-		descText.borderSize = 2.4;
+		//descText.borderSize = 2.4;
+
+		descBox = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+		descBox.alpha = 0.9;
+		add(descBox);
 		add(descText);
 
 		for (i in 0...optionsArray.length)
 		{
 			var optionText:Alphabet = new Alphabet(0, 70 * i, optionsArray[i].name, false, false);
-			optionText.altRotation = true;
+			optionText.align = 'left';
 			optionText.x += 300;
 			/*optionText.forceX = 300;
 			optionText.yMult = 90;*/
 			optionText.xAdd = 200;
 			optionText.targetY = i;
+			optionText.yMult = 100;
+			optionText.yAdd = -90;
 			grpOptions.add(optionText);
 
 			if(optionsArray[i].type == 'bool') {
 				var checkbox:CheckboxThingie = new CheckboxThingie(optionText.x - 105, optionText.y, optionsArray[i].getValue() == true);
 				checkbox.sprTracker = optionText;
 				checkbox.ID = i;
+				checkbox.align = 'right';
+				checkbox.offsetX = 12;
+				checkbox.offsetY = 6;
 				checkboxGroup.add(checkbox);
 			} else {
 				optionText.x -= 80;
@@ -297,13 +312,13 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			}
 		}
 
-		if(boyfriend != null && boyfriend.animation.curAnim.finished) {
-			boyfriend.dance();
-		}
-
 		if(nextAccept > 0) {
 			nextAccept -= 1;
 		}
+		
+		if (FlxG.sound.music != null)
+			Conductor.songPosition = FlxG.sound.music.time;
+
 		super.update(elapsed);
 	}
 
@@ -382,6 +397,12 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		insert(3, boyfriend);
 		boyfriend.visible = wasVisible;
 	}
+
+	override function beatHit() {
+		super.beatHit();
+		if (boyfriend != null)
+			boyfriend.dance();
+	} 
 
 	function reloadCheckboxes() {
 		for (checkbox in checkboxGroup) {

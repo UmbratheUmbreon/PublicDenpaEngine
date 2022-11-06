@@ -3,12 +3,10 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.system.FlxSound;
@@ -28,14 +26,15 @@ import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;
 import lime.system.Clipboard;
 import haxe.Json;
-#if sys
-import sys.io.File;
-import sys.FileSystem;
-#end
 import WeekData;
+import StoryMenuState.MenuItem;
+import Character.MenuCharacter;
 
 using StringTools;
 
+/**
+* State used to create and edit `Week` jsons.
+*/
 class WeekEditorState extends MusicBeatState
 {
 	var txtWeekTitle:FlxText;
@@ -55,7 +54,9 @@ class WeekEditorState extends MusicBeatState
 		else weekFileName = 'week1';
 	}
 
-	override function create() {
+	override function create()
+	{
+		Paths.clearUnusedMemory();
 		var musicID:Int = FlxG.random.int(0, 2);
 		switch (musicID)
 		{
@@ -65,12 +66,14 @@ class WeekEditorState extends MusicBeatState
 				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
 			case 2:
 				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
+			case 3:
+				FlxG.sound.playMusic(Paths.music('dsi'), 0.5);
 		}
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
 		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
 		
-		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
+		var ui_tex = Paths.getSparrowAtlas('storymenu/campaign_menu_UI_assets');
 		var bgYellow:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
 		bgSprite = new FlxSprite(0, 56);
 		bgSprite.antialiasing = ClientPrefs.globalAntialiasing;
@@ -110,7 +113,7 @@ class WeekEditorState extends MusicBeatState
 		add(bgSprite);
 		add(grpWeekCharacters);
 
-		var tracksSprite:FlxSprite = new FlxSprite(FlxG.width * 0.07, bgSprite.y + 435).loadGraphic(Paths.image('Menu_Tracks'));
+		var tracksSprite:FlxSprite = new FlxSprite(FlxG.width * 0.07, bgSprite.y + 435).loadGraphic(Paths.image('storymenu/Menu_Tracks'));
 		tracksSprite.antialiasing = ClientPrefs.globalAntialiasing;
 		add(tracksSprite);
 
@@ -379,7 +382,7 @@ class WeekEditorState extends MusicBeatState
 
 		#if desktop
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Week Editor", "Editting: " + weekFileName);
+		DiscordClient.changePresence("Week Editor", "Editing: " + weekFileName);
 		#end
 	}
 	

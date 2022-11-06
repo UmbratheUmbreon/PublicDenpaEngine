@@ -1,37 +1,37 @@
 {
 	"animations": [
 		{
-			"loop": true,
 			"offsets": [
 				37,
 				-3
 			],
+			"loop": true,
+			"fps": 24,
 			"anim": "deathLoop",
-			"fps": 24,
-			"name": "BF Dead with GF Loop",
-			"indices": []
+			"indices": [],
+			"name": "BF Dead with GF Loop"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				37,
-				14
+				15
 			],
+			"loop": false,
+			"fps": 24,
 			"anim": "firstDeath",
-			"fps": 24,
-			"name": "BF Dies with GF",
-			"indices": []
+			"indices": [],
+			"name": "BF Dies with GF"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				37,
-				28
+				30
 			],
-			"anim": "deathConfirm",
+			"loop": false,
 			"fps": 24,
-			"name": "RETRY confirm holding gf",
-			"indices": []
+			"anim": "deathConfirm",
+			"indices": [],
+			"name": "RETRY confirm holding gf"
 		}
 	],
 	"sarvente_floating": false,
@@ -46,7 +46,7 @@
 		136,
 		169
 	],
-	"image": "characters/bfHoldingGF-DEAD",
+	"image": "characters/Week7/bfHoldingGF-DEAD",
 	"trail_length": 4,
 	"trail_delay": 24,
 	"position": [
@@ -59,6 +59,7 @@
 	"healthicon": "bf",
 	"shake_screen": false,
 	"orbit": false,
+	"drain_floor": 0.1,
 	"healthbar_count": 3,
 	"flip_x": true,
 	"healthbar_colors": [

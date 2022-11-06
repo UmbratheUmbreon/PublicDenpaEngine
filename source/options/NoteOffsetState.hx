@@ -10,12 +10,14 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
-import flixel.FlxG;
 import flixel.ui.FlxBar;
 import flixel.math.FlxPoint;
 
 using StringTools;
 
+/**
+* State used in the options menu to adjust offsets, both audio and visual wise.
+*/
 class NoteOffsetState extends MusicBeatState
 {
 	var boyfriend:Character;
@@ -28,11 +30,13 @@ class NoteOffsetState extends MusicBeatState
 	var coolText:FlxText;
 	var rating:FlxSprite;
 	var healthBar:FlxSprite;
+	var leftIcon:HealthIcon;
+	var rightIcon:HealthIcon;
 	var comboNums:FlxSpriteGroup;
 	var dumbTexts:FlxTypedGroup<FlxText>;
 
 	var barPercent:Float = 0;
-	var delayMin:Int = 0;
+	var delayMin:Int = -500;
 	var delayMax:Int = 500;
 	var timeBarBG:FlxSprite;
 	var timeBar:FlxBar;
@@ -44,6 +48,17 @@ class NoteOffsetState extends MusicBeatState
 
 	override public function create()
 	{
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+		var directory:String = 'week1';
+		var weekDir:String = StageData.forceNextDirectory;
+		StageData.forceNextDirectory = null;
+
+		if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+
+		Paths.setCurrentLevel(directory);
+		trace('Setting asset folder to ' + directory);
+
 		SoundTestState.isPlaying = false;
 		// Cameras
 		camGame = new FlxCamera();
@@ -72,23 +87,6 @@ class NoteOffsetState extends MusicBeatState
 		stageFront.updateHitbox();
 		add(stageFront);
 
-		if(!ClientPrefs.lowQuality) {
-			var stageLight:BGSprite = new BGSprite('stage_light', -125, -100, 0.9, 0.9);
-			stageLight.setGraphicSize(Std.int(stageLight.width * 1.1));
-			stageLight.updateHitbox();
-			add(stageLight);
-			var stageLight:BGSprite = new BGSprite('stage_light', 1225, -100, 0.9, 0.9);
-			stageLight.setGraphicSize(Std.int(stageLight.width * 1.1));
-			stageLight.updateHitbox();
-			stageLight.flipX = true;
-			add(stageLight);
-
-			var stageCurtains:BGSprite = new BGSprite('stagecurtains', -500, -300, 1.3, 1.3);
-			stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
-			stageCurtains.updateHitbox();
-			add(stageCurtains);
-		}
-
 		// Characters
 		gf = new Character(400, 130, 'gf');
 		gf.x += gf.positionArray[0];
@@ -102,17 +100,41 @@ class NoteOffsetState extends MusicBeatState
 
 		// Combo stuff
 
-		healthBar = new FlxSprite().loadGraphic(Paths.image('healthBarOffset'));
+		healthBar = new FlxSprite().makeGraphic(601, 19, FlxColor.BLACK);
 		healthBar.cameras = [camHUD];
 		healthBar.antialiasing = ClientPrefs.globalAntialiasing;
+		var healthBarRed = new AttachedSprite.NGAttachedSprite(Std.int(healthBar.width/2)-3, 13, 0xFFFF0000);
+		healthBarRed.cameras = [camHUD];
+		healthBarRed.antialiasing = ClientPrefs.globalAntialiasing;
+		healthBarRed.xAdd = 3;
+		healthBarRed.yAdd = 3;
+		healthBarRed.sprTracker = healthBar;
+		healthBarRed.copyVisible = true;
+		var healthBarGreen = new AttachedSprite.NGAttachedSprite(Std.int(healthBar.width/2)-3, 13, 0xFF54FF00);
+		healthBarGreen.cameras = [camHUD];
+		healthBarGreen.antialiasing = ClientPrefs.globalAntialiasing;
+		healthBarGreen.xAdd = 301;
+		healthBarGreen.yAdd = 3;
+		healthBarGreen.sprTracker = healthBar;
+		healthBarGreen.copyVisible = true;
+
+		leftIcon = new HealthIcon('dad');
+		rightIcon = new HealthIcon('bf');
+		rightIcon.flipX = true;
+		leftIcon.cameras = [camHUD];
+		rightIcon.cameras = [camHUD];
 		
 		add(healthBar);
+		add(healthBarRed);
+		add(healthBarGreen);
+		add(rightIcon);
+		add(leftIcon);
 
 		coolText = new FlxText(0, 0, 0, '', 32);
 		coolText.screenCenter();
 		coolText.x = FlxG.width * 0.35;
 
-		rating = new FlxSprite().loadGraphic(Paths.image('sick-fnf'));
+		rating = new FlxSprite().loadGraphic(Paths.image('ratings/sick-fnf'));
 		rating.cameras = [camHUD];
 		rating.setGraphicSize(Std.int(rating.width * 0.7));
 		rating.updateHitbox();
@@ -168,7 +190,7 @@ class NoteOffsetState extends MusicBeatState
 		barPercent = ClientPrefs.noteOffset;
 		updateNoteDelay();
 		
-		timeBarBG = new FlxSprite(0, timeTxt.y + 8).loadGraphic(Paths.image('timeBar'));
+		timeBarBG = new FlxSprite(0, timeTxt.y + 48).makeGraphic(400, 20, FlxColor.BLACK);
 		timeBarBG.setGraphicSize(Std.int(timeBarBG.width * 1.2));
 		timeBarBG.updateHitbox();
 		timeBarBG.cameras = [camHUD];
@@ -178,8 +200,14 @@ class NoteOffsetState extends MusicBeatState
 		timeBar = new FlxBar(0, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'barPercent', delayMin, delayMax);
 		timeBar.scrollFactor.set();
 		timeBar.screenCenter(X);
-		timeBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
-		timeBar.numDivisions = 800; //How much lag this causes?? Should i tone it down to idk, 400 or 200?
+		timeBar.createFilledBar(0xFF000000, 0xFF82A17B);
+		#if (haxe >= "4.1.0")
+			if (ClientPrefs.lowQuality) {
+				timeBar.numDivisions = Std.int((timeBar.width)/4);
+			} else {
+				timeBar.numDivisions = Std.int(timeBar.width); //what if it was 1280 :flushed:
+			}
+		#end
 		timeBar.visible = false;
 		timeBar.cameras = [camHUD];
 
@@ -217,6 +245,11 @@ class NoteOffsetState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
+		var iconOffset:Int = 26;
+		rightIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(50, 0, 100, 100, 0) * 0.01)) + (150 * rightIcon.scale.x - 150) / 2 - iconOffset;
+		leftIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(50, 0, 100, 100, 0) * 0.01)) - (150 * leftIcon.scale.x) / 2 - iconOffset * 2;
+		leftIcon.y = rightIcon.y = healthBar.y - 70;
+
 		var addNum:Int = 1;
 		if(FlxG.keys.pressed.SHIFT) addNum = 10;
 
@@ -378,10 +411,22 @@ class NoteOffsetState extends MusicBeatState
 			if(zoomTween != null) zoomTween.cancel();
 			if(beatTween != null) beatTween.cancel();
 
+			var directory:String = 'shared';
+			var weekDir:String = StageData.forceNextDirectory;
+			StageData.forceNextDirectory = null;
+	
+			if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
+	
+			Paths.setCurrentLevel(directory);
+			trace('Setting asset folder to ' + directory);
+
 			persistentUpdate = false;
 			CustomFadeTransition.nextCamera = camOther;
 			MusicBeatState.switchState(new options.OptionsState());
-			FlxG.sound.playMusic(Paths.music('freakyMenu'), 1, true);
+			FlxG.sound.playMusic(Paths.music('msm'), 0);
+			FlxG.sound.music.fadeIn(1, 0, 0.6);
+	
+			Conductor.changeBPM(99);	
 			FlxG.mouse.visible = false;
 		}
 
@@ -498,6 +543,8 @@ class NoteOffsetState extends MusicBeatState
 	{
 		rating.visible = onComboMenu;
 		healthBar.visible = onComboMenu;
+		leftIcon.visible = onComboMenu;
+		rightIcon.visible = onComboMenu;
 		comboNums.visible = onComboMenu;
 		dumbTexts.visible = onComboMenu;
 		

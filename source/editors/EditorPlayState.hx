@@ -1,17 +1,13 @@
 package editors;
 
-import Section.SwagSection;
-import Song.SwagSong;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
-import flixel.FlxG;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxSound;
@@ -20,12 +16,19 @@ import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
 import openfl.events.KeyboardEvent;
 import FunkinLua;
+import Song;
+import Note;
+import ClientPrefs;
 
 using StringTools;
 
+/**
+* State used to test any charts without loading playstate.
+*/
 class EditorPlayState extends MusicBeatState
 {
 	// Yes, this is mostly a copy of PlayState, it's kinda dumb to make a direct copy of it but... ehhh
+	var daPixelZoom:Float = 6;
 	private var strumLine:FlxSprite;
 	private var comboGroup:FlxTypedGroup<FlxSprite>;
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
@@ -69,6 +72,7 @@ class EditorPlayState extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearUnusedMemory();
 		instance = this;
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -108,11 +112,6 @@ class EditorPlayState extends MusicBeatState
 
 		generateStaticArrows(0);
 		generateStaticArrows(1);
-		/*if(ClientPrefs.middleScroll) {
-			opponentStrums.forEachAlive(function (note:StrumNote) {
-				note.visible = false;
-			});
-		}*/
 		
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 		add(grpNoteSplashes);
@@ -121,18 +120,18 @@ class EditorPlayState extends MusicBeatState
 		grpNoteSplashes.add(splash);
 		splash.alpha = 0.0;
 		
-		if (PlayState.SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+		if (PlayState.SONG.header.needsVoices)
+			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.header.song));
 		else
 			vocals = new FlxSound();
 
-		secondaryVocals = new FlxSound().loadEmbedded(Paths.secVoices(PlayState.SONG.song));
+		secondaryVocals = new FlxSound().loadEmbedded(Paths.secVoices(PlayState.SONG.header.song));
 
-		generateSong(PlayState.SONG.song);
+		generateSong(PlayState.SONG.header.song);
 		#if LUA_ALLOWED
 		for (notetype in noteTypeMap.keys()) {
 			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
-			if(sys.FileSystem.exists(luaToLoad)) {
+			if(#if sys sys.FileSystem.exists(luaToLoad) #else OpenFlAssets.exists(luaToLoad) #end) {
 				var lua:editors.EditorLua = new editors.EditorLua(luaToLoad);
 				new FlxTimer().start(0.1, function (tmr:FlxTimer) {
 					lua.stop();
@@ -204,14 +203,14 @@ class EditorPlayState extends MusicBeatState
 	var startingSong:Bool = true;
 	private function generateSong(dataPath:String):Void
 		{
-			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0, false);
+			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.header.song), 0, false);
 			FlxG.sound.music.pause();
 			FlxG.sound.music.onComplete = endSong;
 			vocals.pause();
 			vocals.volume = 0;
 	
 			var songData = PlayState.SONG;
-			Conductor.changeBPM(songData.bpm);
+			Conductor.changeBPM(songData.header.bpm);
 			
 			notes = new FlxTypedGroup<Note>();
 			add(notes);
@@ -265,7 +264,7 @@ class EditorPlayState extends MusicBeatState
 								{
 									oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 	
-									var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(PlayState.SONG.speed, 2)), daNoteData, oldNote, true);
+									var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(PlayState.SONG.options.speed, 2)), daNoteData, oldNote, true);
 									sustainNote.mustPress = gottaHitNote;
 									sustainNote.noteType = swagNote.noteType;
 									sustainNote.scrollFactor.set();
@@ -350,7 +349,7 @@ class EditorPlayState extends MusicBeatState
 			Conductor.songPosition += elapsed * 1000;
 		}
 
-		var roundedSpeed:Float = FlxMath.roundDecimal(PlayState.SONG.speed, 2);
+		var roundedSpeed:Float = FlxMath.roundDecimal(PlayState.SONG.options.speed, 2);
 		if (unspawnNotes[0] != null)
 		{
 			var time:Float = 1500;
@@ -368,7 +367,7 @@ class EditorPlayState extends MusicBeatState
 		
 		if (generatedMusic)
 		{
-			var fakeCrochet:Float = (60 / PlayState.SONG.bpm) * 1000;
+			var fakeCrochet:Float = (60 / PlayState.SONG.header.bpm) * 1000;
 			notes.forEachAlive(function(daNote:Note)
 			{
 				/*if (daNote.y > FlxG.height)
@@ -414,7 +413,7 @@ class EditorPlayState extends MusicBeatState
 								daNote.y -= 19;
 							}
 							daNote.y += (strumHeight / 2) - (60.5 * (roundedSpeed - 1));
-							daNote.y += (27.5 * ((PlayState.SONG.bpm / 100) - 1) * (roundedSpeed - 1)) * Note.scales[songMania];
+							daNote.y += (27.5 * ((PlayState.SONG.header.bpm / 100) - 1) * (roundedSpeed - 1)) * Note.scales[songMania];
 
 							if(daNote.mustPress || !daNote.ignoreNote)
 							{
@@ -450,7 +449,7 @@ class EditorPlayState extends MusicBeatState
 
 				if (!daNote.mustPress && daNote.wasGoodHit && !daNote.hitByOpponent && !daNote.ignoreNote)
 				{
-					if (PlayState.SONG.needsVoices)
+					if (PlayState.SONG.header.needsVoices)
 						vocals.volume = 1;
 						secondaryVocals.volume = 1;
 
@@ -682,26 +681,6 @@ class EditorPlayState extends MusicBeatState
 				return false;
 			}
 		
-				#if android
-			private function hitboxKeysArePressed():Bool
-			{
-					if (_hitbox.array[songMania].pressed) 
-						{
-					return true;
-				}
-				return false;
-			}
-		
-			private function hitboxDataKeyIsPressed(data:Int):Bool
-			{
-				if (_hitbox.array[data].pressed) 
-						{
-								return true;
-						}
-				return false;
-			}
-				#end
-		
 			private function keyShit():Void
 			{
 				// FlxG.watch.addQuick('asdfa', upP);
@@ -839,6 +818,7 @@ class EditorPlayState extends MusicBeatState
 		var pixelShitPart1:String = "";
 		var pixelShitPart2:String = '';
 		var skinShit:String = '';
+		var extraPath:String = "";
 
 		if (PlayState.isPixelStage)
 		{
@@ -846,10 +826,11 @@ class EditorPlayState extends MusicBeatState
 			pixelShitPart2 = '-pixel';
 			var skinShit:String = '';
 		} else {
-			skinShit = '-' + ClientPrefs.uiSkin;
+			extraPath = "ratings/";
+			skinShit = '-' + ClientPrefs.uiSkin.toLowerCase();
 		}
 
-		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + pixelShitPart2 + skinShit));
+		rating.loadGraphic(Paths.image(extraPath + pixelShitPart1 + daRating + pixelShitPart2 + skinShit));
 		rating.screenCenter();
 		rating.x = coolText.x - 40;
 		rating.y -= 60;
@@ -860,7 +841,7 @@ class EditorPlayState extends MusicBeatState
 		rating.x += ClientPrefs.comboOffset[0];
 		rating.y -= ClientPrefs.comboOffset[1];
 
-		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2 + skinShit));
+		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(extraPath + pixelShitPart1 + 'combo' + pixelShitPart2 + skinShit));
 		comboSpr.screenCenter();
 		comboSpr.x = coolText.x;
 		comboSpr.acceleration.y = 600;
@@ -881,8 +862,8 @@ class EditorPlayState extends MusicBeatState
 		}
 		else
 		{
-			rating.setGraphicSize(Std.int(rating.width * PlayState.daPixelZoom * 0.85));
-			comboSpr.setGraphicSize(Std.int(comboSpr.width * PlayState.daPixelZoom * 0.85));
+			rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.85));
+			comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.85));
 		}
 
 		comboSpr.updateHitbox();
@@ -926,7 +907,7 @@ class EditorPlayState extends MusicBeatState
 			}
 			else
 			{
-				numScore.setGraphicSize(Std.int(numScore.width * PlayState.daPixelZoom));
+				numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
 			}
 			numScore.updateHitbox();
 
@@ -1033,7 +1014,7 @@ class EditorPlayState extends MusicBeatState
 
 	function spawnNoteSplash(x:Float, y:Float, data:Int, ?note:Note = null) {
 		var skin:String = 'noteSplashes';
-		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
+		if(PlayState.SONG.assets.splashSkin != null && PlayState.SONG.assets.splashSkin.length > 0) skin = PlayState.SONG.assets.splashSkin;
 		
 		var hue:Float = ClientPrefs.arrowHSV[Std.int(Note.keysShit.get(songMania).get('pixelAnimIndex')[data] % Note.ammo[songMania])][0] / 360;
 		var sat:Float = ClientPrefs.arrowHSV[Std.int(Note.keysShit.get(songMania).get('pixelAnimIndex')[data] % Note.ammo[songMania])][1] / 100;

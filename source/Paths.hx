@@ -1,22 +1,10 @@
 package;
 
-import animateatlas.AtlasFrameMaker;
-import flixel.math.FlxPoint;
-import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
-import openfl.geom.Rectangle;
-import flixel.math.FlxRect;
-import haxe.xml.Access;
 import openfl.system.System;
-import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 import lime.utils.Assets;
-import flixel.FlxSprite;
-#if MODS_ALLOWED
-import sys.io.File;
-import sys.FileSystem;
-#end
 import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 
@@ -24,6 +12,10 @@ import flash.media.Sound;
 
 using StringTools;
 
+/**
+* Class used for all pathfinding in the game.
+* This class should be used instead of the default Flixel method of loading assets.
+*/
 class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
@@ -35,17 +27,16 @@ class Paths
 		'custom_events',
 		'custom_notetypes',
 		'data',
-		'songs',
-		'music',
-		'sounds',
-		'shaders',
-		'videos',
-		'images',
-		'stages',
-		'weeks',
 		'fonts',
+		'images',
+		'music',
 		'scripts',
-		'achievements'
+		'shaders',
+		'songs',
+		'sounds',
+		'stages',
+		'videos',
+		'weeks'
 	];
 	#end
 
@@ -166,6 +157,11 @@ class Paths
 		return getPath('data/$key.txt', TEXT, library);
 	}
 
+	inline static public function hscript(key:String, ?library:String)
+	{
+		return getPath('$key.hscript', TEXT, library);
+	}
+
 	inline static public function xml(key:String, ?library:String)
 	{
 		return getPath('data/$key.xml', TEXT, library);
@@ -219,21 +215,21 @@ class Paths
 
 	inline static public function voices(song:String):Any
 	{
-		var songKey:String = '${song.toLowerCase().replace(' ', '-')}/Voices';
+		var songKey:String = '${formatToSongPath(song)}/Voices';
 		var voices = returnSound('songs', songKey);
 		return voices;
 	}
 
 	inline static public function inst(song:String):Any
 	{
-		var songKey:String = '${song.toLowerCase().replace(' ', '-')}/Inst';
+		var songKey:String = '${formatToSongPath(song)}/Inst';
 		var inst = returnSound('songs', songKey);
 		return inst;
 	}
 
 	inline static public function secVoices(song:String)
 	{
-		var songKey:String = '${song.toLowerCase().replace(' ', '-')}/SecVoices';
+		var songKey:String = '${formatToSongPath(song)}/SecVoices';
 		var secVoices = returnSound('songs', songKey);
 		return secVoices;
 	}
@@ -371,6 +367,7 @@ class Paths
 		#end
 
 		var path = getPath('images/$key.png', IMAGE, library);
+		var quartiz = getPath('images/quartiz.png', IMAGE, library);
 		if (OpenFlAssets.exists(path, IMAGE)) {
 			if(!currentTrackedAssets.exists(path)) {
 				var newGraphic:FlxGraphic = FlxG.bitmap.add(path, false, path);
@@ -380,7 +377,17 @@ class Paths
 			localTrackedAssets.push(path);
 			return currentTrackedAssets.get(path);
 		}
-		trace('oh no its returning null NOOOO');
+		trace('oh no its returning null NOOOO: ' + 'images/$key.png' + ' REPLACING WITH QUARTIZ!');
+		if (OpenFlAssets.exists(quartiz, IMAGE)) {
+			if(!currentTrackedAssets.exists(quartiz)) {
+				var newGraphic:FlxGraphic = FlxG.bitmap.add(quartiz, false, quartiz);
+				newGraphic.persist = true;
+				currentTrackedAssets.set(quartiz, newGraphic);
+			}
+			localTrackedAssets.push(quartiz);
+			return currentTrackedAssets.get(quartiz);
+		}
+		trace('OH GOD QUARTIZ IS GONE, HAXEFLIXEL LOGO, GO!');
 		return null;
 	}
 
@@ -404,7 +411,13 @@ class Paths
 		#if MODS_ALLOWED
 			currentTrackedSounds.set(gottenPath, Sound.fromFile('./' + gottenPath));
 		#else
-			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(getPath('$path/$key.$SOUND_EXT', SOUND, library)));
+		{
+			var folder:String = '';
+			#if html5
+			if(path == 'songs') folder = 'songs:';
+			#end
+			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(folder + getPath('$path/$key.$SOUND_EXT', SOUND, library)));
+		}
 		#end
 		localTrackedAssets.push(gottenPath);
 		return currentTrackedSounds.get(gottenPath);
@@ -450,9 +463,6 @@ class Paths
 	inline static public function modsShaderVertex(key:String, ?library:String)
 	{
 		return modFolders('shaders/'+key+'.vert');
-	}
-	inline static public function modsAchievements(key:String) {
-		return modFolders('achievements/' + key + '.json');
 	}
 
 	static public function modFolders(key:String) {

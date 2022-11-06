@@ -1,37 +1,37 @@
 {
 	"animations": [
 		{
-			"offsets": [
-				-26,
-				-12
-			],
 			"loop": false,
-			"anim": "deathConfirm",
-			"fps": 24,
-			"name": "RETRY CONFIRM",
-			"indices": []
-		},
-		{
 			"offsets": [
 				-30,
 				-12
 			],
-			"loop": true,
-			"anim": "deathLoop",
 			"fps": 24,
-			"name": "Retry Loop",
-			"indices": []
+			"anim": "deathConfirm",
+			"indices": [],
+			"name": "RETRY CONFIRM"
 		},
 		{
+			"loop": true,
+			"offsets": [
+				-30,
+				-12
+			],
+			"fps": 24,
+			"anim": "deathLoop",
+			"indices": [],
+			"name": "Retry Loop"
+		},
+		{
+			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"loop": false,
-			"anim": "firstDeath",
 			"fps": 24,
-			"name": "BF Dies pixel",
-			"indices": []
+			"anim": "firstDeath",
+			"indices": [],
+			"name": "BF Dies pixel"
 		}
 	],
 	"sarvente_floating": false,
@@ -46,12 +46,20 @@
 		134,
 		166
 	],
-	"image": "characters/bfPixelsDEAD",
+	"image": "characters/Week6/bfPixelsDEAD",
+	"trail_length": null,
+	"trail_delay": null,
 	"position": [
 		0,
 		350
 	],
+	"trail_diff": null,
+	"trail_alpha": null,
+	"health_drain": false,
 	"healthicon": "bf-pixel",
+	"shake_screen": false,
+	"orbit": false,
+	"drain_floor": 0.1,
 	"healthbar_count": 3,
 	"flip_x": true,
 	"healthbar_colors": [
@@ -65,6 +73,8 @@
 	],
 	"float_magnitude": 0,
 	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
 	"scale": 6,
 	"flixel_trail": false
 }

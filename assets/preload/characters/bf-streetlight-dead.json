@@ -1,0 +1,81 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [
+				37,
+				11
+			],
+			"anim": "firstDeath",
+			"fps": 24,
+			"name": "BF dies",
+			"indices": []
+		},
+		{
+			"loop": true,
+			"offsets": [
+				37,
+				5
+			],
+			"anim": "deathLoop",
+			"fps": 24,
+			"name": "BF Dead Loop",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				37,
+				35
+			],
+			"anim": "deathConfirm",
+			"fps": 24,
+			"name": "BF Dead confirm",
+			"indices": []
+		}
+	],
+	"sarvente_floating": false,
+	"healthbar_colors_middle": [
+		29,
+		156,
+		189
+	],
+	"no_antialiasing": false,
+	"healthbar_colors_bottom": [
+		9,
+		136,
+		169
+	],
+	"drain_kill": false,
+	"image": "characters/Week2/bfStreetlight-dead",
+	"trail_length": 4,
+	"trail_delay": 24,
+	"position": [
+		0,
+		350
+	],
+	"trail_diff": 0,
+	"trail_alpha": 1,
+	"health_drain": false,
+	"healthicon": "bf",
+	"shake_screen": false,
+	"orbit": false,
+	"drain_floor": 0.1,
+	"healthbar_count": 3,
+	"flip_x": true,
+	"healthbar_colors": [
+		49,
+		176,
+		209
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"float_magnitude": null,
+	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
+	"scale": 1,
+	"flixel_trail": false
+}

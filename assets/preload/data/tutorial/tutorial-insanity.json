@@ -1,8 +1,30 @@
 {
 	"song": {
-		"autoIdles": true,
-		"player1": "bf",
-		"autoZooms": true,
+		"header": {
+			"song": "Tutorial",
+			"bpm": 100,
+			"needsVoices": false,
+			"hardness": 2.5,
+			"validScore": true
+		},
+		"assets": {
+			"player1": "bf",
+			"player2": "gf-tutorial",
+			"player3": null,
+			"gfVersion": "gf-tutorial"
+		},
+		"options": {
+			"speed": 1,
+			"mania": 7,
+			"autoZooms": true,
+			"autoIdles": true,
+			"autoIcons": true,
+			"allowBot": true,
+			"allowGhostTapping": true
+		},
+		"sectionLengths": [],
+		"events": [],
+		"sections": 0,
 		"notes": [
 			{
 				"typeOfSection": 0,
@@ -589,22 +611,6 @@
 				"mustHitSection": true,
 				"crossFade": false
 			}
-		],
-		"player2": "gf",
-		"player3": null,
-		"mania": 7,
-		"song": "Tutorial",
-		"validScore": true,
-		"speed": 1,
-		"sectionLengths": [],
-		"events": [],
-		"gfVersion": "gf",
-		"autoIcons": true,
-		"sections": 0,
-		"needsVoices": false,
-		"bpm": 100,
-		"allowBot": true,
-		"allowGhostTapping": true,
-		"hardness": 2.5
+		]
 	}
 }

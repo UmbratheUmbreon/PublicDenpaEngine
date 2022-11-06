@@ -1,32 +1,16 @@
 package;
 
-#if desktop
-import Discord.DiscordClient;
-#end
-import flash.text.TextField;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.util.FlxSave;
-import haxe.Json;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import Controls;
+import Alphabet;
 
 using StringTools;
 
+/**
+* Substate used to alter the Gamplay Modifers map.
+*/
 class GameplayChangersSubstate extends MusicBeatSubstate
 {
 	private var curOption:GameplayOption = null;
@@ -43,9 +27,10 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		optionsArray.push(goption);
 
 		var option:GameplayOption = new GameplayOption('Scroll Speed', 'scrollspeed', 'float', 1);
-		option.scrollSpeed = 1.5;
-		option.minValue = 0.5;
-		option.changeValue = 0.1;
+		option.scrollSpeed = 2.0;
+		option.minValue = 0.35;
+		option.changeValue = 0.05;
+		option.decimals = 2;
 		if (goption.getValue() != "constant")
 		{
 			option.displayFormat = '%vX';
@@ -58,13 +43,16 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 		optionsArray.push(option);
 
-		/*var option:GameplayOption = new GameplayOption('Playback Rate', 'songspeed', 'float', 1);
-		option.scrollSpeed = 1;
-		option.minValue = 0.5;
-		option.maxValue = 2.5;
-		option.changeValue = 0.1;
+		#if !html5
+		var option:GameplayOption = new GameplayOption('Playback Rate', 'songspeed', 'float', 1);
+		option.scrollSpeed = 2;
+		option.changeValue = 0.25;
+		option.minValue = 0.1;
+		option.maxValue = 4;
 		option.displayFormat = '%vX';
-		optionsArray.push(option);*/
+		option.decimals = 2;
+		optionsArray.push(option);
+		#end
 
 		var option:GameplayOption = new GameplayOption('Health Gain Multiplier', 'healthgain', 'float', 1);
 		option.scrollSpeed = 2.5;
@@ -88,13 +76,28 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		var option:GameplayOption = new GameplayOption('Sick Only', 'sickonly', 'bool', false);
 		optionsArray.push(option);
 
+		var option:GameplayOption = new GameplayOption('Poison', 'poison', 'bool', false);
+		optionsArray.push(option);
+
+		var option:GameplayOption = new GameplayOption('Freeze', 'freeze', 'bool', false);
+		optionsArray.push(option);
+
+		var option:GameplayOption = new GameplayOption('Flashlight', 'flashlight', 'bool', false);
+		optionsArray.push(option);
+
+		var option:GameplayOption = new GameplayOption('Ghost Mode', 'ghostmode', 'bool', false);
+		optionsArray.push(option);
+
+		var option:GameplayOption = new GameplayOption('Random Mode', 'randommode', 'bool', false);
+		optionsArray.push(option);
+
+		var option:GameplayOption = new GameplayOption('Quartiz', 'quartiz', 'bool', false);
+		optionsArray.push(option);
+
 		var option:GameplayOption = new GameplayOption('Practice Mode', 'practice', 'bool', false);
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Botplay', 'botplay', 'bool', false);
-		optionsArray.push(option);
-
-		var option:GameplayOption = new GameplayOption('Poison', 'poison', 'bool', false);
 		optionsArray.push(option);
 	}
 
@@ -109,13 +112,19 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		return null;
 	}
 
+	private var iconArray:Array<AttachedSprite> = [];
+
+	private var bg:FlxSprite;
+
 	public function new()
 	{
 		super();
 		
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		bg.alpha = 0.6;
+		bg = new FlxSprite(-1280, 0).loadGraphic(Paths.image('loadingscreen'));
+		bg.angle = 27;
+		bg.alpha = 0;
 		add(bg);
+		FlxTween.tween(bg, {x: 0, angle: 0, alpha: 1}, 0.22, {ease: FlxEase.quadOut});
 
 		// avoids lagspikes while scrolling through menus!
 		grpOptions = new FlxTypedGroup<Alphabet>();
@@ -132,11 +141,11 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		for (i in 0...optionsArray.length)
 		{
 			var optionText:Alphabet = new Alphabet(0, 70 * i, optionsArray[i].name, true, false, 0.05, 0.8);
-			optionText.isMenuItem = true;
+			optionText.altRotation = true;
 			optionText.x += 300;
 			/*optionText.forceX = 300;
 			optionText.yMult = 90;*/
-			optionText.xAdd = 120;
+			optionText.xAdd = 20;
 			optionText.targetY = i;
 			grpOptions.add(optionText);
 
@@ -148,7 +157,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 				checkboxGroup.add(checkbox);
 				optionText.xAdd += 80;
 			} else {
-				var valueText:AttachedText = new AttachedText('' + optionsArray[i].getValue(), optionText.width + 80, true, 0.8);
+				var valueText:AttachedText = new AttachedText('' + optionsArray[i].getValue(), optionText.width + 30, true, 0.8);
 				valueText.sprTracker = optionText;
 				valueText.copyAlpha = true;
 				valueText.ID = i;
@@ -156,8 +165,17 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 				optionsArray[i].setChild(valueText);
 			}
 			updateTextFrom(optionsArray[i]);
+			if (optionsArray[i].name != "Playback Rate" && optionsArray[i].name != "Scroll Speed" && optionsArray[i].name != "Scroll Type") {
+				var icon:AttachedSprite = new AttachedSprite('modifiers/' + optionsArray[i].variable);
+				icon.sprTracker = optionText;
+				icon.xAdd = optionText.width;
+				if (optionsArray[i].name == "Health Gain Multiplier" || optionsArray[i].name == "Health Loss Multiplier")icon.xAdd += 60 + grpTexts.members[i].width;
+				icon.yAdd = -55;
+				icon.copyAlpha = true;
+				add(icon);
+				iconArray.push(icon);
+			}
 		}
-
 		changeSelection();
 		reloadCheckboxes();
 	}
@@ -176,10 +194,20 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			changeSelection(1);
 		}
 
+		if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+		{
+			changeSelection(-FlxG.mouse.wheel);
+		}
+
 		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
-			close();
 			ClientPrefs.saveSettings();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
+			FlxTween.tween(bg, {x: -1280, angle: 27, alpha: 0}, 0.22, {ease: FlxEase.quadOut, onComplete: function(_) {
+				close();
+			}});
+			grpOptions.forEach(function(option:Alphabet){
+				FlxTween.tween(option, {alpha: 0}, 0.22, {ease: FlxEase.quadOut});
+			});
 		}
 
 		if(nextAccept <= 0)
@@ -291,7 +319,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 				}
 			}
 
-			if(controls.RESET)
+			if(controls.RESET && FlxG.keys.pressed.SHIFT)
 			{
 				for (i in 0...optionsArray.length)
 				{
@@ -318,6 +346,34 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 					}
 					leOption.change();
 				}
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+				reloadCheckboxes();
+			}
+
+			if(controls.RESET && !FlxG.keys.pressed.SHIFT)
+			{
+				var leOption:GameplayOption = optionsArray[curSelected];
+				leOption.setValue(leOption.defaultValue);
+				if(leOption.type != 'bool')
+				{
+					if(leOption.type == 'string')
+					{
+						leOption.curOption = leOption.options.indexOf(leOption.getValue());
+					}
+					updateTextFrom(leOption);
+				}
+
+				if(leOption.name == 'Scroll Speed')
+				{
+					leOption.displayFormat = "%vX";
+					leOption.maxValue = 3;
+					if(leOption.getValue() > 3)
+					{
+						leOption.setValue(3);
+					}
+					updateTextFrom(leOption);
+				}
+				leOption.change();
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				reloadCheckboxes();
 			}

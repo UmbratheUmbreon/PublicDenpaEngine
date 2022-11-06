@@ -1,8 +1,8 @@
 {
 	"songs": [
-		["Senpai", "senpai-pixel", [255, 120, 191]],
-		["Roses", "senpai-angry-pixel", [255, 120, 191]],
-		["Thorns", "spirit-pixel", [255, 120, 191]]
+		["Senpai", "senpai", [255, 120, 191]],
+		["Roses", "senpai", [255, 120, 191]],
+		["Thorns", "spirit", [255, 120, 191]]
 	],
 
 	"weekCharacters": [

@@ -5,14 +5,12 @@ import flixel.tweens.FlxTween;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.text.FlxText;
-import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import lime.app.Application;
 import flixel.input.keyboard.FlxKey;
@@ -20,6 +18,9 @@ import WeekData;
 
 using StringTools;
 
+/**
+* State used to decide which selection of songs should be loaded in `FreeplayState`.
+*/
 class FreeplaySectionState extends MusicBeatState
 {
 	public static var daSection:String = '';
@@ -66,10 +67,8 @@ class FreeplaySectionState extends MusicBeatState
 				for (section in leWeek.sections) {
 					if (section.toLowerCase() != sectionArray[fuck].toLowerCase()) {
 						sectionArray.push(section);
-						fuck++;
-					} else {
-						fuck++;
 					}
+					fuck++;
 				}
 			//trace (Std.string(sectionArray));
 			} else {
@@ -82,6 +81,7 @@ class FreeplaySectionState extends MusicBeatState
 
 			WeekData.setDirectoryFromWeek(leWeek);
 		}
+		sectionArray = CoolUtil.removeDuplicates(sectionArray);
 		WeekData.loadTheFirstEnabledMod();
 
 		daSection = sectionArray[0];
@@ -161,9 +161,12 @@ class FreeplaySectionState extends MusicBeatState
 			Conductor.songPosition = FlxG.sound.music.time;
 	
 		if (!transitioning) {
-		var mult:Float = FlxMath.lerp(1, bg.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
-		bg.scale.set(mult, mult);
-		bg.updateHitbox();
+			var mult:Float = FlxMath.lerp(1, bg.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+			bg.scale.set(mult, mult);
+			bg.updateHitbox();
+			var mult:Float = FlxMath.lerp(1, sectionSpr.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+			sectionSpr.scale.set(mult, mult);
+			sectionSpr.updateHitbox();
 		}
 
 		if (controls.UI_LEFT_P && !transitioning)
@@ -173,6 +176,14 @@ class FreeplaySectionState extends MusicBeatState
 				counter -= 1;
 				daSection = sectionArray[counter];
 				sectionSpr.loadGraphic(Paths.image('freeplaysections/' + daSection.toLowerCase()));
+				sectionSpr.scale.set(1.1, 1.1);
+				sectionSpr.updateHitbox();
+			} else {
+				counter = sectionArray.length-1;
+				daSection = sectionArray[counter];
+				sectionSpr.loadGraphic(Paths.image('freeplaysections/' + daSection.toLowerCase()));
+				sectionSpr.scale.set(1.1, 1.1);
+				sectionSpr.updateHitbox();
 			}
 		}
 
@@ -183,6 +194,14 @@ class FreeplaySectionState extends MusicBeatState
 				counter += 1;
 				daSection = sectionArray[counter];
 				sectionSpr.loadGraphic(Paths.image('freeplaysections/' + daSection.toLowerCase()));
+				sectionSpr.scale.set(1.1, 1.1);
+				sectionSpr.updateHitbox();
+			} else {
+				counter = 0;
+				daSection = sectionArray[counter];
+				sectionSpr.loadGraphic(Paths.image('freeplaysections/' + daSection.toLowerCase()));
+				sectionSpr.scale.set(1.1, 1.1);
+				sectionSpr.updateHitbox();
 			}
 		}
 		

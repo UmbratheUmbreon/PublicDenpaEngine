@@ -1,6 +1,4 @@
 package;
-//this code was done by _jorge btw, go check them out
-
 //i forgot i was doing this LOL
 //ill work on it.. later
 import lime.system.System;
@@ -12,19 +10,21 @@ import flixel.text.FlxText;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxG;
 #if desktop
 import cpp.Lib;
-import sys.FileSystem;
 #end
 import lime.app.Application;
 import flixel.tweens.FlxEase;
 import Discord.DiscordClient;
-import flixel.math.FlxMath;
 import openfl.Assets;
 import hscript.Expr;
 import hscript.Interp;
 import hscript.Parser;
+
+/**
+* Class used to control `HScript`.
+* Written by _jorge.
+*/
 class HScript 
 {
     public var interpreter:Interp;
@@ -35,7 +35,11 @@ class HScript
     public function new(path:String)
     {
         var file:String = 'trace("No script found");';
-#if sys if (FileSystem.exists(path)) #end
+        #if sys
+        if (FileSystem.exists(path))
+        #else
+        if (OpenFlAssets.exists(path))
+        #end
             file = Assets.getText(path);
 
         interpreter = new Interp();
@@ -89,5 +93,6 @@ class HScript
         interpreter.variables.set("FlxTween", FlxTween);
         interpreter.variables.set("FlxEase", FlxEase);
         interpreter.variables.set("FlxTimer", FlxTimer);
+        //interpreter.variables.set("FlxColor", FlxColor);
     }
 }

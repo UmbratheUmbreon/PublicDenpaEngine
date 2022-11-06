@@ -1,11 +1,14 @@
 package;
 
 import Conductor.BPMChangeEvent;
-import flixel.FlxG;
 import flixel.FlxSubState;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
 
+/**
+* Basic substate to use for substates in the game.
+* Contains beat/step functions.
+*/
 class MusicBeatSubstate extends FlxSubState
 {
 	public function new()

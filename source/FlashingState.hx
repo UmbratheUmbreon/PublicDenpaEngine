@@ -1,6 +1,5 @@
 package;
 
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.text.FlxText;
@@ -11,6 +10,9 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 
+/**
+* State used to warn the player of Flashing Lights, and allow them to turn Flashing Lights off.
+*/
 class FlashingState extends MusicBeatState
 {
 	public static var leftState:Bool = false;
@@ -18,6 +20,7 @@ class FlashingState extends MusicBeatState
 	var warnText:FlxText;
 	override function create()
 	{
+		Paths.clearUnusedMemory();
 		super.create();
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);

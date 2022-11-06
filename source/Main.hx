@@ -1,16 +1,13 @@
 package;
 
-import flixel.graphics.FlxGraphic;
-import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
-import openfl.Assets;
 import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
-import openfl.display.StageScaleMode;
-//import Transparency;
+import stats.CustomFPS;
+import stats.CustomFPS.CustomMEM;
 //crash handler stuff
 #if desktop
 import lime.app.Application;
@@ -18,9 +15,6 @@ import openfl.events.UncaughtErrorEvent;
 import haxe.CallStack;
 import haxe.io.Path;
 import Discord.DiscordClient;
-import sys.FileSystem;
-import sys.io.File;
-import sys.io.Process;
 #end
 
 using StringTools;
@@ -83,27 +77,39 @@ class Main extends Sprite
 		}
 	
 		ClientPrefs.loadDefaultKeys();
+		
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
+		#if FLIXEL_STUDIO
+		flixel.addons.studio.FlxStudio.create();
+		#end
 
-		#if !mobile
-		fpsVar = new FPS(10, 3, 0xFFFFFF);
-		addChild(fpsVar);
-		Lib.current.stage.align = "tl";
-		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-		if(fpsVar != null) {
-			fpsVar.visible = ClientPrefs.showFPS;
-		}
+		fpsCounter = new CustomFPS(10, 3, 0xFFFFFF);
+		addChild(fpsCounter);
+		toggleFPS(ClientPrefs.showFPS);
+
+		#if debug
+		ramCount = new CustomMEM(10, 16, 0xffffff);
+		addChild(ramCount);
+		toggleMEM(ClientPrefs.showFPS);
 		#end
 
 		#if html5
 		FlxG.autoPause = false;
 		FlxG.mouse.visible = false;
 		#end
-		//Transparency.setTransparency("Friday Night Funkin': Denpa Engine", 0x4a2245);
 		#if desktop
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end
 	}
+
+	public static var fpsCounter:CustomFPS;
+	public static var ramCount:CustomMEM;
+
+	public static function toggleFPS(fpsEnabled:Bool):Void
+		fpsCounter.visible = fpsEnabled;
+
+	public static function toggleMEM(fpsEnabled:Bool):Void
+		ramCount.visible = fpsEnabled;
 
 	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
 	// very cool person for real they don't get enough credit for their work
@@ -141,7 +147,8 @@ class Main extends Sprite
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
-		Application.current.window.alert(errMsg, "Error!");
+		var randoms:Array<String> = ['Error!', 'Uh Oh!', 'Wipe Out!', 'Dangit!', 'Shit!', 'I Messed Up!', 'Oops!', 'Ouch!', 'Sorry!', 'God damnit!', 'Try Again!', 'Crash!', 'Ow!', 'That Stinks!', 'Help!', 'Oh Come On!', 'Really?!', 'Ugh!', 'That Was Stupid!'];
+		Application.current.window.alert(errMsg, randoms[FlxG.random.int(0,randoms.length-1)]);
 		DiscordClient.shutdown();
 		Sys.exit(1);
 	}

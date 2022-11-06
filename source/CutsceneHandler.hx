@@ -1,7 +1,6 @@
 package;
 
 import flixel.FlxCamera;
-import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -16,6 +15,10 @@ import flixel.group.FlxSpriteGroup;
 import animateatlas.AtlasFrameMaker;
 import flixel.util.FlxSort;
 
+/**
+* Class used to handle cutscenes, such as the ones seen in Week 7.
+* See `PlayState` for how to use this class.
+*/
 class CutsceneHandler extends FlxBasic
 {
 	public var timedEvents:Array<Dynamic> = [];
@@ -25,6 +28,8 @@ class CutsceneHandler extends FlxBasic
 	public var endTime:Float = 0;
 	public var objects:Array<FlxSprite> = [];
 	public var music:String = null;
+	public var sounds:Array<FlxSound> = [];
+	public var canSkip:Bool = false;
 	public function new()
 	{
 		super();
@@ -43,6 +48,7 @@ class CutsceneHandler extends FlxBasic
 
 	private var cutsceneTime:Float = 0;
 	private var firstFrame:Bool = false;
+	var acceptKeys:Array<flixel.input.keyboard.FlxKey> = ClientPrefs.keyBinds.get('accept');
 	override function update(elapsed)
 	{
 		super.update(elapsed);
@@ -69,6 +75,31 @@ class CutsceneHandler extends FlxBasic
 			kill();
 			destroy();
 			PlayState.instance.remove(this);
+		}
+
+		if (canSkip) {
+			if (FlxG.keys.anyJustPressed(acceptKeys) || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
+				{
+					finishCallback();
+					if(finishCallback2 != null) finishCallback2();
+		
+					for (spr in objects)
+					{
+						spr.kill();
+						PlayState.instance.remove(spr);
+						spr.destroy();
+					}
+		
+					for (sound in sounds)
+					{
+						if (sound.playing)
+							sound.stop();
+					}
+		
+					kill();
+					destroy();
+					PlayState.instance.remove(this);
+				}
 		}
 		
 		while(timedEvents.length > 0 && timedEvents[0][0] <= cutsceneTime)

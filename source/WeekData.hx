@@ -1,16 +1,9 @@
 package;
 
-#if MODS_ALLOWED
-import sys.io.File;
-import sys.FileSystem;
-#end
-import lime.utils.Assets;
+#if !MODS_ALLOWED
 import openfl.utils.Assets as OpenFlAssets;
-import haxe.Json;
-import haxe.format.JsonParser;
-#if desktop
-import sys.io.File;
 #end
+import haxe.Json;
 
 using StringTools;
 
@@ -221,7 +214,7 @@ class WeekData {
 		}
 		#else
 		if(OpenFlAssets.exists(path)) {
-			rawJson = Assets.getText(path);
+			rawJson = OpenFlAssets.getText(path);
 		}
 		#end
 

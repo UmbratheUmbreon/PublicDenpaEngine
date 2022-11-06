@@ -1,9 +1,10 @@
 package;
 
-import flixel.FlxG;
-
 using StringTools;
 
+/**
+* Class used to save and load Highscores.
+*/
 class Highscore
 {
 	#if (haxe >= "4.0.0")

@@ -4,24 +4,21 @@ package;
 import Discord.DiscordClient;
 #end
 import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-#if MODS_ALLOWED
-import sys.FileSystem;
-import sys.io.File;
-#end
 import lime.utils.Assets;
 
 using StringTools;
 
+/**
+* State to showcase the credits of the engine and or mod.
+*/
 class CreditsState extends MusicBeatState
 {
 	var curSelected:Int = -1;
@@ -34,18 +31,21 @@ class CreditsState extends MusicBeatState
 	var bgScroll:FlxBackdrop;
 	var bgScroll2:FlxBackdrop;
 	var gradient:FlxSprite;
+	var nameText:FlxText;
+	var roleText:FlxText;
 	var descText:FlxText;
 	var intendedColor:Int;
 	var colorTween:FlxTween;
 	var bgScrollColorTween:FlxTween;
 	var bgScroll2ColorTween:FlxTween;
 	var gradientColorTween:FlxTween;
-	var descBox:AttachedSprite;
+	var descBox:FlxSprite;
 
 	var offsetThing:Float = -75;
 
 	override function create()
 	{
+		Paths.clearUnusedMemory();
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Spirit Shrine", null);
@@ -103,56 +103,51 @@ class CreditsState extends MusicBeatState
 		}
 		#end
 
-		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
-			["Denpa Engine Contributors"],
-			['BlueVapor1234',		'at',				"Main Programmer of Denpa Engine",							'https://twitter.com/BlueVapor1234',	'34343C'],
-			['Toadette8394',		'toadette',			"Extra Programmer of Denpa Engine",							'https://twitter.com/Toadette8394',		'A31161'],
-			['ThriftySoles',		'thrift',			"Ideas Provider and Misc. Music/Assets Maker of Denpa Engine",'https://twitter.com/thriftysoles',	'335552'],
-			['_Jorge',				'jorge',			"Cross Fade Code, Hscript Support for Denpa Engine",		'NON EXISTENT',							'EFDE7D'],
-			['DanyG7',				'dany',				"Credits Icons Maker",										'https://twitter.com/DanyTheGamer7',	'1CE8FF'],
-			['Megaverse',			'discord',			"Title Music for the Engine and Denpa Funkin'",				'NON EXISTENT',							'5C89BF'],
-			['Adrian',				'adrian',			"Character Select Music for Denpa Engine",					'NON EXISTENT',							'6BBE30'],
-			['Bethany Clone',		'egg',				"Extra Programmer and Advisor of Denpa Engine",				'NON EXISTENT',							'018B00'],
-			['Electrophyll II',		'te',				"Extra Programmer and Ideas Provider of Denpa Engine",		'NON EXISTENT',							'EFE469'],
-			['Beterperter',			'sneed',			"Composer for Denpa Engine",								'https://twitter.com/beterperter',		'000033'],
-			['Box',					'box',				"Extra Programmer and Optimizer of Denpa Engine",			'NON EXISTENT',							'C09560'],
-			['Ninteytwo',			'92',				"Ideas Provider for Denpa Engine",							'https://twitter.com/ninteytwo21',		'FFFFFF'],
-			['Denpa Engine Discord','discord',			"Press Enter to Join",										'https://discord.gg/pUX2ZMm4Qt',		'5C89BF'],
+		var pisspoop:Array<Array<String>> = [ //Username - Icon name - Name - Role - Description - Link - BG Color
+			["Denpa Engine"],
+			['BlueVapor1234',		'at',				"AT", "Main Programmer & Creator", "\"What am i doing with my life\"",		'https://twitter.com/BlueVapor1234', '34343C'],
+			['Toadette8394',		'toadette',			"Toadette", "Co Programmer", "\"Play All Star Funkin': VS Yoshikage Kira\"",	'https://twitter.com/Toadette8394',	'E2009B'],
+			['ThriftySoles',		'thrift',			"Thrify", "Misc. Music/Assets", "\"i spent 2 fuqin howas, fixing my qode, too, fakin, aowas\"",		'https://twitter.com/thriftysoles',	'335552'],
+			['_Jorge',				'jorge',			"Jorge", "Cross Fade Code, Hscript Support", "\"mmmmm pan ache\"",		'',							'EFDE7D'],
+			['Ziad',				'discord',			"Ziad", "Multiplayer Support", "\"Children\"",		'',					'5C89BF'],
+			['atpx8',				'discord',			"atpx8", "Infinite Combo, Array Duplicate Removal", "\"<insert unfunny joke here that people will laugh at anyway>\"",		'',					'5C89BF'],
+			['YanniZ06',			'discord',			"Yanni", "Bug Fixings", "\"Sex 2, the long awaited sequel Sex is coming to your local cinema RIGHT NOW!!!!\"",		'',					'5C89BF'],
+			['Shygee',				'shygee',			"Shygee", "Extra Programmer", "",				'',							'C275F7'],
+			['Tsuwukiz',			'tsuwukiz',			"Tsu", "Artist", "\"should i make a baldi mod\"",		'https://twitter.com/tsuwuki666','715BD7'],
+			['Boushuu',				'discord',			"Boushuu", "Artist", "\"play fFUBNKIN IN TERIAOR\"",	'',					'5C89BF'],
+			['DanyG7',				'dany',				"Dany", "Credits Icons", "",					'https://twitter.com/DanyTheGamer7',	'1CE8FF'],
+			['Megaverse',			'discord',			"Megaverse", "Title Music",	"\"Norman\"",		'',							'5C89BF'],
+			['Adrian',				'adrian',			"Adrian", "Character Select Music",	"",			'',							'6BBE30'],
+			['Bethany Clone',		'egg',				"Beth", "Advisor", "\"I left my oven on\"",		'',							'018B00'],
+			['Electrophyll II',		'te',				"Electro", "Ideas Provider", "\"In the end, we all... DIE.\nWhy should I, even try.\nGun in hand, my life shall end\nMY SUFFERING SHALL BE KNOWN, FRIEND!\"",	'',	'EFE469'],
+			['MythsList',			'mythslist',		"52", "GameBanana Game Manager", "\"put me in it\"",		'https://twitter.com/MythsList',	'29211F'],
+			//['Beterperter',		'sneed',			"Sneed", "Composer", "",						'https://twitter.com/beterperter',		'000033'],
+			//['Box',				'box',				"Box", "Optimizer", "",							'',							'C09560'],
+			//['Ninteytwo',			'92',				"92", "Ideas Provider",	"",						'https://twitter.com/ninteytwo21',		'FFFFFF'],
+			['Discord',				'discord',			"Denpa Discord", "Press " + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'))) + ' or ' + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'), 1)) + " to Join", "",	'https://discord.gg/pUX2ZMm4Qt', '5C89BF'],
 			[''],
-			["Misc. Credits"],
-			['kuroao_anomal',		'discord',			"Sarvente Engine Programmer",								'https://twitter.com/kuroao_anomal?lang=en','5C89BF'],
-			['Kade Developer',		'kade',				"Kade Engine Programmer",									'https://twitter.com/kade0912?lang=en',	'64A250'],
-			['srPEREZ',				'perez',			"Multi Key Assets/Original Multi Key Code",					'https://twitter.com/newsrperez?lang=en','FFAE00'],
-			['Grantare',			'discord',			"Golden Apple Programmer",									'https://twitter.com/grantarep?lang=en','5C89BF'],
-			['MoldyGH',				'discord',			"Dave and Bambi Programmer",								'https://twitter.com/moldy_gh?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor','5C89BF'],
-			['Rei the Goat',		'discord',			"Vs Cye Programmer",										'https://www.youtube.com/c/ReitheGoat',	'5C89BF'],
-			['Rozebud',				'discord',			"FPS+ Programmer",											'https://twitter.com/helpme_thebigt?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor','5C89BF'],
+			["Extra"],
+			['kuroao_anomal',		'discord',			"Kuro", "Sarv Engine Programmer", "",				'https://twitter.com/kuroao_anomal?lang=en','5C89BF'],
+			['Kade Developer',		'kade',				"Kade", "Kade Engine Programmer", "",				'https://twitter.com/kade0912?lang=en',	'64A250'],
+			['srPEREZ',				'perez',			"Perez", "Multi Key Assets", "",					'https://twitter.com/newsrperez?lang=en','FFAE00'],
+			['Sky!',				'discord',			"Sky!", "D&B: Golden Apple Programmer", "",			'https://twitter.com/grantarep?lang=en','5C89BF'],
+			['MoldyGH',				'discord',			"Moldy", "D&B Programmer", "",						'https://twitter.com/moldy_gh?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor','5C89BF'],
+			['Rei the Goat',		'discord',			"Rei", "Vs Cye Programmer",	"",						'https://www.youtube.com/c/ReitheGoat',	'5C89BF'],
+			['Rozebud',				'discord',			"Rozebud", "FPS+ Programmer", "",					'https://twitter.com/helpme_thebigt?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor','5C89BF'],
+			['Shadow Mario',		'shadowmario',		"Shadow Mario", 'Psych Engine Programmer', "\"Cover me in piss\"",	'https://twitter.com/Shadow_Mario_',	'444444'],
 			[''],
-			["Denpa Funkin' Crew"],
-			['DPadderz',			'dpadderz',			"Artist, Composer, and Ideas Man",							'https://twitter.com/MoldyPuff',		'A5BABA'],
-			//['Shayz',				'shayz',			"Charter",													'NON EXISTENT',							'DF002F'],
-			['Denpamoo',			'moo',				"Cool 2d artist",											'NON EXISTENT',							'63E7FF'],
-			['ZebruhYes',			'zebruh',			"Cool 3d artist",											'https://www.youtube.com/channel/UCIpWCo8lgIxtkXEhRFA50lg','FFFFFF'],
-			['Chuckles',			'chuckles',			"Composer and Ideas Man",									'https://twitter.com/Chuckle10511369',	'6B6B6B'],
-			//['Satas',				'discord',			"Arist and Playtester",										'https://mobile.twitter.com/Void_satas','5C89BF'],
-			['Denpa Men Discord',	'discord',			"Press Enter to Join",										'https://discord.gg/thedenpamen',		'5C89BF'],
-			[''],
-			["Funkin' Crew"],
-			['ninjamuffin99',		'ninjamuffin99',	"Programmer of Friday Night Funkin'",						'https://twitter.com/ninja_muffin99',	'CF2D2D'],
-			['PhantomArcade',		'phantomarcade',	"Animator of Friday Night Funkin'",							'https://twitter.com/PhantomArcade3K',	'FADC45'],
-			['evilsk8r',			'evilsk8r',			"Artist of Friday Night Funkin'",							'https://twitter.com/evilsk8r',			'5ABD4B'],
-			['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",							'https://twitter.com/kawaisprite',		'D2D2D2'],
-			[''],
-			['Psych Team'],
-			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',							'https://twitter.com/Shadow_Mario_',	'444444'],
-			['RiverOaken',			'riveroaken',		'Main Artist/Animator of Psych Engine',						'https://twitter.com/RiverOaken',		'B42F71'],
-			['shubs',				'shubs',			'Additional Programmer of Psych Engine',					'https://twitter.com/yoshubs',			'5E99DF'],
-			['bb-panzu',			'bb-panzu',			'Ex-Programmer of Psych Engine',							'https://twitter.com/bbsub3',			'3E213A'],
-			['iFlicky',				'iflicky',			'Composer of Psync and Tea Time\nMade the Dialogue Sounds',	'https://twitter.com/flicky_i',			'9E29CF'],
-			['SqirraRNG',			'gedehari',			'Chart Editor\'s Sound Waveform base',						'https://twitter.com/gedehari',			'E1843A'],
-			['PolybiusProxy',		'polybiusproxy',	'.MP4 Video Loader Extension',								'https://twitter.com/polybiusproxy',	'DCD294'],
-			['Keoiki',				'keoiki',			'Note Splash Animations',									'https://twitter.com/Keoiki_',			'D2D2D2'],
-			['Smokey',				'smokey',			'Spritemap Texture Support',								'https://twitter.com/Smokey_5_',		'483D92']
+			/*["Denpa Funkin'"],
+			['DPadderz',			'dpadderz',			"Moldy", "Artist, Composer", "",	'https://twitter.com/MoldyPuff',		'A5BABA'],
+			['Denpamoo',			'moo',				"Moo", "2d Artist", "",				'',							'63E7FF'],
+			['ZebruhYes',			'zebruh',			"Zebruh", "3d Artist", "",			'https://www.youtube.com/channel/UCIpWCo8lgIxtkXEhRFA50lg','FFFFFF'],
+			['Chuckles',			'chuckles',			"Chuckles", "Composer", "",			'https://twitter.com/Chuckle10511369',	'6B6B6B'],
+			['Denpa Men Discord',	'discord',			"Denpa Men Discord", "Press " + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'))) + ' or ' + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'), 1)) + " to Join", "",		'https://discord.gg/thedenpamen',	'5C89BF'],
+			[''],*/
+			["FNF"],
+			['ninjamuffin99',		'ninjamuffin99',	"Ninjamuffin", "Programmer", "",				'https://twitter.com/ninja_muffin99',	'CF2D2D'],
+			['PhantomArcade',		'phantomarcade',	"PhantomArcade", "Animator & Artist", "",		'https://twitter.com/PhantomArcade3K',	'FADC45'],
+			['evilsk8r',			'evilsk8r',			"Evilsk8r", "Artist", "",						'https://twitter.com/evilsk8r',			'5ABD4B'],
+			['kawaisprite',			'kawaisprite',		"Kawaisprite", "Composer", "",					'https://twitter.com/kawaisprite',		'D2D2D2']
 		];
 		
 		for(i in pisspoop){
@@ -175,9 +170,9 @@ class CreditsState extends MusicBeatState
 			grpOptions.add(optionText);
 
 			if(isSelectable) {
-				if(creditsStuff[i][5] != null)
+				if(creditsStuff[i][7] != null)
 				{
-					Paths.currentModDirectory = creditsStuff[i][5];
+					Paths.currentModDirectory = creditsStuff[i][7];
 				}
 
 				var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
@@ -193,19 +188,24 @@ class CreditsState extends MusicBeatState
 			}
 		}
 		
-		descBox = new AttachedSprite();
-		descBox.makeGraphic(1, 1, FlxColor.BLACK);
-		descBox.xAdd = -10;
-		descBox.yAdd = -10;
-		descBox.alphaMult = 0.6;
+		descBox = new FlxSprite(FlxG.width, 0);
+		descBox.makeGraphic(Std.int(FlxG.width/2 - 70), FlxG.height, FlxColor.BLACK);
 		descBox.alpha = 0.6;
 		add(descBox);
 
-		descText = new FlxText(50, FlxG.height + offsetThing - 25, 1180, "", 32);
-		descText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER/*, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK*/);
+		nameText = new FlxText(FlxG.width, 25, 570, "", 32);
+		nameText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
+		nameText.scrollFactor.set();
+		add(nameText);
+
+		roleText = new FlxText(FlxG.width, 100, 570, "", 24);
+		roleText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
+		roleText.scrollFactor.set();
+		add(roleText);
+
+		descText = new FlxText(FlxG.width, 200, 570, "", 16);
+		descText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER);
 		descText.scrollFactor.set();
-		//descText.borderSize = 2.4;
-		descBox.sprTracker = descText;
 		add(descText);
 
 		bg.color = getCurrentBGColor();
@@ -275,7 +275,9 @@ class CreditsState extends MusicBeatState
 			}
 
 			if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
-				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
+				if (creditsStuff[curSelected][5] != null && creditsStuff[curSelected][5].length > 0) {
+					CoolUtil.browserLoad(creditsStuff[curSelected][5]);
+				}
 			}
 			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
 			{
@@ -304,22 +306,26 @@ class CreditsState extends MusicBeatState
 				var lerpVal:Float = CoolUtil.boundTo(elapsed * 12, 0, 1);
 				if(item.targetY == 0)
 				{
-					var lastX:Float = item.x;
-					item.screenCenter(X);
-					item.x = FlxMath.lerp(lastX, item.x - 70, lerpVal);
+					item.x = FlxMath.lerp(item.x, 100 + -40 * Math.abs(item.targetY), lerpVal);
 					item.forceX = item.x;
 				}
 				else
 				{
-					item.x = FlxMath.lerp(item.x, 200 + -40 * Math.abs(item.targetY), lerpVal);
+					item.x = FlxMath.lerp(item.x, 15, lerpVal);
 					item.forceX = item.x;
 				}
+			} else {
+				item.x = 25;
+				item.forceX = item.x;
 			}
 		}
 		super.update(elapsed);
 	}
 
-	var moveTween:FlxTween = null;
+	var nameTextTwn:FlxTween = null;
+	var roleTextTwn:FlxTween = null;
+	var descTextTwn:FlxTween = null;
+	var boxTween:FlxTween = null;
 	function changeSelection(change:Int = 0)
 	{
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
@@ -383,14 +389,24 @@ class CreditsState extends MusicBeatState
 			}
 		}
 
-		descText.text = creditsStuff[curSelected][2];
-		descText.y = FlxG.height - descText.height + offsetThing - 60;
+		if(nameTextTwn != null) nameTextTwn.cancel();
+		nameText.text = creditsStuff[curSelected][2];
+		nameText.x = FlxG.width-400;
+		nameTextTwn = FlxTween.tween(nameText, {x : FlxG.width - descBox.width}, 0.7, {ease: FlxEase.expoOut});
 
-		if(moveTween != null) moveTween.cancel();
-		moveTween = FlxTween.tween(descText, {y : descText.y + 75}, 0.25, {ease: FlxEase.sineOut});
+		if(roleTextTwn != null) roleTextTwn.cancel();
+		roleText.text = creditsStuff[curSelected][3];
+		roleText.x = FlxG.width-400;
+		roleTextTwn = FlxTween.tween(roleText, {x : FlxG.width - descBox.width}, 0.7, {ease: FlxEase.expoOut});
 
-		descBox.setGraphicSize(Std.int(descText.width + 20), Std.int(descText.height + 25));
-		descBox.updateHitbox();
+		if(descTextTwn != null) descTextTwn.cancel();
+		descText.text = creditsStuff[curSelected][4];
+		descText.x = FlxG.width-400;
+		descTextTwn = FlxTween.tween(descText, {x : FlxG.width - descBox.width}, 0.7, {ease: FlxEase.expoOut});
+
+		if(boxTween != null) boxTween.cancel();
+		descBox.x = FlxG.width-400;
+		boxTween = FlxTween.tween(descBox, {x: FlxG.width - descBox.width}, 0.7, {ease: FlxEase.expoOut});
 	}
 
 	#if MODS_ALLOWED
@@ -409,7 +425,7 @@ class CreditsState extends MusicBeatState
 			for(i in firstarray)
 			{
 				var arr:Array<String> = i.replace('\\n', '\n').split("::");
-				if(arr.length >= 5) arr.push(folder);
+				if(arr.length >= 7) arr.push(folder);
 				creditsStuff.push(arr);
 			}
 			creditsStuff.push(['']);
@@ -419,7 +435,7 @@ class CreditsState extends MusicBeatState
 	#end
 
 	function getCurrentBGColor() {
-		var bgColor:String = creditsStuff[curSelected][4];
+		var bgColor:String = creditsStuff[curSelected][6];
 		if(!bgColor.startsWith('0x')) {
 			bgColor = '0xFF' + bgColor;
 		}
@@ -435,13 +451,6 @@ class CreditsState extends MusicBeatState
 
 		bg.scale.set(1.06,1.06);
 		bg.updateHitbox();
-		if (PlayState.SONG != null) {
-			if (PlayState.SONG.song == 'Zavodila')  {
-				FlxG.camera.shake(0.0075, 0.2);
-				bg.scale.set(1.16,1.16);
-				bg.updateHitbox();
-			}
-		}
 		//trace('beat hit' + curBeat);
 	}
 }

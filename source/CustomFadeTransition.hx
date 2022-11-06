@@ -1,7 +1,6 @@
 package;
 
 import Conductor.BPMChangeEvent;
-import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
@@ -14,10 +13,15 @@ import flixel.FlxSubState;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 
+/**
+* Class used to create the fade transition between states.
+* By default, an `FlxGradient` is used.
+*/
 class CustomFadeTransition extends MusicBeatSubstate {
 	public static var finishCallback:Void->Void;
 	private var leTween:FlxTween = null;
 	public static var nextCamera:FlxCamera;
+	public static var colorForFunnyGrad:FlxColor = FlxColor.BLACK;
 	var isTransIn:Bool = false;
 	var transBlack:FlxSprite;
 	var transGradient:FlxSprite;
@@ -29,11 +33,11 @@ class CustomFadeTransition extends MusicBeatSubstate {
 		var zoom:Float = CoolUtil.boundTo(FlxG.camera.zoom, 0.05, 1);
 		var width:Int = Std.int(FlxG.width / zoom);
 		var height:Int = Std.int(FlxG.height / zoom);
-		transGradient = FlxGradient.createGradientFlxSprite(width, height, (isTransIn ? [0x0, FlxColor.BLACK] : [FlxColor.BLACK, 0x0]));
+		transGradient = FlxGradient.createGradientFlxSprite(width, height, (isTransIn ? [0x0, colorForFunnyGrad] : [colorForFunnyGrad, 0x0]));
 		transGradient.scrollFactor.set();
 		add(transGradient);
 
-		transBlack = new FlxSprite().makeGraphic(width, height + 400, FlxColor.BLACK);
+		transBlack = new FlxSprite().makeGraphic(width, height + 400, colorForFunnyGrad);
 		transBlack.scrollFactor.set();
 		add(transBlack);
 
@@ -85,6 +89,7 @@ class CustomFadeTransition extends MusicBeatSubstate {
 			finishCallback();
 			leTween.cancel();
 		}
+		colorForFunnyGrad = FlxColor.BLACK;
 		super.destroy();
 	}
 }

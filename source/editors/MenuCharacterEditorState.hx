@@ -3,12 +3,10 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.system.FlxSound;
@@ -21,18 +19,19 @@ import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.ui.FlxButton;
-import MenuCharacter;
+import Character.MenuCharacter;
+import Character.MenuCharacterFile;
 import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;
 import haxe.Json;
-#if sys
-import sys.io.File;
-#end
 
 using StringTools;
 
+/**
+* State used to create and edit `Menu Character` jsons.
+*/
 class MenuCharacterEditorState extends MusicBeatState
 {
 	var grpWeekCharacters:FlxTypedGroup<MenuCharacter>;
@@ -40,7 +39,9 @@ class MenuCharacterEditorState extends MusicBeatState
 	var txtOffsets:FlxText;
 	var defaultCharacters:Array<String> = ['dad', 'bf', 'gf'];
 
-	override function create() {
+	override function create()
+	{
+		Paths.clearUnusedMemory();
 		var musicID:Int = FlxG.random.int(0, 2);
 		switch (musicID)
 		{
@@ -50,6 +51,8 @@ class MenuCharacterEditorState extends MusicBeatState
 				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
 			case 2:
 				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
+			case 3:
+				FlxG.sound.playMusic(Paths.music('dsi'), 0.5);
 		}
 		characterFile = {
 			image: 'Menu_Dad',
@@ -174,7 +177,6 @@ class MenuCharacterEditorState extends MusicBeatState
 	var imageInputText:FlxUIInputText;
 	var idleInputText:FlxUIInputText;
 	var confirmInputText:FlxUIInputText;
-	var confirmDescText:FlxText;
 	var scaleStepper:FlxUINumericStepper;
 	var flipXCheckbox:FlxUICheckBox;
 	function addCharacterUI() {
@@ -201,7 +203,7 @@ class MenuCharacterEditorState extends MusicBeatState
 		
 		scaleStepper = new FlxUINumericStepper(140, imageInputText.y, 0.05, 1, 0.1, 30, 2);
 
-		confirmDescText = new FlxText(10, confirmInputText.y - 18, 0, 'Start Press animation on the .XML:');
+		var confirmDescText = new FlxText(10, confirmInputText.y - 18, 0, 'Start Press animation on the .XML:');
 		tab_group.add(new FlxText(10, imageInputText.y - 18, 0, 'Image file name:'));
 		tab_group.add(new FlxText(10, idleInputText.y - 18, 0, 'Idle animation on the .XML:'));
 		tab_group.add(new FlxText(scaleStepper.x, scaleStepper.y - 18, 0, 'Scale:'));
@@ -255,8 +257,6 @@ class MenuCharacterEditorState extends MusicBeatState
 		char.updateHitbox();
 		char.animation.play('idle');
 
-		confirmDescText.visible = (curTypeSelected == 1);
-		confirmInputText.visible = (curTypeSelected == 1);
 		updateOffset();
 		
 		#if desktop

@@ -3,22 +3,20 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.system.FlxSound;
-#if MODS_ALLOWED
-import sys.FileSystem;
-#end
 
 using StringTools;
 
+/**
+* State with shortcuts to all other editor menus.
+*/
 class MasterEditorMenu extends MusicBeatState
 {
 	var options:Array<String> = [
@@ -27,6 +25,9 @@ class MasterEditorMenu extends MusicBeatState
 		'Dialogue Editor',
 		'Dialogue Portrait Editor',
 		'Character Editor',
+		#if debug
+		'Stage Editor',
+		#end
 		'Chart Editor'
 	];
 	private var grpTexts:FlxTypedGroup<Alphabet>;
@@ -38,6 +39,8 @@ class MasterEditorMenu extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
 		FlxG.camera.bgColor = FlxColor.BLACK;
 		#if desktop
 		// Updating Discord Rich Presence
@@ -145,7 +148,10 @@ class MasterEditorMenu extends MusicBeatState
 				case 'Dialogue Editor':
 					LoadingState.loadAndSwitchState(new DialogueEditorState(), false);
 				case 'Chart Editor'://felt it would be cool maybe
+					PlayState.chartingMode = true;
 					LoadingState.loadAndSwitchState(new ChartingState(), false);
+				case 'Stage Editor':
+					LoadingState.loadAndSwitchState(new StageEditorState(), false);
 			}
 			FlxG.sound.music.volume = 0;
 			#if PRELOAD_ALL

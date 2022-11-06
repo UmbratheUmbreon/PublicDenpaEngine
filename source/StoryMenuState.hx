@@ -3,14 +3,12 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -19,6 +17,7 @@ import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
 import flixel.graphics.FlxGraphic;
 import WeekData;
+import Character.MenuCharacter;
 
 using StringTools;
 
@@ -75,7 +74,7 @@ class StoryMenuState extends MusicBeatState
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
 
-		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
+		var ui_tex = Paths.getSparrowAtlas('storymenu/campaign_menu_UI_assets');
 		var bgYellow:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
 		bgSprite = new FlxSprite(0, 56);
 		bgSprite.antialiasing = ClientPrefs.globalAntialiasing;
@@ -175,14 +174,10 @@ class StoryMenuState extends MusicBeatState
 		add(bgSprite);
 		add(grpWeekCharacters);
 
-		tracksSprite = new FlxSprite(FlxG.width * 0.07, bgSprite.y + 425).loadGraphic(Paths.image('Menu_Tracks'));
+		tracksSprite = new FlxSprite(FlxG.width * 0.07, bgSprite.y + 425).loadGraphic(Paths.image('storymenu/Menu_Tracks'));
 		tracksSprite.antialiasing = ClientPrefs.globalAntialiasing;
 		add(tracksSprite);
-
-		/*txtTracklist = new FlxText(FlxG.width * 0.05, tracksSprite.y + 60, 0, "", 32);
-		txtTracklist.alignment = CENTER;
-		txtTracklist.font = rankText.font;
-		txtTracklist.color = 0xFFe55777;*/
+		
 		add(scoreText);
 		add(txtWeekTitle);
 
@@ -294,7 +289,28 @@ class StoryMenuState extends MusicBeatState
 					});
 				}
 				#else
-				selectWeek();
+				if(OpenFlAssets.exists(Paths.json(songLowercase + '/' + poop))){
+					selectWeek();
+				}
+				else
+				{
+					trace(poop + '.json does not exist!');
+					FlxG.sound.play(Paths.sound('invalidJSON'));
+					FlxG.camera.shake(0.05, 0.05);
+					var funnyText = new FlxText(12, FlxG.height - 24, 0, "Invalid JSON!");
+					funnyText.scrollFactor.set();
+					funnyText.screenCenter();
+					funnyText.x = FlxG.width/2 - 250;
+					funnyText.y = FlxG.height/2 - 64;
+					funnyText.setFormat("VCR OSD Mono", 64, FlxColor.RED, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+					add(funnyText);
+					FlxTween.tween(funnyText, {alpha: 0}, 0.6, {
+						onComplete: function(tween:FlxTween)
+						{
+							funnyText.destroy();
+						}
+					});
+				}
 				#end
 			}
 		}
@@ -329,8 +345,13 @@ class StoryMenuState extends MusicBeatState
 
 				grpWeekText.members[curWeek].startFlashing();
 
-				var bf:MenuCharacter = grpWeekCharacters.members[1];
-				if(bf.character != '' && bf.hasConfirmAnimation) grpWeekCharacters.members[1].animation.play('confirm');
+				for (char in grpWeekCharacters.members)
+				{
+					if (char.character != '' && char.hasConfirmAnimation)
+					{
+						char.animation.play('confirm');
+					}
+				}
 				stopspamming = true;
 			}
 
@@ -356,6 +377,7 @@ class StoryMenuState extends MusicBeatState
 			PlayState.campaignMisses = 0;
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
+				LoadingState.globeTrans = false;
 				LoadingState.loadAndSwitchState(new PlayState(), true);
 				FreeplayState.destroyFreeplayVocals();
 			});
@@ -549,7 +571,7 @@ class StoryMenuState extends MusicBeatState
 			trackListTimer.cancel();
 			trackListTimer = null;
 		}
-		trackListTimer = new FlxTimer().start(1, function(tmr:FlxTimer){
+		trackListTimer = new FlxTimer().start(0.2, function(tmr:FlxTimer){
 			var fuck:Int = 0;
 			trackListGrp.forEach(function(text:FlxText){
 				var origin:Float = text.y;
@@ -567,5 +589,46 @@ class StoryMenuState extends MusicBeatState
 				});
 			});
 		});
+	}
+}
+
+class MenuItem extends FlxSprite
+{
+	public var targetY:Float = 0;
+	public var flashingInt:Int = 0;
+
+	public function new(x:Float, y:Float, weekName:String = '')
+	{
+		super(x, y);
+		loadGraphic(Paths.image('storymenu/' + weekName));
+		//trace('Test added: ' + WeekData.getWeekNumber(weekNum) + ' (' + weekNum + ')');
+		antialiasing = ClientPrefs.globalAntialiasing;
+	}
+
+	private var isFlashing:Bool = false;
+
+	public function startFlashing():Void
+	{
+		isFlashing = true;
+	}
+
+	// if it runs at 60fps, fake framerate will be 6
+	// if it runs at 144 fps, fake framerate will be like 14, and will update the graphic every 0.016666 * 3 seconds still???
+	// so it runs basically every so many seconds, not dependant on framerate??
+	// I'm still learning how math works thanks whoever is reading this lol
+	var fakeFramerate:Int = Math.round((1 / FlxG.elapsed) / 10);
+
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+		y = FlxMath.lerp(y, (targetY * 120) + 480, CoolUtil.boundTo(elapsed * 10.2, 0, 1));
+
+		if (isFlashing)
+			flashingInt += 1;
+
+		if (flashingInt % fakeFramerate >= Math.floor(fakeFramerate / 2))
+			color = 0xFF33ffff;
+		else
+			color = FlxColor.WHITE;
 	}
 }

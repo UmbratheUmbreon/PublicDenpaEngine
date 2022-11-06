@@ -1,13 +1,14 @@
 {
 	"animations": [
 		{
+			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "danceLeft",
+			"fps": 24,
+			"name": "GF IDLE",
 			"indices": [
 				30,
 				0,
@@ -25,17 +26,17 @@
 				12,
 				13,
 				14
-			],
-			"name": "GF IDLE"
+			]
 		},
 		{
+			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "danceRight",
+			"fps": 24,
+			"name": "GF IDLE",
 			"indices": [
 				15,
 				16,
@@ -52,34 +53,54 @@
 				27,
 				28,
 				29
-			],
-			"name": "GF IDLE"
+			]
 		},
 		{
+			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "singUP",
-			"indices": [],
-			"name": "GF IDLE"
+			"fps": 24,
+			"name": "GF IDLE",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-18,
+				24
+			],
+			"anim": "teleport",
+			"fps": 24,
+			"name": "GF TELEPORT"
+		},
+		{
+			"loop": true,
+			"offsets": [
+				-18,
+				24
+			],
+			"anim": "teleport-loop",
+			"fps": 24,
+			"name": "GF TP LOOP"
 		}
 	],
 	"sarvente_floating": false,
 	"healthbar_colors_middle": [
+		145,
+		0,
+		57
+	],
+	"no_antialiasing": true,
+	"healthbar_colors_bottom": [
 		125,
 		0,
 		37
 	],
-	"no_antialiasing": true,
-	"healthbar_colors_bottom": [
-		85,
-		0,
-		0
-	],
-	"image": "characters/gfPixel",
+	"drain_kill": false,
+	"image": "characters/Week6/gfPixel",
 	"trail_length": null,
 	"trail_delay": null,
 	"position": [
@@ -92,6 +113,7 @@
 	"healthicon": "gf",
 	"shake_screen": false,
 	"orbit": false,
+	"drain_floor": 0.1,
 	"healthbar_count": 3,
 	"flip_x": false,
 	"healthbar_colors": [
@@ -105,6 +127,8 @@
 	],
 	"float_magnitude": null,
 	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
 	"scale": 5.99999999999999,
 	"flixel_trail": false
 }

@@ -1,2 +1,1 @@
-Drop you custom sounds here!
-It should be in .ogg otherwise it won't work!!!
+This is where your sound .oggs go.

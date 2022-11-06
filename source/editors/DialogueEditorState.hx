@@ -3,12 +3,10 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.system.FlxSound;
@@ -26,14 +24,14 @@ import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;
 import haxe.Json;
-import DialogueBoxPsych;
+import DialogueBoxDenpa;
 import lime.system.Clipboard;
-#if sys
-import sys.io.File;
-#end
 
 using StringTools;
 
+/**
+* State used to create and edit `Dialogue` jsons.
+*/
 class DialogueEditorState extends MusicBeatState
 {
 	var character:DialogueCharacter;
@@ -46,7 +44,9 @@ class DialogueEditorState extends MusicBeatState
 	var defaultLine:DialogueLine;
 	var dialogueFile:DialogueFile = null;
 
-	override function create() {
+	override function create()
+	{
+		Paths.clearUnusedMemory();
 		var musicID:Int = FlxG.random.int(0, 2);
 		switch (musicID)
 		{
@@ -56,6 +56,8 @@ class DialogueEditorState extends MusicBeatState
 				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
 			case 2:
 				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
+			case 3:
+				FlxG.sound.playMusic(Paths.music('dsi'), 0.5);
 		}
 		persistentUpdate = persistentDraw = true;
 		FlxG.camera.bgColor = FlxColor.fromHSL(0, 0, 0.5);
@@ -204,7 +206,7 @@ class DialogueEditorState extends MusicBeatState
 				}
 		}
 		box.animation.play(anim, true);
-		DialogueBoxPsych.updateBoxOffsets(box);
+		DialogueBoxDenpa.updateBoxOffsets(box);
 	}
 
 	function reloadCharacter() {
@@ -213,12 +215,12 @@ class DialogueEditorState extends MusicBeatState
 		character.reloadAnimations();
 		character.setGraphicSize(Std.int(character.width * DialogueCharacter.DEFAULT_SCALE * character.jsonFile.scale));
 		character.updateHitbox();
-		character.x = DialogueBoxPsych.LEFT_CHAR_X;
-		character.y = DialogueBoxPsych.DEFAULT_CHAR_Y;
+		character.x = DialogueBoxDenpa.LEFT_CHAR_X;
+		character.y = DialogueBoxDenpa.DEFAULT_CHAR_Y;
 
 		switch(character.jsonFile.dialogue_pos) {
 			case 'right':
-				character.x = FlxG.width - character.width + DialogueBoxPsych.RIGHT_CHAR_X;
+				character.x = FlxG.width - character.width + DialogueBoxDenpa.RIGHT_CHAR_X;
 			
 			case 'center':
 				character.x = FlxG.width / 2;
@@ -253,7 +255,7 @@ class DialogueEditorState extends MusicBeatState
 		if(textToType == null || textToType.length < 1) textToType = ' ';
 	
 		Alphabet.setDialogueSound(soundInputText.text);
-		daText = new Alphabet(DialogueBoxPsych.DEFAULT_TEXT_X, DialogueBoxPsych.DEFAULT_TEXT_Y, textToType, false, true, speed, 0.7);
+		daText = new Alphabet(DialogueBoxDenpa.DEFAULT_TEXT_X, DialogueBoxDenpa.DEFAULT_TEXT_Y, textToType, false, true, speed, 0.7);
 		add(daText);
 
 		if(speed > 0) {

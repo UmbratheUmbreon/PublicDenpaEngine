@@ -12,8 +12,12 @@ import llua.State;
 
 using StringTools;
 
+/**
+* Class used to control Discord Rich Presence.
+*/
 class DiscordClient
 {
+	#if desktop
 	public static var isInitialized:Bool = false;
 	public function new()
 	{
@@ -44,10 +48,10 @@ class DiscordClient
 	static function onReady()
 	{
 		DiscordRpc.presence({
-			details: "In the Menus",
+			details: "Starting up...",
 			state: null,
-			largeImageKey: 'logo',
-			largeImageText: "Denpa Funkin'"
+			largeImageKey: 'sun',
+			largeImageText: "Denpa Engine"
 		});
 	}
 
@@ -83,9 +87,10 @@ class DiscordClient
 		DiscordRpc.presence({
 			details: details,
 			state: state,
-			largeImageKey: 'logo',
+			largeImageKey: 'sun',
 			largeImageText: "Engine Version: " + MainMenuState.denpaEngineVersion,
 			smallImageKey : smallImageKey,
+			smallImageText: CoolUtil.formatStringProper(smallImageKey),
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
             endTimestamp : Std.int(endTimestamp / 1000)
@@ -100,5 +105,6 @@ class DiscordClient
 			changePresence(details, state, smallImageKey, hasStartTimestamp, endTimestamp);
 		});
 	}
+	#end
 	#end
 }

@@ -7,7 +7,6 @@ import llua.State;
 import llua.Convert;
 #end
 
-import flixel.FlxG;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.text.FlxText;
@@ -19,13 +18,9 @@ import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.util.FlxColor;
 import flixel.FlxBasic;
-#if sys
-import sys.FileSystem;
-import sys.io.File;
-#end
 import Type.ValueType;
 import Controls;
-import DialogueBoxPsych;
+import DialogueBoxDenpa;
 
 #if desktop
 import Discord;
@@ -33,6 +28,9 @@ import Discord;
 
 using StringTools;
 
+/**
+* Lua class used for all lua in the `EditorPlayState`.
+*/
 class EditorLua {
 	public static var Function_Stop = 1;
 	public static var Function_Continue = 0;
@@ -66,12 +64,12 @@ class EditorLua {
 		set('inChartEditor', true);
 
 		set('curBpm', Conductor.bpm);
-		set('bpm', PlayState.SONG.bpm);
-		set('scrollSpeed', PlayState.SONG.speed);
+		set('bpm', PlayState.SONG.header.bpm);
+		set('scrollSpeed', PlayState.SONG.options.speed);
 		set('crochet', Conductor.crochet);
 		set('stepCrochet', Conductor.stepCrochet);
 		set('songLength', FlxG.sound.music.length);
-		set('songName', PlayState.SONG.song);
+		set('songName', PlayState.SONG.header.song);
 
 		set('screenWidth', FlxG.width);
 		set('screenHeight', FlxG.height);

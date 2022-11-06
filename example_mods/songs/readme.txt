@@ -1,2 +1,3 @@
-Put your custom songs here
-It should be a folder with your custom song's name, and inside of it should include two files: "Inst.ogg" and "Voices.ogg"
+This is where your song .oggs go.
+They should be in the following location: "song/Inst.ogg" and "song/Voices.ogg".
+There is an optional second vocal track for the opponent that you can add as "song/SecVoices.ogg".

@@ -1,69 +1,24 @@
 {
 	"animations": [
 		{
-			"loop": false,
 			"offsets": [
-				1,
+				0,
 				0
 			],
+			"loop": false,
+			"fps": 24,
 			"anim": "cheer",
-			"fps": 24,
-			"name": "GF Cheer",
-			"indices": []
+			"indices": [],
+			"name": "GF Cheer"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				0,
-				-19
-			],
-			"anim": "singLEFT",
-			"fps": 24,
-			"name": "GF left note",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				0,
-				-20
-			],
-			"anim": "singDOWN",
-			"fps": 24,
-			"name": "GF Down Note",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				0,
-				4
-			],
-			"anim": "singUP",
-			"fps": 24,
-			"name": "GF Up Note",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				0,
-				-20
-			],
-			"anim": "singRIGHT",
-			"fps": 24,
-			"name": "GF Right Note",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				-2,
 				-21
 			],
-			"anim": "sad",
+			"loop": false,
 			"fps": 24,
-			"name": "gf sad",
+			"anim": "sad",
 			"indices": [
 				0,
 				1,
@@ -78,17 +33,17 @@
 				10,
 				11,
 				12
-			]
+			],
+			"name": "gf sad"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				0,
 				-9
 			],
-			"anim": "danceLeft",
+			"loop": false,
 			"fps": 24,
-			"name": "GF Dancing Beat",
+			"anim": "danceLeft",
 			"indices": [
 				30,
 				0,
@@ -106,17 +61,17 @@
 				12,
 				13,
 				14
-			]
+			],
+			"name": "GF Dancing Beat"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				0,
 				-9
 			],
-			"anim": "danceRight",
+			"loop": false,
 			"fps": 24,
-			"name": "GF Dancing Beat",
+			"anim": "danceRight",
 			"indices": [
 				15,
 				16,
@@ -133,62 +88,36 @@
 				27,
 				28,
 				29
-			]
-		},
-		{
-			"loop": false,
-			"offsets": [
-				0,
-				-9
 			],
-			"anim": "hairFall",
-			"fps": 24,
-			"name": "GF Dancing Beat Hair Landing",
-			"indices": [
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-				6,
-				7,
-				8,
-				9,
-				10,
-				11
-			]
-		},
-		{
-			"loop": true,
-			"offsets": [
-				-2,
-				-17
-			],
-			"anim": "scared",
-			"fps": 24,
-			"name": "GF FEAR",
-			"indices": []
+			"name": "GF Dancing Beat"
 		}
 	],
 	"sarvente_floating": false,
 	"healthbar_colors_middle": [
+		145,
+		0,
+		57
+	],
+	"no_antialiasing": false,
+	"healthbar_colors_bottom": [
 		125,
 		0,
 		37
 	],
-	"no_antialiasing": false,
-	"healthbar_colors_bottom": [
-		85,
-		0,
-		0
-	],
-	"image": "characters/gfChristmas",
+	"image": "characters/Week5/gfChristmas",
+	"trail_length": null,
+	"trail_delay": null,
 	"position": [
 		0,
 		0
 	],
+	"trail_diff": null,
+	"trail_alpha": null,
+	"health_drain": false,
 	"healthicon": "gf",
+	"shake_screen": false,
+	"orbit": false,
+	"drain_floor": 0.1,
 	"healthbar_count": 3,
 	"flip_x": false,
 	"healthbar_colors": [
@@ -202,6 +131,8 @@
 	],
 	"float_magnitude": 0,
 	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
 	"scale": 1,
 	"flixel_trail": false
 }

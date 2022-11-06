@@ -1,19 +1,12 @@
 package;
 
-import flixel.FlxG;
 import openfl.utils.Assets;
-import lime.utils.Assets as LimeAssets;
-import lime.utils.AssetLibrary;
-import lime.utils.AssetManifest;
-#if sys
-import sys.io.File;
-import sys.FileSystem;
-#else
-import openfl.utils.Assets;
-#end
 
 using StringTools;
 
+/**
+* Class containing useful functions to be reused across the different states.
+*/
 class CoolUtil
 {
 	public static var defaultDifficulties:Array<String> = [
@@ -30,6 +23,38 @@ class CoolUtil
 		var m:Float = Math.fround(f * snap);
 		trace(snap);
 		return (m / snap);
+	}
+
+	public static function curveNumber(input:Float = 1, ?curve:Float = 10):Float
+	{
+		var returnNum:Float = Math.sqrt(input)*curve;
+		return returnNum;
+	}
+
+	public static function formatStringProper(input:String):String {
+		var coolString:Array<String> = input.replace('-', ' ').trim().split(' ');
+		var fuck = 0;
+		for (str in coolString) {
+			str = '${str.charAt(0).toUpperCase()}${str.substr(1)}';
+			coolString[fuck] = str;
+			fuck++;
+		}
+		return coolString.join(' ');
+	}
+
+	public static function removeDuplicates(string:Array<String>):Array<String> {
+		var tempArray:Array<String> = new Array<String>();
+		var lastSeen:String = null;
+		string.sort(function(str1:String, str2:String) {
+		  return (str1 == str2) ? 0 : (str1 > str2) ? 1 : -1; 
+		});
+		for (str in string) {
+		  if (str != lastSeen) {
+			tempArray.push(str);
+		  }
+		  lastSeen = str;
+		}
+		return tempArray;
 	}
 
 	public static function getDifficultyFilePath(num:Null<Int> = null)

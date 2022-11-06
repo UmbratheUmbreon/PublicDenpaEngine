@@ -4,9 +4,7 @@ import flash.geom.Rectangle;
 import flixel.addons.ui.interfaces.IFlxUIClickable;
 import flixel.addons.ui.interfaces.IFlxUIWidget;
 import flixel.addons.ui.interfaces.IHasParams;
-import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.math.FlxMath;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
@@ -448,12 +446,24 @@ class FlxUIDropDownMenuCustom extends FlxUIGroup implements IFlxUIWidget impleme
 				}
 			}
 
-			if (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(this))
+			if (FlxG.mouse.justPressed && !mouseOverlapping())
 			{
 				showList(false);
 			}
 		}
 		#end
+	}
+
+	function mouseOverlapping()
+	{
+		var mousePoint = FlxG.mouse.getScreenPosition(camera);
+		var objPoint = this.getScreenPosition(null, camera);
+		if(mousePoint.x >= objPoint.x && mousePoint.y >= objPoint.y &&
+			mousePoint.x < objPoint.x + this.width && mousePoint.y < objPoint.y + this.height)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	override public function destroy():Void

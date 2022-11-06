@@ -49,7 +49,7 @@ function onSongStart()
 end
 
 function onEndSong()
-	-- song ended/starting transition (Will be delayed if you're unlocking an achievement)
+	-- song ended/starting transition
 	-- return Function_Stop to stop the song from ending for playing a cutscene or something.
 	return Function_Continue;
 end
@@ -160,23 +160,4 @@ function onTimerCompleted(tag, loops, loopsLeft)
 	-- A loop from a timer you called has been completed, value "tag" is it's tag
 	-- loops = how many loops it will have done when it ends completely
 	-- loopsLeft = how many are remaining
-end
-function onCheckForAchievement(name)
-	
-	--deals with achievement checks
-	
-	--EX:
---[[
-  if name == 'sick-full-combo' and getProperty('bads') == 0 and getProperty('goods') == 0 and getProperty('shits') == 0 and getProperty('endingSong') then
-    return Function_Continue
-  end
-  if name == 'bad-health-finish' and getProperty('health') < 0.01 and getProperty('endingSong') then
-    return Function_Continue
-  end
-  if name == 'halfway' and getSongPosition >  getPropertyFromClass('flixel.FlxG','sound.music.length')/2 then
-    return Function_Continue
-  end
-	
-	
-	]]--
 end

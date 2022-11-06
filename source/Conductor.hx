@@ -14,6 +14,9 @@ typedef BPMChangeEvent =
 	var bpm:Float;
 }
 
+/**
+* Class used to control all timing related functions for bpm.
+*/
 class Conductor
 {
 	public static var bpm:Float = 100;
@@ -32,8 +35,11 @@ class Conductor
 	{
 	}
 
-	public static function judgeNote(note:Note, diff:Float=0) //STOLEN FROM KADE ENGINE (bbpanzu) - I had to rewrite it later anyway after i added the custom hit windows lmao (Shadow Mario)
+	public static function judgeNote(note:Note, diff:Float=0, ?bot:Bool = false) //STOLEN FROM KADE ENGINE (bbpanzu) - I had to rewrite it later anyway after i added the custom hit windows lmao (Shadow Mario)
 	{
+		if (bot) {
+			return 'perfect';
+		}
 		//tryna do MS based judgment due to popular demand
 		var timingWindows:Array<Int> = [ClientPrefs.perfectWindow, ClientPrefs.sickWindow, ClientPrefs.goodWindow, ClientPrefs.badWindow, ClientPrefs.shitWindow];
 		var windowNames:Array<String> = ['perfect', 'sick', 'good', 'bad', 'shit'];
@@ -49,16 +55,11 @@ class Conductor
 		return 'wtf';
 	}
 
-	public static function botJudgeNote(note:Note, diff:Float=0)
-	{
-		return 'perfect';
-	}
-
 	public static function mapBPMChanges(song:SwagSong)
 	{
 		bpmChangeMap = [];
 
-		var curBPM:Float = song.bpm;
+		var curBPM:Float = song.header.bpm;
 		var totalSteps:Int = 0;
 		var totalPos:Float = 0;
 		for (i in 0...song.notes.length)

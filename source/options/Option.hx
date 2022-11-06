@@ -1,17 +1,14 @@
 package options;
 
 import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
 import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxSave;
 import flixel.tweens.FlxEase;
@@ -23,6 +20,9 @@ import Controls;
 
 using StringTools;
 
+/**
+* Class defining an `Option` in an option sub state.
+*/
 class Option
 {
 	private var child:Alphabet;
@@ -109,11 +109,17 @@ class Option
 
 	public function getValue():Dynamic
 	{
-		return Reflect.getProperty(ClientPrefs, variable);
+		/*switch (variable.toLowerCase()) {
+			default:*/
+				return Reflect.getProperty(ClientPrefs, variable);
+		//}
 	}
 	public function setValue(value:Dynamic)
 	{
-		Reflect.setProperty(ClientPrefs, variable, value);
+		/*switch (variable.toLowerCase()) {
+			default:*/
+				Reflect.setProperty(ClientPrefs, variable, value);
+		//}
 	}
 
 	public function setChild(child:Alphabet)

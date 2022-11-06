@@ -107,17 +107,17 @@
 	],
 	"sarvente_floating": false,
 	"healthbar_colors_middle": [
-		163,
-		196,
-		65
+		133,
+		235,
+		82
 	],
 	"no_antialiasing": false,
 	"healthbar_colors_bottom": [
-		143,
-		176,
-		45
+		113,
+		215,
+		62
 	],
-	"image": "characters/picoSpeaker",
+	"image": "characters/Week7/picoSpeaker",
 	"trail_length": 4,
 	"trail_delay": 24,
 	"position": [
@@ -133,9 +133,9 @@
 	"healthbar_count": 3,
 	"flip_x": false,
 	"healthbar_colors": [
-		183,
-		216,
-		85
+		153,
+		255,
+		102
 	],
 	"camera_position": [
 		-310,

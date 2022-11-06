@@ -3,7 +3,6 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
@@ -13,23 +12,24 @@ import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
-import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.app.Application;
-import Achievements;
 import editors.MasterEditorMenu;
 import flixel.input.keyboard.FlxKey;
 
 using StringTools;
 
+/**
+* State containing connections to other states, serving as a hub for the menus.
+*/
 class MainMenuState extends MusicBeatState
 {
 	#if !debug
-	public static var denpaEngineVersion:String = '0.5.1'; //This is also used for Discord RPC
+	public static var denpaEngineVersion:String = '0.7.0'; //This is also used for Discord RPC
 	#else
-	public static var denpaEngineVersion:String = '0.5.1 Nightly'; //For declaring "HEY THIS ISNT FINAL"
+	public static var denpaEngineVersion:String = '0.7.0 Nightly'; //For declaring "HEY THIS ISNT FINAL"
 	#end
 	public static var baseVersion:String = '0.5.2h'; //For those wondering what this engine is based on
 	public static var curSelected:Int = 0;
@@ -37,7 +37,6 @@ class MainMenuState extends MusicBeatState
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
-	private var camAchievement:FlxCamera;
 
 	var curDifficulty:Int = -1;
 	
@@ -72,6 +71,8 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
 		WeekData.loadTheFirstEnabledMod();
 		optionShit = [
 			'story_mode', 
@@ -90,11 +91,8 @@ class MainMenuState extends MusicBeatState
 		if (ClientPrefs.mouseControls) FlxG.mouse.visible = true;
 
 		camGame = new FlxCamera();
-		camAchievement = new FlxCamera();
-		camAchievement.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
-		FlxG.cameras.add(camAchievement, false);
 		FlxG.cameras.setDefaultDrawTarget(camGame, true); //new EPIC code
 		//FlxCamera.defaultCameras = [camGame]; //old STUPID code
 
@@ -131,7 +129,7 @@ class MainMenuState extends MusicBeatState
 		//gradient.screenCenter();
 
 		logo = new FlxSprite(270, FlxG.height/2);
-		logo.frames = Paths.getSparrowAtlas('logoBumpin');
+		logo.frames = Paths.getSparrowAtlas('title/logoBumpin');
 		logo.animation.addByPrefix('bump', 'logo bumpin', 24, false);
 		logo.animation.play('bump');
 		logo.scrollFactor.set(0, 0);
@@ -194,35 +192,18 @@ class MainMenuState extends MusicBeatState
 			{case 'story_mode':
 				menuItem.x = 115;
 				menuItem.y = 450;
-				/*if(!seenTween){
-					menuItem.x = -1385;
-				}*/
 			case 'freeplay':
 				menuItem.x = 315;
 				menuItem.y = 450;
-				/*if(!seenTween){
-					menuItem.x = -1185;
-					menuItem.y = 1950;
-				}*/
 			case 'credits':
 				menuItem.x = 515;
 				menuItem.y = 450;
-				/*if(!seenTween){
-					menuItem.y = 1950;
-				}*/
 			case 'options':
 				menuItem.x = 715;
 				menuItem.y = 450;
-				/*if(!seenTween){
-					menuItem.x = 2215;
-					menuItem.y = 1950;
-				}*/
 			case 'patch':
 				menuItem.x = 915;
 				menuItem.y = 450;
-				/*if(!seenTween){
-					menuItem.x = 2415;
-				}*/
 			case 'soundtest':
 				menuItem.x = 0;
 				menuItem.y = -30;
@@ -238,14 +219,20 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollowPos, null, 1);
 
-		var versionShit2:FlxText = new FlxText(12, FlxG.height - 44, 0, "Denpa Engine v" + denpaEngineVersion, 12);
+		var versionShit2:FlxText = new FlxText(12, FlxG.height - #if !html 64 #else 44 #end, 0, "Denpa Engine v" + denpaEngineVersion, 12);
 		versionShit2.scrollFactor.set();
 		versionShit2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit2);
-		var versionShit:FlxText = new FlxText(12, FlxG.height - 24, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
+		var versionShit:FlxText = new FlxText(12, FlxG.height - #if !html 44 #else 24 #end, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
+		#if !html
+		var prompt:FlxText = new FlxText(12, FlxG.height - 24, 0, "Press RESET to Clear Save Data", 12);
+		prompt.scrollFactor.set();
+		prompt.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(prompt);
+		#end
 
 		versionShit.visible = true;
 		versionShit2.visible = true;	
@@ -253,19 +240,6 @@ class MainMenuState extends MusicBeatState
 		// NG.core.calls.event.logEvent('swag').send();
 
 		changeItem();
-
-		#if ACHIEVEMENTS_ALLOWED
-		Achievements.loadAchievements();
-		var leDate = Date.now();
-		if (leDate.getDay() == 5 && leDate.getHours() >= 18) {
-			var achieveID:Int = Achievements.getAchievementIndex('friday_night_play');
-			if(!Achievements.isAchievementUnlocked(Achievements.achievementsStuff[achieveID][2])) { //It's a friday night. WEEEEEEEEEEEEEEEEEE
-				Achievements.achievementsMap.set(Achievements.achievementsStuff[achieveID][2], true);
-				giveAchievement();
-				ClientPrefs.saveSettings();
-			}
-		}
-		#end
 
 		if(!seenTween){
 		FlxTween.tween(logo, {y: 0, alpha: 1}, 1, {ease: FlxEase.quadOut});
@@ -289,15 +263,6 @@ class MainMenuState extends MusicBeatState
 		
 		super.create();
 	}
-
-	#if ACHIEVEMENTS_ALLOWED
-	// Unlocks "Freaky on a Friday Night" achievement
-	function giveAchievement() {
-		add(new AchievementObject('friday_night_play', camAchievement));
-		FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
-		trace('Giving achievement "friday_night_play"');
-	}
-	#end
 
 	var selectedSomethin:Bool = false;
 	var canClick:Bool = true;
@@ -388,6 +353,29 @@ class MainMenuState extends MusicBeatState
 			{
 				selectedSomethin = true;
 				MusicBeatState.switchState(new MasterEditorMenu());
+			}
+			#end
+			#if !html
+			if (controls.RESET)
+			{
+				FlxG.save.erase();
+				ClientPrefs.loadPrefs();
+				ClientPrefs.keyBinds = ClientPrefs.defaultKeys.copy();
+				trace ('erasing data');
+				FlxG.sound.play(Paths.sound('invalidJSON'));
+				var funnyText = new FlxText(12, FlxG.height - 24, 0, "Data Erased!");
+				funnyText.scrollFactor.set();
+				funnyText.screenCenter();
+				funnyText.x = FlxG.width/2 - 250;
+				funnyText.y = FlxG.height/2 - 64;
+				funnyText.setFormat("VCR OSD Mono", 64, FlxColor.RED, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				add(funnyText);
+				FlxTween.tween(funnyText, {alpha: 0}, 0.6, {
+					onComplete: function(tween:FlxTween)
+					{
+						funnyText.destroy();
+					}
+				});
 			}
 			#end
 		}
@@ -489,13 +477,6 @@ class MainMenuState extends MusicBeatState
 
 		bg.scale.set(1.06,1.06);
 		bg.updateHitbox();
-		if (PlayState.SONG != null) {
-			if (PlayState.SONG.song == 'Zavodila')  {
-				FlxG.camera.shake(0.0075, 0.2);
-				bg.scale.set(1.16,1.16);
-				bg.updateHitbox();
-			}
-		}
 		if(logo != null) 
 			logo.animation.play('bump', true);
 		//trace('beat hit' + curBeat);

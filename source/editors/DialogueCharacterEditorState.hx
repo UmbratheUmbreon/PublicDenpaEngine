@@ -3,12 +3,10 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.system.FlxSound;
@@ -26,16 +24,16 @@ import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;
 import haxe.Json;
-import DialogueBoxPsych;
+import DialogueBoxDenpa;
 import flixel.FlxCamera;
 import flixel.group.FlxSpriteGroup;
 import lime.system.Clipboard;
-#if sys
-import sys.io.File;
-#end
 
 using StringTools;
 
+/**
+* State used to create and edit `Dialogue Character` jsons.
+*/
 class DialogueCharacterEditorState extends MusicBeatState
 {
 	var box:FlxSprite;
@@ -74,7 +72,9 @@ class DialogueCharacterEditorState extends MusicBeatState
 
 	var curAnim:Int = 0;
 
-	override function create() {
+	override function create()
+	{
+		Paths.clearUnusedMemory();
 		var musicID:Int = FlxG.random.int(0, 2);
 		switch (musicID)
 		{
@@ -84,6 +84,8 @@ class DialogueCharacterEditorState extends MusicBeatState
 				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
 			case 2:
 				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
+			case 3:
+				FlxG.sound.playMusic(Paths.music('dsi'), 0.5);
 		}
 		Alphabet.setDialogueSound();
 
@@ -435,8 +437,8 @@ class DialogueCharacterEditorState extends MusicBeatState
 			daText.destroy();
 		}
 		daText = new Alphabet(0, 0, DEFAULT_TEXT, false, true, 0.05, 0.7);
-		daText.x = DialogueBoxPsych.DEFAULT_TEXT_X;
-		daText.y = DialogueBoxPsych.DEFAULT_TEXT_Y;
+		daText.x = DialogueBoxDenpa.DEFAULT_TEXT_X;
+		daText.y = DialogueBoxDenpa.DEFAULT_TEXT_Y;
 		hudGroup.add(daText);
 	}
 
@@ -449,12 +451,12 @@ class DialogueCharacterEditorState extends MusicBeatState
 			char.setGraphicSize(Std.int(char.width * DialogueCharacter.DEFAULT_SCALE * character.jsonFile.scale));
 			char.updateHitbox();
 		}
-		character.x = DialogueBoxPsych.LEFT_CHAR_X;
-		character.y = DialogueBoxPsych.DEFAULT_CHAR_Y;
+		character.x = DialogueBoxDenpa.LEFT_CHAR_X;
+		character.y = DialogueBoxDenpa.DEFAULT_CHAR_Y;
 
 		switch(character.jsonFile.dialogue_pos) {
 			case 'right':
-				character.x = FlxG.width - character.width + DialogueBoxPsych.RIGHT_CHAR_X;
+				character.x = FlxG.width - character.width + DialogueBoxDenpa.RIGHT_CHAR_X;
 			
 			case 'center':
 				character.x = FlxG.width / 2;
@@ -491,7 +493,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 				anim = 'center';
 		}
 		box.animation.play(anim, true);
-		DialogueBoxPsych.updateBoxOffsets(box);
+		DialogueBoxDenpa.updateBoxOffsets(box);
 	}
 
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>) {

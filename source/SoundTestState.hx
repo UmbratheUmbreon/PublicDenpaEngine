@@ -3,7 +3,6 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
@@ -13,7 +12,6 @@ import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
-import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
@@ -22,6 +20,9 @@ import flixel.input.keyboard.FlxKey;
 
 using StringTools;
 
+/**
+* State used to play and select songs for the menus.
+*/
 class SoundTestState extends MusicBeatState
 {
 	public static var disk:Int = 0;
@@ -38,6 +39,7 @@ class SoundTestState extends MusicBeatState
 	var paused:Bool = false;
 
 	var albumCover:FlxSprite;
+	var diskImg:String = 'engine';
 	var diskTxt:FlxText;
 	var trackTxt:FlxText;
 
@@ -105,12 +107,7 @@ class SoundTestState extends MusicBeatState
 		add(gradient);
 		//gradient.screenCenter();
 
-		albumCover = new FlxSprite();
-		albumCover.frames = Paths.getSparrowAtlas('albumGrid');
-		albumCover.animation.addByPrefix('tdm1', 'album tdm1', 1, true);
-		albumCover.animation.addByPrefix('tdm2', 'album tdm2', 1, true);
-		albumCover.animation.addByPrefix('tdm3', 'album tdm3', 1, true);
-		albumCover.animation.addByPrefix('engine', 'album engine', 1, true);
+		albumCover = new FlxSprite().loadGraphic(Paths.image('albums/$diskImg'));
 		albumCover.scrollFactor.set(0, 0);
 		albumCover.x = FlxG.width/2 - 240;
 		albumCover.y = FlxG.height/2 - 120;
@@ -267,557 +264,197 @@ class SoundTestState extends MusicBeatState
 				switch (epicTrack)
 				{
 					case 0:
-						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Menu Song';
-						Conductor.changeBPM(100);
-						colorToSet = FlxColor.fromRGB(255,131,0);
+						setTrackThing('freakyMenu', 'Menu Song', 255,131,0, 100);
 					case 1:
-						FlxG.sound.playMusic(Paths.music('OVERDOSE'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'OVERDOSE';
-						Conductor.changeBPM(104);
-						colorToSet = FlxColor.fromRGB(32,32,32);
+						setTrackThing('overdose', 'OVERDOSE', 32,32,32, 104);
 					case 2:
-						FlxG.sound.playMusic(Paths.music('characterSelect'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Character Select';
-						Conductor.changeBPM(80);
-						colorToSet = FlxColor.fromRGB(200,200,200);
+						setTrackThing('characterSelect', 'Character Select', 200,200,200, 80);
 				}
 			case 1:
 				switch (epicTrack)
 				{
 					case 0:
-						FlxG.sound.playMusic(Paths.music('tdm1/0'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Main Theme';
-						Conductor.changeBPM(100);
-						colorToSet = FlxColor.fromRGB(222,222,222);
+						setTrackThing('tdm1/0', 'Main Theme', 222,222,222, 100);
 					case 1:
-						FlxG.sound.playMusic(Paths.music('tdm1/1'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Digitoll';
-						Conductor.changeBPM(105);
-						colorToSet = FlxColor.fromRGB(5,154,38);
+						setTrackThing('tdm1/1', 'Digitoll', 5,154,38, 105);
 					case 2:
-						FlxG.sound.playMusic(Paths.music('tdm1/2'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Antenna Tower';
-						Conductor.changeBPM(80);
-						colorToSet = FlxColor.fromRGB(244,244,244);
+						setTrackThing('tdm1/2', 'Antenna Tower', 244,244,244, 80);
 					case 3:
-						FlxG.sound.playMusic(Paths.music('tdm1/3'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Shop';
-						Conductor.changeBPM(105);
-						colorToSet = FlxColor.fromRGB(166,166,166);
+						setTrackThing('tdm1/3', 'Shop', 166,166,166, 105);
 					case 4:
-						FlxG.sound.playMusic(Paths.music('tdm1/4'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Computer';
-						Conductor.changeBPM(150);
-						colorToSet = FlxColor.fromRGB(122,122,122);
+						setTrackThing('tdm1/4', 'Computer', 122,122,122, 150);
 					case 5:
-						FlxG.sound.playMusic(Paths.music('tdm1/5'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = "Denpa Mens' House";
-						Conductor.changeBPM(105);
-						colorToSet = FlxColor.fromRGB(145,145,145);
+						setTrackThing('tdm1/5', 'Denpa Mens\' House', 145,145,145, 105);
 					case 6:
-						FlxG.sound.playMusic(Paths.music('tdm1/6'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Museum';
-						Conductor.changeBPM(99);
-						colorToSet = FlxColor.fromRGB(31,213,73);
+						setTrackThing('msm', 'Museum', 31,213,73, 99);
 					case 7:
-						FlxG.sound.playMusic(Paths.music('tdm1/7'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Ferry Wharf';
-						Conductor.changeBPM(105);
-						colorToSet = FlxColor.fromRGB(21,0,255);
+						setTrackThing('tdm1/7', 'Ferry Wharf', 21,0,255, 105);
 					case 8:
-						FlxG.sound.playMusic(Paths.music('tdm1/8'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Cave';
-						Conductor.changeBPM(82);
-						colorToSet = FlxColor.fromRGB(236,99,19);
+						setTrackThing('tdm1/8', 'Cave', 236,99,19, 82);
 					case 9:
-						FlxG.sound.playMusic(Paths.music('tdm1/9'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Battle';	
-						Conductor.changeBPM(200);
-						colorToSet = FlxColor.fromRGB(55,55,55);
+						setTrackThing('tdm1/9', 'Battle', 55,55,55, 200);
 					case 10:
-						FlxG.sound.playMusic(Paths.music('tdm1/10'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Theme of the Forest';
-						Conductor.changeBPM(82);
-						colorToSet = FlxColor.fromRGB(0,255,59);
+						setTrackThing('tdm1/10', 'Theme of the Forest', 0,255,59, 82);
 					case 11:
-						FlxG.sound.playMusic(Paths.music('tdm1/11'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Village of the Underground Man';
-						Conductor.changeBPM(70);
-						colorToSet = FlxColor.fromRGB(255,205,75);
+						setTrackThing('tdm1/11', 'Village of the Underground Man', 255,205,75, 70);
 					case 12:
-						FlxG.sound.playMusic(Paths.music('tdm1/12'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Tower of the Demon King';
-						Conductor.changeBPM(76);
-						colorToSet = FlxColor.fromRGB(25,110,0);
+						setTrackThing('tdm1/12', 'Tower of the Demon King', 25,110,0, 76);
 					case 13:
-						FlxG.sound.playMusic(Paths.music('tdm1/13'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Boss Battle';
-						Conductor.changeBPM(180);
-						colorToSet = FlxColor.fromRGB(24,24,24);
+						setTrackThing('tdm1/13', 'Boss Battle', 24,24,24, 180);
 					case 14:
-						FlxG.sound.playMusic(Paths.music('tdm1/14'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Incandescence Zone';
-						Conductor.changeBPM(88);
-						colorToSet = FlxColor.fromRGB(122,0,0);
+						setTrackThing('tdm1/14', 'Incandescence Zone', 122,0,0, 88);
 					case 15:
-						FlxG.sound.playMusic(Paths.music('tdm1/15'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Barren Land';
-						Conductor.changeBPM(120);
-						colorToSet = FlxColor.fromRGB(0,122,0);
+						setTrackThing('tdm1/15', 'Barren Land', 0,122,0, 120);
 					case 16:
-						FlxG.sound.playMusic(Paths.music('tdm1/16'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Fairy Oasis';
-						Conductor.changeBPM(98);
-						colorToSet = FlxColor.fromRGB(245,245,245);
+						setTrackThing('tdm1/16', 'Fairy Oasis', 245,245,245, 98);
 					case 17:
-						FlxG.sound.playMusic(Paths.music('tdm1/17'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Ice World';
-						Conductor.changeBPM(82);
-						colorToSet = FlxColor.fromRGB(48,207,239);
+						setTrackThing('tdm1/17', 'Ice World', 48,207,239, 82);
 					case 18:
-						FlxG.sound.playMusic(Paths.music('tdm1/18'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Remains of the Darkness';
-						Conductor.changeBPM(82);
-						colorToSet = FlxColor.fromRGB(10,10,10);
+						setTrackThing('tdm1/18', 'Remains of the Darkness', 10,10,10, 82);
 					case 19:
-						FlxG.sound.playMusic(Paths.music('tdm1/19'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Great Demon King';
-						Conductor.changeBPM(186);
-						colorToSet = FlxColor.fromRGB(255,249,66);
+						setTrackThing('tdm1/19', 'Great Demon King', 255,249,66, 186);
 					case 20:
-						FlxG.sound.playMusic(Paths.music('tdm1/20'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Ending';
-						Conductor.changeBPM(100);
-						colorToSet = FlxColor.fromRGB(255,255,255);
+						setTrackThing('tdm1/20', 'Ending', 255,255,255, 100);
 				}
 			case 2:
 				switch (epicTrack)
 				{
 					case 0:
-						FlxG.sound.playMusic(Paths.music('tdm2/0'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Title';
-						Conductor.changeBPM(120);
-						colorToSet = FlxColor.fromRGB(200,200,200);
+						setTrackThing('tdm2/0', 'Title', 200,200,200, 120);
 					case 1:
-						FlxG.sound.playMusic(Paths.music('tdm2/1'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Antenna';
-						Conductor.changeBPM(80);
-						colorToSet = FlxColor.fromRGB(244,244,244);
+						setTrackThing('tdm2/1', 'Antenna', 244,244,244, 80);
 					case 2:
-						FlxG.sound.playMusic(Paths.music('tdm2/2'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Digitown';
-						Conductor.changeBPM(120);
-						colorToSet = FlxColor.fromRGB(5,154,38);
+						setTrackThing('tdm2/2', 'Digitown', 5,154,38, 120);
 					case 3:
-						FlxG.sound.playMusic(Paths.music('tdm2/3'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Battle';
-						Conductor.changeBPM(180);
-						colorToSet = FlxColor.fromRGB(55,55,55);
+						setTrackThing('tdm2/3', 'Battle', 55,55,55, 180);
 					case 4:
-						FlxG.sound.playMusic(Paths.music('tdm2/4'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Elegy';
-						Conductor.changeBPM(81); //maybe 80 or 82?
-						colorToSet = FlxColor.fromRGB(33,33,33);
+						setTrackThing('tdm2/4', 'Elegy', 33,33,33, 81);
 					case 5:
-						FlxG.sound.playMusic(Paths.music('tdm2/5'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'World Map';
-						Conductor.changeBPM(117);
-						colorToSet = FlxColor.fromRGB(0,255,0);
+						setTrackThing('tdm2/5', 'World Map', 0,255,0, 117);
 					case 6:
-						FlxG.sound.playMusic(Paths.music('tdm2/6'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = "Denpa Mens' House";
-						Conductor.changeBPM(141);
-						colorToSet = FlxColor.fromRGB(145,145,145);
+						setTrackThing('tdm2/6', 'Denpa Mens\' House', 145,145,145, 141);
 					case 7:
-						FlxG.sound.playMusic(Paths.music('tdm2/7'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Farm';
-						Conductor.changeBPM(150);
-						colorToSet = FlxColor.fromRGB(196,122,0);
+						setTrackThing('tdm2/7', 'Farm', 196,122,0, 150);
 					case 8:
-						FlxG.sound.playMusic(Paths.music('tdm2/8'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Cave';
-						Conductor.changeBPM(93);
-						colorToSet = FlxColor.fromRGB(236,99,19);
+						setTrackThing('tdm2/8', 'Cave', 236,99,19, 93);
 					case 9:
-						FlxG.sound.playMusic(Paths.music('tdm2/9'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Boss Battle';
-						Conductor.changeBPM(180);
-						colorToSet = FlxColor.fromRGB(24,24,24);
+						setTrackThing('tdm2/9', 'Boss Battle', 24,24,24, 180);
 					case 10:
-						FlxG.sound.playMusic(Paths.music('tdm1/4'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'PC';
-						Conductor.changeBPM(150);
-						colorToSet = FlxColor.fromRGB(122,122,122);
+						setTrackThing('tdm1/4', 'PC', 122,122,122, 150);
 					case 11:
-						FlxG.sound.playMusic(Paths.music('tdm2/11'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Village';
-						Conductor.changeBPM(95);
-						colorToSet = FlxColor.fromRGB(0,144,225);
+						setTrackThing('tdm2/11', 'Village', 0,144,225, 95);
 					case 12:
-						FlxG.sound.playMusic(Paths.music('tdm2/12'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Dwarf Home';
-						Conductor.changeBPM(92);
-						colorToSet = FlxColor.fromRGB(255,205,75);
+						setTrackThing('tdm2/12', 'Dwarf Home', 255,205,75, 92);
 					case 13:
-						FlxG.sound.playMusic(Paths.music('tdm2/13'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Mystic';
-						Conductor.changeBPM(65);
-						colorToSet = FlxColor.fromRGB(255,255,255);
+						setTrackThing('tdm2/13', 'Mystic', 255,255,255, 65);
 					case 14:
-						FlxG.sound.playMusic(Paths.music('tdm2/14'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Cave of Darkness';
-						Conductor.changeBPM(82);
-						colorToSet = FlxColor.fromRGB(10,10,10);
+						setTrackThing('tdm2/14', 'Cave of Darkness', 10,10,10, 82);
 					case 15:
-						FlxG.sound.playMusic(Paths.music('tdm1/6'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Museum';
-						Conductor.changeBPM(99);
-						colorToSet = FlxColor.fromRGB(31,213,73);
+						setTrackThing('tdm1/6', 'Museum', 31,213,73, 99);
 					case 16:
-						FlxG.sound.playMusic(Paths.music('tdm1/12'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Tower of Evil';
-						Conductor.changeBPM(76);
-						colorToSet = FlxColor.fromRGB(25,110,0);
+						setTrackThing('tdm1/12', 'Tower of Evil', 25,110,0, 76);
 					case 17:
-						FlxG.sound.playMusic(Paths.music('tdm2/17'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'At Sea';
-						Conductor.changeBPM(60);
-						colorToSet = FlxColor.fromRGB(21,0,255);
+						setTrackThing('tdm2/17', 'At Sea', 21,0,255, 60);
 					case 18:
-						FlxG.sound.playMusic(Paths.music('tdm1/14'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Volcano';
-						Conductor.changeBPM(88);
-						colorToSet = FlxColor.fromRGB(122,0,0);
+						setTrackThing('tdm1/14', 'Volcano', 122,0,0, 88);
 					case 19:
-						FlxG.sound.playMusic(Paths.music('tdm2/19'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Desert';
-						Conductor.changeBPM(152);
-						colorToSet = FlxColor.fromRGB(255,219,0);
+						setTrackThing('tdm2/19', 'Desert', 255,219,0, 152);
 					case 20:
-						FlxG.sound.playMusic(Paths.music('tdm2/20'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Pyramid';
-						Conductor.changeBPM(170);
-						colorToSet = FlxColor.fromRGB(255,219,0);
+						setTrackThing('tdm2/20', 'Pyramid', 255,219,0, 170);
 					case 21:
-						FlxG.sound.playMusic(Paths.music('tdm2/21'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Coliseum';
-						Conductor.changeBPM(100);
-						colorToSet = FlxColor.fromRGB(128,128,128);
+						setTrackThing('tdm2/21', 'Coliseum', 128,128,128, 100);
 					case 22:
-						FlxG.sound.playMusic(Paths.music('tdm2/22'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Coliseum Battle';
-						Conductor.changeBPM(188);
-						colorToSet = FlxColor.fromRGB(157,157,157);
+						setTrackThing('tdm2/22', 'Coliseum Battle', 157,157,157, 188);
 					case 23:
-						FlxG.sound.playMusic(Paths.music('tdm2/23'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Dark Ocean';
-						Conductor.changeBPM(60);
-						colorToSet = FlxColor.fromRGB(1,0,84);
+						setTrackThing('tdm2/23', 'Dark Ocean', 1,0,84, 60);
 					case 24:
-						FlxG.sound.playMusic(Paths.music('tdm2/24'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Water Temple';
-						Conductor.changeBPM(125);
-						colorToSet = FlxColor.fromRGB(95,148,211);
+						setTrackThing('tdm2/24', 'Water Temple', 95,148,211, 125);
 					case 25:
-						FlxG.sound.playMusic(Paths.music('tdm2/25'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Shop';
-						Conductor.changeBPM(88);
-						colorToSet = FlxColor.fromRGB(166,166,166);
+						setTrackThing('tdm2/25', 'Shop', 166,166,166, 88);
 					case 26:
-						FlxG.sound.playMusic(Paths.music('tdm2/26'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Fairy';
-						Conductor.changeBPM(98);
-						colorToSet = FlxColor.fromRGB(245,245,245);
+						setTrackThing('tdm2/26', 'Fairy', 245,245,245, 98);
 					case 27:
-						FlxG.sound.playMusic(Paths.music('tdm1/17'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Ice Island';
-						Conductor.changeBPM(82);
-						colorToSet = FlxColor.fromRGB(48,207,239);
+						setTrackThing('tdm1/17', 'Ice Island', 48,207,239, 82);
 					case 28:
-						FlxG.sound.playMusic(Paths.music('tdm2/28'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Evil Cave';
-						Conductor.changeBPM(68);
-						colorToSet = FlxColor.fromRGB(15,15,15);
+						setTrackThing('tdm2/28', 'Evil Cave', 15,15,15, 68);
 					case 29:
-						FlxG.sound.playMusic(Paths.music('tdm2/29'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Palace';
-						Conductor.changeBPM(59);
-						colorToSet = FlxColor.fromRGB(255,240,0);
+						setTrackThing('tdm2/29', 'Palace', 255,240,0, 59);
 					case 30:
-						FlxG.sound.playMusic(Paths.music('tdm2/30'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Final Boss Battle';
-						Conductor.changeBPM(185);
-						colorToSet = FlxColor.fromRGB(19,19,19);
+						setTrackThing('tdm2/30', 'Final Boss Battle', 19,19,19, 185);
 					case 31:
-						FlxG.sound.playMusic(Paths.music('tdm2/31'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Ending';
-						Conductor.changeBPM(55);
-						colorToSet = FlxColor.fromRGB(255,255,255);
+						setTrackThing('tdm2/31', 'Ending', 255,255,255, 55);
 				}
 			case 3:
 				switch (epicTrack)
 				{
 					case 0:
-						FlxG.sound.playMusic(Paths.music('tdm3/0'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Title';
-						colorToSet = FlxColor.fromRGB(222,222,222);
-						Conductor.changeBPM(123);
+						setTrackThing('tdm3/0', 'Title', 222,222,222, 123);
 					case 1:
-						FlxG.sound.playMusic(Paths.music('tdm3/1'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Antenna';
-						colorToSet = FlxColor.fromRGB(244,244,244);
-						Conductor.changeBPM(144);
+						setTrackThing('tdm3/1', 'Antenna', 244,244,244, 144);
 					case 2:
-						FlxG.sound.playMusic(Paths.music('tdm3/2'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Digitoll';
-						colorToSet = FlxColor.fromRGB(10,220,0);
-						Conductor.changeBPM(117);
+						setTrackThing('tdm3/2', 'Digitoll', 10,220,0, 117);
 					case 3:
-						FlxG.sound.playMusic(Paths.music('tdm3/3'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'PC';
-						colorToSet = FlxColor.fromRGB(208,208,208);
-						Conductor.changeBPM(99);
+						setTrackThing('tdm3/3', 'PC', 208,208,208, 99);
 					case 4:
-						FlxG.sound.playMusic(Paths.music('tdm3/4'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = "Squelch's Cave";
-						colorToSet = FlxColor.fromRGB(208,99,0);
-						Conductor.changeBPM(96);
+						setTrackThing('tdm3/4', 'Squelch\'s Cave', 208,99,0, 96);
 					case 5:
-						FlxG.sound.playMusic(Paths.music('tdm3/5'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Battle';
-						colorToSet = FlxColor.fromRGB(128,128,128);
-						Conductor.changeBPM(108);
+						setTrackThing('tdm3/5', 'Battle', 128,128,128, 108);
 					case 6:
-						FlxG.sound.playMusic(Paths.music('tdm3/6'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Boss Battle';
-						colorToSet = FlxColor.fromRGB(24,24,24);
-						Conductor.changeBPM(92);
+						setTrackThing('tdm3/6', 'Boss Battle', 24,24,24, 92);
 					case 7:
-						FlxG.sound.playMusic(Paths.music('tdm3/7'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Digipelago';
-						colorToSet = FlxColor.fromRGB(116,112,255);
-						Conductor.changeBPM(112);
+						setTrackThing('tdm3/7', 'Digipelago', 116,112,255, 112);
 					case 8:
-						FlxG.sound.playMusic(Paths.music('tdm3/8'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Museum';
-						colorToSet = FlxColor.fromRGB(31,213,73);
-						Conductor.changeBPM(108);
+						setTrackThing('tdm3/8', 'Museum', 31,213,73, 108);
 					case 9:
-						FlxG.sound.playMusic(Paths.music('tdm3/9'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Village';
-						colorToSet = FlxColor.fromRGB(255,205,75);
-						Conductor.changeBPM(172);
+						setTrackThing('tdm3/9', 'Village', 255,205,75, 172);
 					case 10:
-						FlxG.sound.playMusic(Paths.music('tdm3/10'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Fishing';
-						colorToSet = FlxColor.fromRGB(67,111,248);
-						Conductor.changeBPM(144);
+						setTrackThing('tdm3/10', 'Fishing', 67,111,248, 144);
 					case 11:
-						FlxG.sound.playMusic(Paths.music('tdm3/11'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Rare Fish';
-						colorToSet = FlxColor.fromRGB(0,53,217);
-						Conductor.changeBPM(152);
+						setTrackThing('tdm3/11', 'Rare Fish', 0,53,217, 152);
 					case 12:
-						FlxG.sound.playMusic(Paths.music('tdm3/12'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Fairy Spring';
-						colorToSet = FlxColor.fromRGB(170,170,170);
-						Conductor.changeBPM(99);
+						setTrackThing('tdm3/12', 'Fairy Spring', 170,170,170, 99);
 					case 13:
-						FlxG.sound.playMusic(Paths.music('tdm3/13'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Jewel Shop';
-						colorToSet = FlxColor.fromRGB(0,227,255);
-						Conductor.changeBPM(96);
+						setTrackThing('tdm3/13', 'Jewel Shop', 0,227,255, 96);
 					case 14:
-						FlxG.sound.playMusic(Paths.music('tdm3/14'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Overworld';
-						colorToSet = FlxColor.fromRGB(0,255,0);
-						Conductor.changeBPM(108);
+						setTrackThing('tdm3/14', 'Overworld', 0,255,0, 108);
 					case 15:
-						FlxG.sound.playMusic(Paths.music('tdm3/15'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Cannon Village';
-						colorToSet = FlxColor.fromRGB(0,144,225);
-						Conductor.changeBPM(86);
+						setTrackThing('tdm3/15', 'Cannon Village', 0,144,225, 86);
 					case 16:
-						FlxG.sound.playMusic(Paths.music('tdm3/16'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Evil Hideout';
-						colorToSet = FlxColor.fromRGB(32,32,32);
-						Conductor.changeBPM(96);
+						setTrackThing('tdm3/16', 'Evil Hideout', 32,32,32, 96);
 					case 17:
-						FlxG.sound.playMusic(Paths.music('tdm3/17'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Hot Spring Village';
-						colorToSet = FlxColor.fromRGB(255,0,0);
-						Conductor.changeBPM(112);
+						setTrackThing('tdm3/17', 'Hot Spring Village', 255,0,0, 112);
 					case 18:
-						FlxG.sound.playMusic(Paths.music('tdm3/18'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Mystic';
-						colorToSet = FlxColor.fromRGB(255,255,255);
-						Conductor.changeBPM(136);
+						setTrackThing('tdm3/18', 'Mystic', 255,255,255, 136);
 					case 19:
-						FlxG.sound.playMusic(Paths.music('tdm3/19'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Volcano';
-						colorToSet = FlxColor.fromRGB(78,0,0);
-						Conductor.changeBPM(89);
+						setTrackThing('tdm3/19', 'Volcano', 78,0,0, 89);
 					case 20:
-						FlxG.sound.playMusic(Paths.music('tdm3/20'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'At Sea';
-						colorToSet = FlxColor.fromRGB(21,0,255);
-						Conductor.changeBPM(92);
+						setTrackThing('tdm3/20', 'At Sea', 21,0,255, 92);
 					case 21:
-						FlxG.sound.playMusic(Paths.music('tdm3/21'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Elegy';
-						colorToSet = FlxColor.fromRGB(33,33,33);
-						Conductor.changeBPM(161);
+						setTrackThing('tdm3/21', 'Elegy', 33,33,33, 161);
 					case 22:
-						FlxG.sound.playMusic(Paths.music('tdm3/22'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Cave of Darkness';
-						colorToSet = FlxColor.fromRGB(10,10,10);
-						Conductor.changeBPM(123);
+						setTrackThing('tdm3/22', 'Cave of Darkness', 10,10,10, 123);
 					case 23:
-						FlxG.sound.playMusic(Paths.music('tdm3/23'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Coliseum';
-						colorToSet = FlxColor.fromRGB(128,128,128);
-						Conductor.changeBPM(103);
+						setTrackThing('tdm3/23', 'Coliseum', 128,128,128, 103);
 					case 24:
-						FlxG.sound.playMusic(Paths.music('tdm3/24'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Coliseum Battle';
-						colorToSet = FlxColor.fromRGB(157,157,157);
-						Conductor.changeBPM(89);
+						setTrackThing('tdm3/24', 'Coliseum Battle', 157,157,157, 89);
 					case 25:
-						FlxG.sound.playMusic(Paths.music('tdm3/25'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Dark Ruins';
-						colorToSet = FlxColor.fromRGB(5,5,5);
-						Conductor.changeBPM(152);
+						setTrackThing('tdm3/25', 'Dark Ruins', 5,5,5, 152);
 					case 26:
-						FlxG.sound.playMusic(Paths.music('tdm3/26'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Fairy Village';
-						colorToSet = FlxColor.fromRGB(245,245,245);
-						Conductor.changeBPM(99);
+						setTrackThing('tdm3/26', 'Fairy Village', 245,245,245, 99);
 					case 27:
-						FlxG.sound.playMusic(Paths.music('tdm3/27'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Dark Ocean';
-						colorToSet = FlxColor.fromRGB(1,0,84);
-						Conductor.changeBPM(92);
+						setTrackThing('tdm3/27', 'Dark Ocean', 1,0,84, 92);
 					case 28:
-						FlxG.sound.playMusic(Paths.music('tdm3/28'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Water Temple';
-						colorToSet = FlxColor.fromRGB(95,148,211);
-						Conductor.changeBPM(123);
+						setTrackThing('tdm3/28', 'Water Temple', 95,148,211, 123);
 					case 29:
-						FlxG.sound.playMusic(Paths.music('tdm3/29'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Tuhot Village';
-						colorToSet = FlxColor.fromRGB(255,219,0);
-						Conductor.changeBPM(152);
+						setTrackThing('tdm3/29', 'Tuhot Village', 255,219,0, 152);
 					case 30:
-						FlxG.sound.playMusic(Paths.music('tdm3/30'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Jewel Mine';
-						colorToSet = FlxColor.fromRGB(48,207,239);
-						Conductor.changeBPM(96);
+						setTrackThing('tdm3/30', 'Jewel Mine', 48,207,239, 96);
 					case 31:
-						FlxG.sound.playMusic(Paths.music('tdm3/31'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Shock Temple';
-						colorToSet = FlxColor.fromRGB(255,249,66);
-						Conductor.changeBPM(89);
+						setTrackThing('tdm3/31', 'Shock Temple', 255,249,66, 89);
 					case 32:
-						FlxG.sound.playMusic(Paths.music('tdm3/32'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Final Battle';
-						colorToSet = FlxColor.fromRGB(12,12,12);
-						Conductor.changeBPM(136);
+						setTrackThing('tdm3/32', 'Final Battle', 12,12,12, 136);
 					case 33:
-						FlxG.sound.playMusic(Paths.music('tdm3/33'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						trackName = 'Ending';
-						colorToSet = FlxColor.fromRGB(255,255,255);
-						Conductor.changeBPM(86);
+						setTrackThing('tdm3/33', 'Ending', 255,255,255, 86);
 				}
 		}
 		tweenColor();
@@ -870,14 +507,15 @@ class SoundTestState extends MusicBeatState
 					albumCover.x = -240;
 					switch (disk) {
 						case 0:
-							albumCover.animation.play('engine');
+							diskImg = 'engine';
 						case 1:
-							albumCover.animation.play('tdm1');
+							diskImg = 'tdm1';
 						case 2:
-							albumCover.animation.play('tdm2');
+							diskImg = 'tdm2';
 						case 3:
-							albumCover.animation.play('tdm3');
+							diskImg = 'tdm3';
 					}
+					albumCover.loadGraphic(Paths.image('albums/$diskImg'));
 					FlxTween.tween(albumCover, {x: FlxG.width/2 - 240}, 0.15, {
 						ease: FlxEase.quadInOut
 					});
@@ -891,14 +529,15 @@ class SoundTestState extends MusicBeatState
 					albumCover.x = FlxG.width;
 					switch (disk) {
 						case 0:
-							albumCover.animation.play('engine');
+							diskImg = 'engine';
 						case 1:
-							albumCover.animation.play('tdm1');
+							diskImg = 'tdm1';
 						case 2:
-							albumCover.animation.play('tdm2');
+							diskImg = 'tdm2';
 						case 3:
-							albumCover.animation.play('tdm3');
+							diskImg = 'tdm3';
 					}
+					albumCover.loadGraphic(Paths.image('albums/$diskImg'));
 					FlxTween.tween(albumCover, {x: FlxG.width/2 - 240}, 0.1, {
 						ease: FlxEase.quadInOut
 					});
@@ -993,12 +632,25 @@ class SoundTestState extends MusicBeatState
 		}
 	}
 
-	public static function getDaColor() {
+	public static function getDaColor():FlxColor {
 		//do i even need this function? probs not 
 		if (!setColor) {
 			colorToSet = FlxColor.fromRGB(255,255,255);
 		}
+		//CustomFadeTransition.colorForFunnyGrad = colorToSet;
 		return colorToSet;
+	}
+
+	function setTrackThing(music:String = '', track:String = '', r:Int = 255, g:Int = 255, b:Int = 255, bpm:Float = 100, ?loopStart:Float = null, ?loopEnd:Float = null, ?stream:Bool = false) {
+		if (!stream) {
+			FlxG.sound.playMusic(Paths.music(music), 0);
+		} else {
+			FlxG.sound.music.loadStream(music, true, false, null, null).play();
+		}
+		FlxG.sound.music.fadeIn(4, 0, 0.7);
+		trackName = track;
+		colorToSet = FlxColor.fromRGB(r,g,b);
+		Conductor.changeBPM(bpm);
 	}
 
 	override function beatHit() {

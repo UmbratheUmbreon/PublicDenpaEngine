@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<TextureAtlas imagePath="albumGrid.png">
-<SubTexture name="album tdm10000" x="0" y="0" width="240" height="240" frameX="0" frameY="0" frameWidth="240" frameHeight="240" />
-<SubTexture name="album tdm20000" x="240" y="0" width="240" height="240" frameX="0" frameY="0" frameWidth="240" frameHeight="240" />
-<SubTexture name="album tdm30000" x="0" y="240" width="240" height="240" frameX="0" frameY="0" frameWidth="240" frameHeight="240" />
-<SubTexture name="album engine0000" x="240" y="240" width="240" height="240" frameX="0" frameY="0" frameWidth="240" frameHeight="240" />
-</TextureAtlas>

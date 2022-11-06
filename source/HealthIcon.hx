@@ -5,6 +5,9 @@ import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
 
+/**
+* Class used to create and control the `HealthIcon`s used on the Healthbar.
+*/
 class HealthIcon extends FlxSprite
 {
 	public var sprTracker:FlxSprite;
@@ -40,7 +43,7 @@ class HealthIcon extends FlxSprite
 	public function changeIcon(char:String) {
 		if(this.char != char) {
 			var name:String = 'icons/' + char;
-			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-' + char; //Older versions of psych engine's support
+			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-' + char; //Older versions
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-face'; //Prevents crash from missing icon
 			fileName = name;
 			var file:Dynamic = Paths.image(name);

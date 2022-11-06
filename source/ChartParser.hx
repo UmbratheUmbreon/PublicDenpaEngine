@@ -4,6 +4,9 @@ import flixel.util.FlxStringUtil;
 
 using StringTools;
 
+/**
+* Class used to parse a Song Chart.
+*/
 class ChartParser
 {
 	static public function parse(songName:String, section:Int):Array<Dynamic>

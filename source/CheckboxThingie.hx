@@ -3,6 +3,9 @@ package;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
+/**
+* Class used to create Checkboxes for the menus.
+*/
 class CheckboxThingie extends FlxSprite
 {
 	public var sprTracker:FlxSprite;
@@ -10,6 +13,7 @@ class CheckboxThingie extends FlxSprite
 	public var copyAlpha:Bool = true;
 	public var offsetX:Float = 0;
 	public var offsetY:Float = 0;
+	public var align:String = 'left';
 	public function new(x:Float = 0, y:Float = 0, ?checked = false) {
 		super(x, y);
 
@@ -30,7 +34,12 @@ class CheckboxThingie extends FlxSprite
 
 	override function update(elapsed:Float) {
 		if (sprTracker != null) {
-			setPosition(sprTracker.x - 130 + offsetX, sprTracker.y + 30 + offsetY);
+			switch (align) {
+				case 'right':
+					setPosition(sprTracker.x + sprTracker.width + offsetX, sprTracker.y + 30 + offsetY);
+				default:
+					setPosition(sprTracker.x - 130 + offsetX, sprTracker.y + 30 + offsetY);
+			}
 			if(copyAlpha) {
 				alpha = sprTracker.alpha;
 			}

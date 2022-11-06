@@ -1,6 +1,5 @@
 package;
 
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -12,6 +11,9 @@ import flixel.util.FlxTimer;
 
 using StringTools;
 
+/**
+* Class used to create and control `DialogueBox`s for Week 6 style dialogue.
+*/
 class DialogueBox extends FlxSpriteGroup
 {
 	var box:FlxSprite;
@@ -40,14 +42,28 @@ class DialogueBox extends FlxSpriteGroup
 	{
 		super();
 
-		switch (PlayState.SONG.song.toLowerCase())
-		{
-			case 'senpai':
-				FlxG.sound.playMusic(Paths.music('Lunchbox'), 0);
-				FlxG.sound.music.fadeIn(1, 0, 0.8);
-			case 'thorns':
-				FlxG.sound.playMusic(Paths.music('LunchboxScary'), 0);
-				FlxG.sound.music.fadeIn(1, 0, 0.8);
+		var shouldBeSeeingCutscene:Null<Bool> = null;
+		var daCutsceneString:String = ClientPrefs.cutscenes;
+		switch (daCutsceneString) {
+			case 'Never':
+				shouldBeSeeingCutscene = false;
+			case 'Story Mode Only':
+				if (PlayState.isStoryMode) shouldBeSeeingCutscene = true;
+			case 'Freeplay Only':
+				if (!PlayState.isStoryMode) shouldBeSeeingCutscene = true;
+			case 'Always':
+				shouldBeSeeingCutscene = true;
+		}
+		if (shouldBeSeeingCutscene) {
+			switch (PlayState.SONG.header.song.toLowerCase())
+			{
+				case 'senpai':
+					FlxG.sound.playMusic(Paths.music('Lunchbox'), 0);
+					FlxG.sound.music.fadeIn(1, 0, 0.8);
+				case 'thorns':
+					FlxG.sound.playMusic(Paths.music('LunchboxScary'), 0);
+					FlxG.sound.music.fadeIn(1, 0, 0.8);
+			}
 		}
 
 		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 1.3), Std.int(FlxG.height * 1.3), 0xFFB3DFd8);
@@ -65,7 +81,7 @@ class DialogueBox extends FlxSpriteGroup
 		box = new FlxSprite(-20, 45);
 		
 		var hasDialog = false;
-		switch (PlayState.SONG.song.toLowerCase())
+		switch (PlayState.SONG.header.song.toLowerCase())
 		{
 			case 'senpai':
 				hasDialog = true;
@@ -157,9 +173,9 @@ class DialogueBox extends FlxSpriteGroup
 	override function update(elapsed:Float)
 	{
 		// HARD CODING CUZ IM STUPDI
-		if (PlayState.SONG.song.toLowerCase() == 'roses')
+		if (PlayState.SONG.header.song.toLowerCase() == 'roses')
 			portraitLeft.visible = false;
-		if (PlayState.SONG.song.toLowerCase() == 'thorns')
+		if (PlayState.SONG.header.song.toLowerCase() == 'thorns')
 		{
 			portraitLeft.visible = false;
 			swagDialogue.color = FlxColor.WHITE;
@@ -195,7 +211,7 @@ class DialogueBox extends FlxSpriteGroup
 						isEnding = true;
 						FlxG.sound.play(Paths.sound('clickText'), 0.8);	
 
-						if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'thorns')
+						if (PlayState.SONG.header.song.toLowerCase() == 'senpai' || PlayState.SONG.header.song.toLowerCase() == 'thorns')
 							FlxG.sound.music.fadeOut(1.5, 0);
 
 						new FlxTimer().start(0.2, function(tmr:FlxTimer)
@@ -262,7 +278,7 @@ class DialogueBox extends FlxSpriteGroup
 				portraitRight.visible = false;
 				if (!portraitLeft.visible)
 				{
-					if (PlayState.SONG.song.toLowerCase() == 'senpai') portraitLeft.visible = true;
+					if (PlayState.SONG.header.song.toLowerCase() == 'senpai') portraitLeft.visible = true;
 					portraitLeft.animation.play('enter');
 				}
 			case 'bf':

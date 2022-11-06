@@ -4,18 +4,15 @@ package options;
 import Discord.DiscordClient;
 #end
 import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
 import flash.text.TextField;
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxSave;
 import haxe.Json;
@@ -28,9 +25,12 @@ import Controls;
 
 using StringTools;
 
+/**
+* State used to take the player to the different options substates.
+*/
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['General', 'Gameplay', 'Graphics', 'Misc', 'Notes', 'Controls', 'Offsets'];
+	var options:Array<String> = ['General', 'Gameplay', 'Graphics', 'Misc', 'Notes', 'Keybinds', 'Offsets'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -38,17 +38,17 @@ class OptionsState extends MusicBeatState
 	function openSelectedSubstate(label:String) {
 		switch(label) {
 			case 'General':
-				openSubState(new options.GeneralSettingsSubState());
+				openSubState(new options.OptionsSubState.GeneralSettingsSubState());
 			case 'Gameplay':
-				openSubState(new options.GameplaySettingsSubState());
+				openSubState(new options.OptionsSubState.GameplaySettingsSubState());
 			case 'Graphics':
-				openSubState(new options.GraphicsSettingsSubState());
+				openSubState(new options.OptionsSubState.GraphicsSettingsSubState());
 			case 'Misc':
-				openSubState(new options.MiscSettingsSubState());
+				openSubState(new options.OptionsSubState.MiscSettingsSubState());
 			case 'Notes':
-				openSubState(new options.NotesSubState());
-			case 'Controls':
-				openSubState(new options.ControlsSubState());
+				openSubState(new options.OptionsSubState.NotesSubState());
+			case 'Keybinds':
+				openSubState(new options.OptionsSubState.ControlsSubState());
 			case 'Offsets':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
 		}
@@ -62,10 +62,19 @@ class OptionsState extends MusicBeatState
 	var bgScroll2:FlxBackdrop;
 	var gradient:FlxSprite;
 
-	override function create() {
+	override function create()
+	{
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
 		#if desktop
 		DiscordClient.changePresence("In the Options Menu", null);
 		#end
+
+		FreeplayState.destroyFreeplayVocals();
+		FlxG.sound.playMusic(Paths.music('msm'), 0);
+		FlxG.sound.music.fadeIn(1, 0, 0.6);
+
+		Conductor.changeBPM(99);
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFF98f0f8;
@@ -75,15 +84,17 @@ class OptionsState extends MusicBeatState
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 
-		bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-		bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
-		bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
-		add(bgScroll);
-
-		bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-		bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
-		bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
-		add(bgScroll2);
+		if (!ClientPrefs.lowQuality) {
+			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
+			bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
+			bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
+			add(bgScroll);
+	
+			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
+			bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
+			bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
+			add(bgScroll2);
+		}
 
 		gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
 		gradient.antialiasing = ClientPrefs.globalAntialiasing;
@@ -154,19 +165,17 @@ class OptionsState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			if (PauseSubState.transferPlayState) {
 				StageData.loadDirectory(PlayState.SONG);
+				LoadingState.globeTrans = false;
 				LoadingState.loadAndSwitchState(new PlayState());
 			} else {
 				MusicBeatState.switchState(new MainMenuState());
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				Conductor.changeBPM(100);		
 			}
 		}
 
 		if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
 			openSelectedSubstate(options[curSelected]);
-		}
-
-		if (controls.RESET) {
-			FlxG.mouse.visible = true;
-			openSubState(new Prompt('This action will clear all settings.\n\nProceed?', 0, function(){resetSettings(); }, null,FlxG.save.data.ignoreWarnings));
 		}
 	}
 	
@@ -200,86 +209,6 @@ class OptionsState extends MusicBeatState
 
 		bg.scale.set(1.06,1.06);
 		bg.updateHitbox();
-		if (PlayState.SONG != null) {
-			if (PlayState.SONG.song == 'Zavodila')  {
-				FlxG.camera.shake(0.0075, 0.2);
-				bg.scale.set(1.16,1.16);
-				bg.updateHitbox();
-			}
-		}
 		//trace('beat hit' + curBeat);
-	}
-
-	function resetSettings() 
-	{
-		ClientPrefs.downScroll = false;
-		ClientPrefs.middleScroll = false;
-		ClientPrefs.showFPS = true;
-		ClientPrefs.fullscreen = false;
-		ClientPrefs.autoPause = true;
-		ClientPrefs.flashing = true;
-		ClientPrefs.globalAntialiasing = true;
-		ClientPrefs.noteSplashes = true;
-		ClientPrefs.lowQuality = false;
-		ClientPrefs.framerate = 60;
-		ClientPrefs.crossFadeLimit = 4;
-		ClientPrefs.boyfriendCrossFadeLimit = 1;
-		ClientPrefs.opponentNoteAnimations = true;
-		ClientPrefs.opponentAlwaysDance = true;
-		ClientPrefs.cursing = true;
-		ClientPrefs.violence = true;
-		ClientPrefs.camZooms = true;
-		ClientPrefs.camPans = true;
-		ClientPrefs.hideHud = false;
-		ClientPrefs.noteOffset = 0;
-		ClientPrefs.arrowHSV = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
-		ClientPrefs.timeBarRed = 255;
-		ClientPrefs.timeBarGreen = 255;
-		ClientPrefs.timeBarBlue = 255;
-		ClientPrefs.uiSkin = 'fnf';
-		ClientPrefs.iconSwing = 'Swing Mild';
-		ClientPrefs.scoreDisplay = 'Psych';
-		ClientPrefs.crossFadeMode = 'Mid-Fight Masses';
-		ClientPrefs.ghostTapping = true;
-		ClientPrefs.timeBarType = 'Time Left';
-		ClientPrefs.scoreZoom = true;
-		ClientPrefs.noReset = false;
-		ClientPrefs.healthBarAlpha = 1;
-		ClientPrefs.controllerMode = false;
-		ClientPrefs.hitsoundVolume = 0;
-		ClientPrefs.pauseMusic = 'Tea Time';
-		ClientPrefs.inputType = 'Psych';
-		ClientPrefs.ratingIntensity = 'Default';
-		ClientPrefs.randomMode = false;
-		ClientPrefs.quartiz = false;
-		ClientPrefs.ghostMode = false;
-		ClientPrefs.watermarks = true;
-		ClientPrefs.ratingsDisplay = true;
-		ClientPrefs.gsmiss = true;
-		ClientPrefs.changeTBcolour = true;
-		ClientPrefs.greenhp = false;
-		ClientPrefs.newHP = true;
-		ClientPrefs.sarvAccuracy = false;
-		ClientPrefs.comboPopup = true;
-		ClientPrefs.wrongCamera = false;
-		ClientPrefs.msPopup = true;
-		ClientPrefs.msPrecision = 2;
-		ClientPrefs.flinchy = true;
-		ClientPrefs.cutscenes = 'Story Mode Only';
-		ClientPrefs.camPanMode = 'Always';
-		ClientPrefs.mouseControls = true;
-		ClientPrefs.checkForUpdates = true;
-		ClientPrefs.darkenBG = false;
-		ClientPrefs.accuracyMode = 'Simple';
-		ClientPrefs.comboOffset = [0, 0, 0, 0, 0, 0];
-		ClientPrefs.noAntimash = false;
-		ClientPrefs.ratingOffset = 0;
-		ClientPrefs.perfectWindow = 10;
-		ClientPrefs.sickWindow = 45;
-		ClientPrefs.goodWindow = 90;
-		ClientPrefs.badWindow = 135;
-		ClientPrefs.shitWindow = 205;
-		ClientPrefs.safeFrames = 10;
-		FlxG.mouse.visible = false;
 	}
 }

@@ -1,12 +1,12 @@
 //THIS IS AN EXAMPLE SCRIPT
 //ALL THE EXISTING FUNCTIONS WILL BE HERE JUST TO SHOW IT OR SOMETHING
 
-function create()
+function onCreate()
     {
         //runs at start of create
     }
     
-    function createPost()
+    function onCreatePost()
     {
         //runs and the end of create
     }
@@ -16,12 +16,22 @@ function create()
         //runs when the countdown started
     }
     
-    function onCountDown(swagCounter)
+    function onCountDownTick(swagCounter)
     {
         //runs each time the countdown goes down
     }
+
+    function onNextDialogue(swagCounter)
+    {
+        //runs when the dialogue is forwarded
+    }
+
+    function onSkipDialogue(swagCounter)
+    {
+        //runs when the dialogue is skipped
+    }
     
-    function onStartSong()
+    function onSongStart()
     {
         //runs when the song starts duh
     }
@@ -29,6 +39,11 @@ function create()
     function onSongGenerated()
     {
         //runs when the notes and music are generated
+    }
+
+    function onResume()
+    {
+        //runs when you resume from pausing
     }
     
     function onFocus()
@@ -41,54 +56,69 @@ function create()
         //runs when you lose focus on your window
     }
     
-    function update(elapsed)
+    function onUpdate(elapsed)
     {
         //runs at the start of every frame
     }
     
-    function updatePost(elapsed)
+    function onUpdatePost(elapsed)
     {
         //runs at the end of every frame
     }
+
+    function onEvent(eventName, value1, value2)
+    {
+        //runs when an event happens
+    }
+
+    function onMoveCamera(character)
+    {
+        //runs when the camera is moved
+    }
     
-    function endSong()
+    function onEndSong()
     {
         //runs when the song ends of course,
     }
-    
-    function onDestroy()
+
+    function noteMissPress()
     {
-        //runs when you exit playstate
+        //runs when you misspress a note (without ghost tapping)
     }
-    
-    function onKeyPressed(event)
+
+    function onKeyPressed(key)
     {
         //runs every time you press a key, using keyboardevent
     }
     
-    function onKeyReleased()
+    function onKeyReleased(key)
     {
         //runs every time you release a key, using keyboardevent
     }
-    
-    function noteMiss()
+
+    function noteMiss(note, noteData, noteType, isSustain)
     {
         //runs every time you miss a note
     }
     
-    function goodNoteHit()
-    {
-        //runs every time you hit a note doesnt matter the rating
-    }
-    
-    function opponentNoteHit()
+    function opponentNoteHit(note, noteData, noteType, isSustain)
     {
         //runs every time the opponent hits a note
     }
 
-     function thirdNoteHit()
+     function thirdNoteHit(note, noteData, noteType, isSustain)
     {
         //runs every time the player 4 hits a note
+    }
+
+    function goodNoteHit(note, noteData, noteType, isSustain)
+    {
+        //runs every time you hit a note doesnt matter the rating
+    }
+
+    function onDestroy()
+    {
+        //runs when you exit playstate
     }
     
     function stepHit()

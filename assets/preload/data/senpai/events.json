@@ -1,0 +1,112 @@
+{
+	"song": {
+		"speed": 1.3,
+		"stage": "school",
+		"player1": "bf-pixel",
+		"player2": "senpai",
+		"player3": null,
+		"player4": null,
+		"dangerMiss": null,
+		"autoIcons": true,
+		"autoIdles": true,
+		"events": [
+			[
+				0,
+				[
+					[
+						"Change Zoom Interval",
+						"1",
+						""
+					]
+				]
+			],
+			[
+				13333.3333333333,
+				[
+					[
+						"Change Zoom Interval",
+						"4",
+						""
+					]
+				]
+			],
+			[
+				26666.6666666667,
+				[
+					[
+						"Change Zoom Interval",
+						"1",
+						""
+					]
+				]
+			],
+			[
+				40000,
+				[
+					[
+						"Change Zoom Interval",
+						"4",
+						""
+					]
+				]
+			],
+			[
+				53333.3333333333,
+				[
+					[
+						"Change Zoom Interval",
+						"1",
+						""
+					]
+				]
+			],
+			[
+				66666.6666666666,
+				[
+					[
+						"Change Zoom Interval",
+						"4",
+						""
+					]
+				]
+			],
+			[
+				93333.3333333334,
+				[
+					[
+						"Change Zoom Interval",
+						"0",
+						""
+					]
+				]
+			]
+		],
+		"allowBot": true,
+		"instVolume": 1,
+		"notes": [],
+		"splashSkin": null,
+		"modchart": null,
+		"validScore": false,
+		"vocalsVolume": 1,
+		"beatDrain": null,
+		"tintBlue": null,
+		"gfVersion": "gf-pixel",
+		"bpm": 144,
+		"mania": 3,
+		"arrowSkin": null,
+		"needsVoices": true,
+		"credits": null,
+		"dadModchart": null,
+		"enablePlayer4": null,
+		"remixCreds": null,
+		"allowGhostTapping": true,
+		"crits": null,
+		"song": "Senpai",
+		"secVocalsVolume": 1,
+		"autoZooms": true,
+		"hardness": 4.6,
+		"tintRed": null,
+		"p4Modchart": null,
+		"tintGreen": null
+	}
+}

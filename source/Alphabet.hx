@@ -1,10 +1,8 @@
 package;
 
-import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup;
-import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
 import flixel.system.FlxSound;
 import flash.media.Sound;
@@ -12,7 +10,9 @@ import flash.media.Sound;
 using StringTools;
 
 /**
- * Loosley based on FlxTypeText lolol
+ * Class used for `Alphabet` text in menus.
+ * 
+ * Loosely based on FlxText, as Ninjamuffin99 says.
  */
 class Alphabet extends FlxSpriteGroup
 {
@@ -27,6 +27,8 @@ class Alphabet extends FlxSpriteGroup
 	public var yAdd:Float = 0;
 	public var isMenuItem:Bool = false;
 	public var altRotation:Bool = false;
+	public var align:String = '';
+	public var alignAdd:Float = 0;
 	public var textSize:Float = 1.0;
 
 	public var text:String = "";
@@ -378,6 +380,26 @@ class Alphabet extends FlxSpriteGroup
 				}
 			}
 		}
+		if (!altRotation && !isMenuItem && align.length > 0) {
+			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
+
+			var lerpVal:Float = CoolUtil.boundTo(elapsed * 9.6, 0, 1);
+			y = FlxMath.lerp(y, (scaledY * yMult) + (FlxG.height * 0.48) + yAdd, lerpVal);
+			if(forceX != Math.NEGATIVE_INFINITY) {
+				x = forceX;
+			} else {
+				switch (align.toLowerCase()) {
+					case 'left':
+						x = FlxMath.lerp(x, (isBold ? 30 : 15) + alignAdd, lerpVal);
+					case 'right':
+						x = FlxMath.lerp(x, (FlxG.width - width) - (isBold ? 30 : 15) + alignAdd, lerpVal);
+					case 'center':
+						x = FlxMath.lerp(x, (FlxG.width - width) - width/2, lerpVal);
+					default:
+						x = FlxMath.lerp(x, (targetY * 20) + 90 + xAdd, lerpVal);
+				}
+			}
+		}
 
 		super.update(elapsed);
 	}
@@ -533,5 +555,37 @@ class AlphaCharacter extends FlxSprite
 				//x -= 35 - (90 * (1.0 - textSize));
 				y -= 16;
 		}
+	}
+}
+
+/**
+* Class used to create `Alphabet`s that automatically follow an `FlxSprite`.
+*/
+class AttachedText extends Alphabet
+{
+	public var offsetX:Float = 0;
+	public var offsetY:Float = 0;
+	public var sprTracker:FlxSprite;
+	public var copyVisible:Bool = true;
+	public var copyAlpha:Bool = false;
+	public function new(text:String = "", ?offsetX:Float = 0, ?offsetY:Float = 0, ?bold = false, ?scale:Float = 1) {
+		super(0, 0, text, bold, false, 0.05, scale);
+		isMenuItem = false;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+	}
+
+	override function update(elapsed:Float) {
+		if (sprTracker != null) {
+			setPosition(sprTracker.x + offsetX, sprTracker.y + offsetY);
+			if(copyVisible) {
+				visible = sprTracker.visible;
+			}
+			if(copyAlpha) {
+				alpha = sprTracker.alpha;
+			}
+		}
+
+		super.update(elapsed);
 	}
 }

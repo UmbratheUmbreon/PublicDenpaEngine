@@ -1,13 +1,10 @@
 package;
 
-import flixel.FlxG;
 import flixel.input.FlxInput;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionInput;
-import flixel.input.actions.FlxActionInputDigital;
 import flixel.input.actions.FlxActionManager;
 import flixel.input.actions.FlxActionSet;
-import flixel.input.gamepad.FlxGamepadButton;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 
@@ -644,10 +641,10 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.UI_DOWN, keysMap.get('ui_down'));
 				inline bindKeys(Control.UI_LEFT, keysMap.get('ui_left'));
 				inline bindKeys(Control.UI_RIGHT, keysMap.get('ui_right'));
-				inline bindKeys(Control.NOTE_UP, keysMap.get('note_up'));
-				inline bindKeys(Control.NOTE_DOWN, keysMap.get('note_down'));
-				inline bindKeys(Control.NOTE_LEFT, keysMap.get('note_left'));
-				inline bindKeys(Control.NOTE_RIGHT, keysMap.get('note_right'));
+				inline bindKeys(Control.NOTE_UP, keysMap.get('note_four3'));
+				inline bindKeys(Control.NOTE_DOWN, keysMap.get('note_four2'));
+				inline bindKeys(Control.NOTE_LEFT, keysMap.get('note_four1'));
+				inline bindKeys(Control.NOTE_RIGHT, keysMap.get('note_four4'));
 
 				inline bindKeys(Control.ACCEPT, keysMap.get('accept'));
 				inline bindKeys(Control.BACK, keysMap.get('back'));
@@ -788,7 +785,6 @@ class Controls extends FlxActionSet
 
 	public function addDefaultGamepad(id):Void
 	{
-		#if !switch
 		addGamepadLiteral(id, [
 			Control.ACCEPT => [A, START],
 			Control.BACK => [B],
@@ -803,23 +799,6 @@ class Controls extends FlxActionSet
 			Control.PAUSE => [START],
 			Control.RESET => [8]
 		]);
-		#else
-		addGamepadLiteral(id, [
-			//Swap A and B for switch
-			Control.ACCEPT => [B, START],
-			Control.BACK => [A],
-			Control.UI_UP => [DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
-			Control.UI_DOWN => [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN, RIGHT_STICK_DIGITAL_DOWN],
-			Control.UI_LEFT => [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT, RIGHT_STICK_DIGITAL_LEFT],
-			Control.UI_RIGHT => [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT, RIGHT_STICK_DIGITAL_RIGHT],
-			Control.NOTE_UP => [DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP, X],
-			Control.NOTE_DOWN => [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN, RIGHT_STICK_DIGITAL_DOWN, B],
-			Control.NOTE_LEFT => [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT, RIGHT_STICK_DIGITAL_LEFT, Y],
-			Control.NOTE_RIGHT => [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT, RIGHT_STICK_DIGITAL_RIGHT, A],
-			Control.PAUSE => [START],
-			Control.RESET => [8],
-		]);
-		#end
 	}
 
 	/**

@@ -1,1 +1,1 @@
-Drop your Menu characters shit here
+This is where your menu character .pngs, .xmls, and .jsons go.

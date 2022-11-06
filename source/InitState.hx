@@ -1,43 +1,17 @@
 package;
 
-import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
-import sys.thread.Thread;
 #end
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.input.keyboard.FlxKey;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.addons.transition.TransitionData;
-import haxe.Json;
-import openfl.display.Bitmap;
-import openfl.display.BitmapData;
-#if MODS_ALLOWED
-import sys.FileSystem;
-import sys.io.File;
-#end
-import options.GraphicsSettingsSubState;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup;
-import flixel.input.gamepad.FlxGamepad;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import flixel.system.FlxSound;
-import flixel.system.ui.FlxSoundTray;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
 import lime.app.Application;
-import openfl.Assets;
 
 using StringTools;
 
+/**
+* State used on boot to initialize the game.
+*/
 class InitState extends MusicBeatState
 {
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
@@ -59,8 +33,6 @@ class InitState extends MusicBeatState
 	public static function init(?transfer:Bool = null) {
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-
-		trace('cleared mem');
 		
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.sound.muteKeys = muteKeys;
@@ -68,16 +40,11 @@ class InitState extends MusicBeatState
 		FlxG.sound.volumeUpKeys = volumeUpKeys;
 		FlxG.keys.preventDefaultKeys = [TAB];
 
-		trace('set keys and framerate');
-
 		PlayerSettings.init();
-
-		trace('initialized playersettings');
 
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 
-		trace('binded save');
-
+		#if !html5
 		if (FlxG.save.data.fullscreen != null) {
 			FlxG.fullscreen = FlxG.save.data.fullscreen;
 		} else {
@@ -89,27 +56,22 @@ class InitState extends MusicBeatState
 		} else {
 			FlxG.autoPause = true;
 		}
-
-		trace('LOADED FULLSCREEN SETTING!! (LIAR!!!)');
+		#end
 		
 		ClientPrefs.loadPrefs();
-		
-		trace('loaded prefs');
 
 		Highscore.load();
-
-		trace('loaded highscore');
 
 		if (FlxG.save.data.weekCompleted != null)
 		{
 			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
-			trace('set weekdata');
-
 		}
 
 		FlxG.mouse.visible = false;
 
-		trace('hid mouse');
+		#if desktop
+		Application.current.window.borderless = true;
+		#end
 
 		#if desktop
 		if (!DiscordClient.isInitialized)
@@ -123,6 +85,7 @@ class InitState extends MusicBeatState
 		#end
 		if(transfer == null) {
 			FlxTransitionableState.skipNextTransIn = true;
+			FlxTransitionableState.skipNextTransOut = true;
 			MusicBeatState.switchState(new DenpaState());
 		}
 	}
@@ -130,8 +93,6 @@ class InitState extends MusicBeatState
 	private function localInit(?transfer:Bool = null) {
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-
-		trace('cleared mem');
 		
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.sound.muteKeys = muteKeys;
@@ -139,38 +100,38 @@ class InitState extends MusicBeatState
 		FlxG.sound.volumeUpKeys = volumeUpKeys;
 		FlxG.keys.preventDefaultKeys = [TAB];
 
-		trace('set keys and framerate');
-
 		PlayerSettings.init();
 
-		trace('initialized playersettings');
-
 		FlxG.save.bind('funkin', 'ninjamuffin99');
-
-		trace('binded save');
 		
 		ClientPrefs.loadPrefs();
-		
-		trace('loaded prefs');
 
 		Highscore.load();
 
-		trace('loaded highscore');
+		#if !html5
+		if (FlxG.save.data.fullscreen != null) {
+			FlxG.fullscreen = FlxG.save.data.fullscreen;
+		} else {
+			FlxG.fullscreen = false;
+		}
 
-		FlxG.fullscreen = ClientPrefs.fullscreen;
-
-		trace('LOADED FULLSCREEN SETTING!! (LIAR!!!)');
+		if (FlxG.save.data.autoPause != null) {
+			FlxG.autoPause = FlxG.save.data.autoPause;
+		} else {
+			FlxG.autoPause = true;
+		}
+		#end
 
 		if (FlxG.save.data.weekCompleted != null)
 		{
 			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
-			trace('set weekdata');
-
 		}
 
 		FlxG.mouse.visible = false;
 
-		trace('hid mouse');
+		#if desktop
+		Application.current.window.borderless = true;
+		#end
 
 		#if desktop
 		if (!DiscordClient.isInitialized)
@@ -184,6 +145,7 @@ class InitState extends MusicBeatState
 		#end
 		if(transfer == null) {
 			FlxTransitionableState.skipNextTransIn = true;
+			FlxTransitionableState.skipNextTransOut = true;
 			MusicBeatState.switchState(new DenpaState());
 		}
 	}

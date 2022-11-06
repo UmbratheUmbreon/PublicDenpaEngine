@@ -9,7 +9,7 @@
 	"p4": [-300, -1200],
 	"hide_girlfriend": false,
 
-	"camera_boyfriend": [-100, -100],
+	"camera_boyfriend": [-130, -100],
 	"camera_opponent": [0, 0],
 	"camera_girlfriend": [0, 0],
 	"camera_speed": 1

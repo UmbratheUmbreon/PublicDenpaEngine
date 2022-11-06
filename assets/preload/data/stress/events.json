@@ -261,7 +261,7 @@
 					[
 						"Stage Tint",
 						"0.75",
-						"5"
+						"5,0xff000000"
 					],
 					[
 						"Tween Camera Zoom",

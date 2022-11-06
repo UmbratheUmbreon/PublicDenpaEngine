@@ -1,20 +1,15 @@
 package;
 
 import Conductor.BPMChangeEvent;
-import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
-import flixel.math.FlxRect;
-import flixel.util.FlxTimer;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.FlxSprite;
-import flixel.util.FlxColor;
-import flixel.util.FlxGradient;
 import flixel.FlxState;
 import flixel.FlxCamera;
-import flixel.FlxBasic;
 
+/**
+* Basic state to use for states in the game.
+* Contains functions relating to state transfers, as well as beat/step functions.
+*/
 class MusicBeatState extends FlxUIState
 {
 	private var lastBeat:Float = 0;
@@ -36,24 +31,10 @@ class MusicBeatState extends FlxUIState
 		super.create();
 
 		if(!skip) {
-			openSubState(new CustomFadeTransition(0.7, true));
+			openSubState(new CustomFadeTransition(0.4, true));
 		}
 		FlxTransitionableState.skipNextTransOut = false;
 	}
-	
-	#if (VIDEOS_ALLOWED && windows)
-	override public function onFocus():Void
-	{
-		FlxVideo.onFocus();
-		super.onFocus();
-	}
-	
-	override public function onFocusLost():Void
-	{
-		FlxVideo.onFocusLost();
-		super.onFocusLost();
-	}
-	#end
 
 	override function update(elapsed:Float)
 	{
@@ -92,12 +73,12 @@ class MusicBeatState extends FlxUIState
 		curStep = lastChange.stepTime + Math.floor(((Conductor.songPosition - ClientPrefs.noteOffset) - lastChange.songTime) / Conductor.stepCrochet);
 	}
 
-	public static function switchState(nextState:FlxState) {
+	public static function switchState(nextState:FlxState, ?fadeDuration:Float = 0.35) {
 		// Custom made Trans in
 		var curState:Dynamic = FlxG.state;
 		var leState:MusicBeatState = curState;
 		if(!FlxTransitionableState.skipNextTransIn) {
-			leState.openSubState(new CustomFadeTransition(0.6, false));
+			leState.openSubState(new CustomFadeTransition(fadeDuration, false));
 			if(nextState == FlxG.state) {
 				CustomFadeTransition.finishCallback = function() {
 					FlxG.resetState();

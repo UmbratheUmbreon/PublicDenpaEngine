@@ -1,10 +1,14 @@
-import flixel.FlxG;
+package;
+
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.util.FlxColor;
 
 using StringTools;
 
+/**
+* Substate used to reset the highscore of a particular song.
+*/
 class ResetScoreSubState extends MusicBeatSubstate
 {
 	var bg:FlxSprite;
@@ -86,10 +90,10 @@ class ResetScoreSubState extends MusicBeatSubstate
 			onYes = !onYes;
 			updateOptions();
 		}
-		if(controls.BACK) {
+		if(controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
 			FlxG.sound.play(Paths.sound('cancelMenu'), 1);
 			close();
-		} else if(controls.ACCEPT) {
+		} else if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
 			if(onYes) {
 				if(week == -1) {
 					Highscore.resetSong(song, difficulty);

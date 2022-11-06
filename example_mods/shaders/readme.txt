@@ -1,2 +1,1 @@
-Put your custom shaders here
-it should include .frag files.
+This is where your shader .frag files go.

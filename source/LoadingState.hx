@@ -2,12 +2,11 @@ package;
 
 import lime.app.Promise;
 import lime.app.Future;
-import flixel.FlxG;
+import flixel.text.FlxText;
 import flixel.FlxState;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxTimer;
-import flixel.math.FlxMath;
 
 import openfl.utils.Assets;
 import lime.utils.Assets as LimeAssets;
@@ -16,6 +15,9 @@ import lime.utils.AssetManifest;
 
 import haxe.io.Path;
 
+/**
+* State used to load between certain states.
+*/
 class LoadingState extends MusicBeatState
 {
 	inline static var MIN_TIME = 1.0;
@@ -29,6 +31,7 @@ class LoadingState extends MusicBeatState
 	var target:FlxState;
 	var stopMusic = false;
 	var directory:String;
+	public static var globeTrans:Bool = true;
 	var callbacks:MultiCallback;
 	var targetShit:Float = 0;
 
@@ -41,6 +44,52 @@ class LoadingState extends MusicBeatState
 	}
 	
 	var loadBar:FlxSprite;
+	var callbackTxt:FlxText;
+	var loadingTxt:FlxSprite;
+	var loadingCirc:FlxSprite;
+	var loadingCircSpeed = FlxG.random.int(50,200);
+	var tipTxt:FlxText;
+	var tips:Array<String> = [
+		"If you're stuck on this screen for longer than 10 seconds, your pc sucks or the game crashed.\nThe Latter is most likely, not trying to insult your PC.\n(Your PC sucks)",
+		"You can access the Chart Editor by holding shift when you enter a song in Freeplay.",
+		"The Chart Editor automatically saves your progress, no need to fret.",
+		"There are several shortcuts to different menus from the Splash Screen.",
+		"Icons are dynamic. You can use 150, 300, and 450 width icons.",
+		"Stages can be made from the Stage Editor, Lua Scipting, or Hard Coding.",
+		"You can use key counts from 1 to 11. These can be changed with the \"Mania\" option.",
+		"There are several different splash screens that can show up. They are random on startup.",
+		"Crossfade took over 4 months to complete.",
+		"There was a multikey bug with hold notes until 0.5.0.",
+		"You can add \"wavy\" bgs with the glitch shader.",
+		"ERROR 404 - NOT FOUND",
+		"MissingNo.",
+		"Gameplay modifiers are optional. You can toggle them in the Gameplay Modifiers menu.",
+		"You can change stages in the Character Editor to help with offsets.",
+		"You can access the Options Menu from the Pause Menu if you need to adjust something.",
+		"It's possible to replay a cut-scene with the Replay Cutscene option in the pause menu.\nIt won't show up unless you have cutscens enabled for the mode you're playing.",
+		"Practice Mode can be enabled to help you perfect your skills.\nYou can turn it on in the Gameplay Modifiers menu.",
+		"Scroll Speed can be set globally in the Gameplay Modifiers menu.",
+		"KYS",
+		"Press the keys to win. They are customizable in the Options Menu.",
+		"Friday Night Funkin' originates from Ludum Dare 47.",
+		"\"PRETTY DOPE ASS GAME\"\n-Playstation Magazine Issue May 2003",
+		"You have a total of 2 health. Let it reach 0 and you will be Blueballed.",
+		"Many of the old bugs are toggleable.",
+		"Uh oh! Your tryin to kiss ur hot girlfriend, but her MEAN and EVIL dad is trying to KILL you! \nHe's an ex-rockstar, the only way to get to his heart? The power of music...",
+		"There is a menu to play custom tracks.",
+		"Multiplayer originates from Madness Engine.",
+		"Many of the variables used in this engine are named dumb things.",
+		"You can ask to get your mod as one of the mod shoutouts in the intro.",
+		"Song Credits can be customized in the Chart Editor, under the Song tab.",
+		"You can make a character float with an option in the Character Editor.",
+		"sgrdnfiuhgdzsbngzsdbnhgbsfsubdfbngjkldghszznsfnsfihebsobsrfnesl;sbfse;ikfbsenselkfsedlkfsnefewsnriogrheioswfdjnsweiofehwa\nwhat was i doing again",
+		"",
+		"The Freeze modifer's penalty lasts for 2 seconds.",
+		"The Poison modifer's penalty stacks with every miss.",
+		"oh no its returning null NOOOO",
+		"The FitnessGram Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. \nLine up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. \nThe second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
+		"//this is the only way this terribleness will work. Why? Has i ever?"
+	];
 	override function create()
 	{
 		var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xffcaff4d);
@@ -48,11 +97,55 @@ class LoadingState extends MusicBeatState
 
 		var loading:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image('loadingscreen'));
 		add(loading);
+		flixel.addons.transition.FlxTransitionableState.skipNextTransIn = false;
+		flixel.addons.transition.FlxTransitionableState.skipNextTransOut = false;
+		if (!globeTrans) {
+			flixel.addons.transition.FlxTransitionableState.skipNextTransIn = true;
+			flixel.addons.transition.FlxTransitionableState.skipNextTransOut = true;
+		}
+		globeTrans = true;
 
-		loadBar = new FlxSprite(0, FlxG.height - 20).makeGraphic(FlxG.width, 10, 0xffff16d2);
-		loadBar.screenCenter(X);
+		loadingTxt = new FlxSprite(100, 0).loadGraphic(Paths.image('loading'));
+		loadingTxt.antialiasing = ClientPrefs.globalAntialiasing;
+		loadingTxt.scale.set(0.45,0.45);
+		loadingTxt.updateHitbox();
+		loadingTxt.screenCenter(Y);
+		add(loadingTxt);
+		flixel.tweens.FlxTween.angle(loadingTxt, -5, 5, 1, {ease:flixel.tweens.FlxEase.quadInOut, type:flixel.tweens.FlxTween.FlxTweenType.PINGPONG});
+		flixel.tweens.FlxTween.tween(loadingTxt, {"scale.x": 0.47, "scale.y": 0.47}, 0.5, {ease:flixel.tweens.FlxEase.quadInOut, type:flixel.tweens.FlxTween.FlxTweenType.PINGPONG});
+
+		loadingCirc = new FlxSprite(loadingTxt.x, 0).loadGraphic(Paths.image('loadingicon'));
+		loadingCirc.x += loadingTxt.width;
+		loadingCirc.scale.set(0.45,0.45);
+		loadingCirc.updateHitbox();
+		loadingCirc.antialiasing = ClientPrefs.globalAntialiasing;
+		loadingCirc.screenCenter(Y);
+		add(loadingCirc);
+
+		loadBar = new FlxSprite(10, 0).makeGraphic(10, FlxG.height - 150, 0xffffffff);
+		loadBar.screenCenter(Y);
 		loadBar.antialiasing = ClientPrefs.globalAntialiasing;
+		loadBar.color = 0xffff00ff;
 		add(loadBar);
+
+		var loadColors:Array<flixel.util.FlxColor> = [0xffff0000, 0xffff7b00, 0xffffff00, 0xff00ff00, 0xff0000ff, 0xffff00ff];
+		var loadIncrement:Int = 0;
+		clrBarTwn(loadIncrement, loadBar, loadColors, 1);
+
+		callbackTxt = new FlxText(30, 0, 0, "");
+		callbackTxt.scrollFactor.set();
+		callbackTxt.setFormat("VCR OSD Mono", 16, 0xffffffff, CENTER);
+		callbackTxt.screenCenter(Y);
+		add(callbackTxt);
+
+		tipTxt = new FlxText(0, FlxG.height - 48, 0, tips[FlxG.random.int(0,tips.length-1)]);
+		tipTxt.scrollFactor.set();
+		tipTxt.setFormat("VCR OSD Mono", 16, 0xffffffff, LEFT);
+		add(tipTxt);
+
+		var timer = new FlxTimer().start(4, function(tmr:FlxTimer) {
+			tipTxt.text = tips[FlxG.random.int(0,tips.length-1)];
+		}, 0);
 		
 		initSongsManifest().onComplete
 		(
@@ -60,11 +153,11 @@ class LoadingState extends MusicBeatState
 			{
 				callbacks = new MultiCallback(onLoad);
 				var introComplete = callbacks.add("introComplete");
-				if (PlayState.SONG != null) {
+				/*if (PlayState.SONG != null) {
 					checkLoadSong(getSongPath());
 					if (PlayState.SONG.needsVoices)
 						checkLoadSong(getVocalPath());
-				}
+				}*/
 				checkLibrary("shared");
 				if(directory != null && directory.length > 0 && directory != 'shared') {
 					checkLibrary(directory);
@@ -109,10 +202,21 @@ class LoadingState extends MusicBeatState
 	{
 		super.update(elapsed);
 
+		loadingCirc.angle += elapsed*loadingCircSpeed;
+
 		if(callbacks != null) {
 			targetShit = FlxMath.remapToRange(callbacks.numRemaining / callbacks.length, 1, 0, 0, 1);
-			loadBar.scale.x += 0.5 * (targetShit - loadBar.scale.x);
+			loadBar.scale.y += 0.5 * (targetShit - loadBar.scale.y);
+			callbackTxt.text = (callbacks.length - callbacks.numRemaining) + '/' + callbacks.length;
 		}
+	}
+
+	function clrBarTwn(incrementor:Int, sprite:FlxSprite, clrArray:Array<flixel.util.FlxColor>, duration:Int) {
+		flixel.tweens.FlxTween.color(sprite, duration, sprite.color, clrArray[incrementor], {onComplete: function(_) {
+			incrementor++;
+			if (incrementor > 5) incrementor = 0;
+			clrBarTwn(incrementor, sprite, clrArray, duration);
+		}});
 	}
 	
 	function onLoad()
@@ -125,12 +229,12 @@ class LoadingState extends MusicBeatState
 	
 	static function getSongPath()
 	{
-		return Paths.inst(PlayState.SONG.song);
+		return Paths.inst(PlayState.SONG.header.song);
 	}
 	
 	static function getVocalPath()
 	{
-		return Paths.voices(PlayState.SONG.song);
+		return Paths.voices(PlayState.SONG.header.song);
 	}
 	
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false)
@@ -152,7 +256,7 @@ class LoadingState extends MusicBeatState
 		#if NO_PRELOAD_ALL
 		var loaded:Bool = false;
 		if (PlayState.SONG != null) {
-			loaded = isSoundLoaded(getSongPath()) && (!PlayState.SONG.needsVoices || isSoundLoaded(getVocalPath())) && isLibraryLoaded("shared") && isLibraryLoaded(directory);
+			loaded = isSoundLoaded(getSongPath()) && (!PlayState.SONG.header.needsVoices || isSoundLoaded(getVocalPath())) && isLibraryLoaded("shared") && isLibraryLoaded(directory);
 		}
 		
 		if (!loaded)
@@ -300,7 +404,9 @@ class MultiCallback
 	inline function log(msg):Void
 	{
 		if (logId != null)
+		{
 			trace('$logId: $msg');
+		}
 	}
 	
 	public function getFired() return fired.copy();

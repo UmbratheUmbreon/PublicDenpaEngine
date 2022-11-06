@@ -16,7 +16,27 @@
 					[
 						"Stage Tint",
 						"0.4",
-						"10"
+						"10,0xff110000"
+					]
+				]
+			],
+			[
+				10105.2631578947,
+				[
+					[
+						"Add Camera Zoom",
+						"0.5",
+						"0.1"
+					],
+					[
+						"Flash Camera",
+						"1",
+						"0xffffff"
+					],
+					[
+						"Set Cam Speed",
+						"2",
+						""
 					]
 				]
 			],
@@ -26,7 +46,12 @@
 					[
 						"Stage Tint",
 						"0.6",
-						"10"
+						"10,0xff110000"
+					],
+					[
+						"Set Cam Speed",
+						"1",
+						""
 					]
 				]
 			],
@@ -191,12 +216,32 @@
 				]
 			],
 			[
+				30315.7894736842,
+				[
+					[
+						"Set Cam Speed",
+						"2",
+						""
+					],
+					[
+						"Add Camera Zoom",
+						"0.5",
+						"0.1"
+					],
+					[
+						"Flash Camera",
+						"1",
+						"0xffffff"
+					]
+				]
+			],
+			[
 				40421.0526315789,
 				[
 					[
 						"Stage Tint",
 						"0.4",
-						"10"
+						"10,0x050000"
 					]
 				]
 			],
@@ -206,7 +251,12 @@
 					[
 						"Stage Tint",
 						"0.6",
-						"10"
+						"10,0xff110000"
+					],
+					[
+						"Set Cam Speed",
+						"1",
+						""
 					]
 				]
 			],
@@ -371,12 +421,32 @@
 				]
 			],
 			[
+				60631.5789473684,
+				[
+					[
+						"Set Cam Speed",
+						"2",
+						""
+					],
+					[
+						"Add Camera Zoom",
+						"0.5",
+						"0.1"
+					],
+					[
+						"Flash Camera",
+						"1",
+						"0xffffff"
+					]
+				]
+			],
+			[
 				70736.8421052631,
 				[
 					[
 						"Stage Tint",
-						"0.8",
-						"10"
+						"0.5",
+						"10,0xff000000"
 					]
 				]
 			],
@@ -384,9 +454,14 @@
 				80842.1052631578,
 				[
 					[
+						"Set Cam Speed",
+						"1",
+						""
+					],
+					[
 						"Stage Tint",
-						"0.9",
-						"10"
+						"0.65",
+						"10,0xff160000"
 					]
 				]
 			],
@@ -556,26 +631,37 @@
 					[
 						"Stage Tint",
 						"0.4",
-						"10"
+						"10,0xff000000"
 					]
 				]
 			]
 		],
 		"allowBot": true,
+		"instVolume": 1,
 		"notes": [],
 		"splashSkin": null,
 		"modchart": null,
 		"validScore": false,
+		"vocalsVolume": 1,
+		"beatDrain": null,
+		"tintBlue": null,
 		"gfVersion": "gf-pixel",
 		"bpm": 190,
 		"mania": 3,
 		"arrowSkin": null,
 		"needsVoices": true,
+		"credits": null,
+		"dadModchart": null,
 		"enablePlayer4": null,
-		"healthDrain": null,
+		"remixCreds": null,
 		"allowGhostTapping": true,
 		"crits": null,
 		"song": "Thorns",
-		"autoZooms": true
+		"secVocalsVolume": 1,
+		"autoZooms": true,
+		"hardness": 5,
+		"tintRed": null,
+		"p4Modchart": null,
+		"tintGreen": null
 	}
 }

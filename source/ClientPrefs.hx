@@ -1,15 +1,18 @@
 package;
 
-import flixel.FlxG;
 import flixel.util.FlxSave;
 import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
 
+/**
+* Class containing all settings.
+* Automatically saves and loads.
+*/
 class ClientPrefs {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
-	public static var showFPS:Bool = true;
+	public static var showFPS:Bool = #if debug true #else false #end;
 	public static var fullscreen:Bool = false;
 	public static var autoPause:Bool = true;
 	public static var flashing:Bool = true;
@@ -18,7 +21,7 @@ class ClientPrefs {
 	public static var lowQuality:Bool = false;
 	public static var framerate:Int = 60;
 	public static var crossFadeLimit:Null<Int> = 4;
-	public static var boyfriendCrossFadeLimit:Null<Int> = 1;
+	public static var boyfriendCrossFadeLimit:Null<Int> = 2;
 	public static var opponentNoteAnimations:Bool = true;
 	public static var opponentAlwaysDance:Bool = true;
 	public static var cursing:Bool = true;
@@ -27,45 +30,43 @@ class ClientPrefs {
 	public static var camPans:Bool = true;
 	public static var hideHud:Bool = false;
 	public static var noteOffset:Int = 0;
-	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
-	public static var timeBarRed:Int = 255;
-	public static var timeBarGreen:Int = 255;
-	public static var timeBarBlue:Int = 255;
-	public static var uiSkin:String = 'fnf';
-	public static var iconSwing:String = 'Swing Mild';
+	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+	public static var timeBarRGB:Array<Int> = [255, 255, 255];
+	public static var uiSkin:String = 'FNF';
+	public static var iconSwing:String = 'Swing';
 	public static var scoreDisplay:String = 'Psych';
 	public static var crossFadeMode:String = 'Mid-Fight Masses';
 	public static var ghostTapping:Bool = true;
 	public static var timeBarType:String = 'Time Left';
 	public static var scoreZoom:Bool = true;
-	public static var noReset:Bool = false;
+	public static var noReset:Bool = true;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
 	public static var hitsoundVolume:Float = 0;
-	public static var pauseMusic:String = 'Tea Time';
-	public static var inputType:String = 'Psych';
+	public static var pauseMusic:String = 'OVERDOSE';
 	public static var ratingIntensity:String = 'Default';
-	public static var randomMode:Bool = false;
-	public static var quartiz:Bool = false;
-	public static var ghostMode:Bool = false; //Unused, Does nothing as of rn because its disabled.
 	public static var watermarks:Bool = true;
 	public static var ratingsDisplay:Bool = true;
-	public static var gsmiss:Bool = true;
+	public static var gsmiss:Bool = false;
 	public static var changeTBcolour:Bool = true;
 	public static var greenhp:Bool = false;
 	public static var newHP:Bool = true;
 	public static var sarvAccuracy:Bool = false;
-	public static var comboPopup:Bool = true;
+	public static var comboPopup:Bool = false;
 	public static var wrongCamera:Bool = false;
 	public static var msPopup:Bool = true;
 	public static var msPrecision:Int = 2;
 	public static var flinchy:Bool = true;
 	public static var cutscenes:String = 'Story Mode Only';
-	public static var camPanMode:String = 'Always';
+	public static var camPanMode:String = 'Camera Focus';
 	public static var mouseControls:Bool = true;
 	public static var checkForUpdates:Null<Bool> = true;
-	public static var darkenBG:Bool = false;
+	public static var comboStacking:Bool = false;
 	public static var accuracyMode:String = 'Simple';
+	public static var subtitles:Bool = true;
+	public static var missSoundVolume:Float = 0.2;
+	public static var hitSound:String = 'Hit Sound';
+	public static var osuManiaSustains:Bool = false;
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 
@@ -86,11 +87,15 @@ class ClientPrefs {
 		'botplay' => false,
 		'poison' => false,
 		'sickonly' => false,
+		'freeze' => false,
+		'flashlight' => false,
+		'quartiz' => false,
+		'ghostmode' => false,
+		'randommode' => false,
 		'opponentplay' => false
 	];
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0, 0, 0];
-	public static var noAntimash:Bool = false;
 	public static var ratingOffset:Int = 0;
 	public static var perfectWindow:Int = 10;
 	public static var sickWindow:Int = 45;
@@ -102,82 +107,59 @@ class ClientPrefs {
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
 		//Key Bind, Name for ControlsSubState
-		'note_one1'		=> [SPACE, NONE],
+		'note_one1'		=> [SPACE, UP],
 
-		'note_two1'		=> [D, NONE],
-		'note_two2'		=> [K, NONE],
+		'note_two1'		=> [D, LEFT],
+		'note_two2'		=> [K, RIGHT],
 
-		'note_three1'	=> [D, NONE],
-		'note_three2'	=> [SPACE, NONE],
-		'note_three3'	=> [K, NONE],
+		'note_three1'	=> [D, LEFT],
+		'note_three2'	=> [SPACE, UP],
+		'note_three3'	=> [K, RIGHT],
 
-		'note_left'		=> [A, LEFT],
-		'note_down'		=> [S, DOWN],
-		'note_up'		=> [W, UP],
-		'note_right'	=> [D, RIGHT],
+		'note_four1'	=> [A, LEFT],
+		'note_four2'	=> [S, DOWN],
+		'note_four3'	=> [W, UP],
+		'note_four4'	=> [D, RIGHT],
 
-		'note_five1'	=> [D, NONE],
-		'note_five2'	=> [F, NONE],
-		'note_five3'	=> [SPACE, NONE],
-		'note_five4'	=> [J, NONE],
-		'note_five5'	=> [K, NONE],
+		'note_five1'	=> [D, LEFT],
+		'note_five2'	=> [F, DOWN],
+		'note_five3'	=> [SPACE, NUMPADZERO],
+		'note_five4'	=> [J, UP],
+		'note_five5'	=> [K, RIGHT],
 
-		'note_six1'		=> [S, NONE],
-		'note_six2'		=> [D, NONE],
-		'note_six3'		=> [F, NONE],
-		'note_six4'		=> [J, NONE],
-		'note_six5'		=> [K, NONE],
-		'note_six6'		=> [L, NONE],
+		'note_six1'		=> [S, LEFT],
+		'note_six2'		=> [D, DOWN],
+		'note_six3'		=> [F, NUMPADFOUR],
+		'note_six4'		=> [J, NUMPADSIX],
+		'note_six5'		=> [K, UP],
+		'note_six6'		=> [L, RIGHT],
 
-		'note_seven1'	=> [S, NONE],
-		'note_seven2'	=> [D, NONE],
-		'note_seven3'	=> [F, NONE],
-		'note_seven4'	=> [SPACE, NONE],
-		'note_seven5'	=> [J, NONE],
-		'note_seven6'	=> [K, NONE],
-		'note_seven7'	=> [L, NONE],
+		'note_seven1'	=> [S, LEFT],
+		'note_seven2'	=> [D, DOWN],
+		'note_seven3'	=> [F, NUMPADFOUR],
+		'note_seven4'	=> [SPACE, NUMPADZERO],
+		'note_seven5'	=> [J, NUMPADSIX],
+		'note_seven6'	=> [K, UP],
+		'note_seven7'	=> [L, RIGHT],
 
-		'note_eight1'	=> [A, NONE],
-		'note_eight2'	=> [S, NONE],
-		'note_eight3'	=> [D, NONE],
-		'note_eight4'	=> [F, NONE],
-		'note_eight5'	=> [H, NONE],
-		'note_eight6'	=> [J, NONE],
-		'note_eight7'	=> [K, NONE],
-		'note_eight8'	=> [L, NONE],
+		'note_eight1'	=> [A, LEFT],
+		'note_eight2'	=> [S, DOWN],
+		'note_eight3'	=> [D, UP],
+		'note_eight4'	=> [F, RIGHT],
+		'note_eight5'	=> [H, NUMPADFOUR],
+		'note_eight6'	=> [J, NUMPADEIGHT],
+		'note_eight7'	=> [K, NUMPADSIX],
+		'note_eight8'	=> [L, NUMPADTWO],
 
-		'note_nine1'	=> [A, NONE],
-		'note_nine2'	=> [S, NONE],
-		'note_nine3'	=> [D, NONE],
-		'note_nine4'	=> [F, NONE],
-		'note_nine5'	=> [SPACE, NONE],
-		'note_nine6'	=> [H, NONE],
-		'note_nine7'	=> [J, NONE],
-		'note_nine8'	=> [K, NONE],
-		'note_nine9'	=> [L, NONE],
-
-		'note_ten1'		=> [A, NONE],
-		'note_ten2'		=> [S, NONE],
-		'note_ten3'		=> [D, NONE],
-		'note_ten4'		=> [F, NONE],
-		'note_ten5'		=> [G, NONE],
-		'note_ten6'		=> [SPACE, NONE],
-		'note_ten7'		=> [H, NONE],
-		'note_ten8'     => [J, NONE],
-		'note_ten9'		=> [K, NONE],
-		'note_ten10'	=> [L, NONE],
-
-		'note_elev1'	=> [A, NONE],
-		'note_elev2'	=> [S, NONE],
-		'note_elev3'	=> [D, NONE],
-		'note_elev4'	=> [F, NONE],
-		'note_elev5'	=> [G, NONE],
-		'note_elev6'	=> [SPACE, NONE],
-		'note_elev7'	=> [H, NONE],
-		'note_elev8'    => [J, NONE],
-		'note_elev9'	=> [K, NONE],
-		'note_elev10'	=> [L, NONE],
-		'note_elev11'	=> [PERIOD, NONE],
+		'note_nine1'	=> [A, LEFT],
+		'note_nine2'	=> [S, DOWN],
+		'note_nine3'	=> [D, UP],
+		'note_nine4'	=> [F, RIGHT],
+		'note_nine5'	=> [SPACE, NUMPADZERO],
+		'note_nine6'	=> [H, NUMPADFOUR],
+		'note_nine7'	=> [J, NUMPADEIGHT],
+		'note_nine8'	=> [K, NUMPADSIX],
+		'note_nine9'	=> [L, NUMPADTWO],
 		
 		'ui_left'		=> [A, LEFT],
 		'ui_down'		=> [S, DOWN],
@@ -197,6 +179,10 @@ class ClientPrefs {
 		'debug_2'		=> [EIGHT, NONE]
 	];
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
+
+	public static function getKeyThing(array:Array<FlxKey>, ?which:Int = 0):String {
+		return array[which];
+	}
 
 	public static function loadDefaultKeys() {
 		defaultKeys = keyBinds.copy();
@@ -225,9 +211,7 @@ class ClientPrefs {
 		FlxG.save.data.noteOffset = noteOffset;
 		FlxG.save.data.hideHud = hideHud;
 		FlxG.save.data.arrowHSV = arrowHSV;
-		FlxG.save.data.timeBarRed = timeBarRed;
-		FlxG.save.data.timeBarGreen = timeBarGreen;
-		FlxG.save.data.timeBarBlue = timeBarBlue;
+		FlxG.save.data.timeBarRGB = timeBarRGB;
 		FlxG.save.data.uiSkin = uiSkin;
 		FlxG.save.data.iconSwing = iconSwing;
 		FlxG.save.data.scoreDisplay = scoreDisplay;
@@ -238,12 +222,6 @@ class ClientPrefs {
 		FlxG.save.data.noReset = noReset;
 		FlxG.save.data.healthBarAlpha = healthBarAlpha;
 		FlxG.save.data.comboOffset = comboOffset;
-		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
-		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
-		FlxG.save.data.noAntimash = noAntimash;
-		FlxG.save.data.quartiz = quartiz;
-		FlxG.save.data.randomMode = randomMode;
-		FlxG.save.data.ghostMode = ghostMode;
 		FlxG.save.data.watermarks = watermarks;
 		FlxG.save.data.ratingsDisplay = ratingsDisplay;
 		FlxG.save.data.gsmiss = gsmiss;
@@ -266,15 +244,18 @@ class ClientPrefs {
 		FlxG.save.data.controllerMode = controllerMode;
 		FlxG.save.data.hitsoundVolume = hitsoundVolume;
 		FlxG.save.data.pauseMusic = pauseMusic;
-		FlxG.save.data.inputType = inputType;
 		FlxG.save.data.ratingIntensity = ratingIntensity;
 		FlxG.save.data.cutscenes = cutscenes;
 		FlxG.save.data.camPanMode = camPanMode;
 		FlxG.save.data.flinchy = flinchy;
 		FlxG.save.data.mouseControls = mouseControls;
 		FlxG.save.data.checkForUpdates = checkForUpdates;
-		FlxG.save.data.darkenBG = darkenBG;
+		FlxG.save.data.comboStacking = comboStacking;
 		FlxG.save.data.accuracyMode = accuracyMode;
+		FlxG.save.data.subtitles = subtitles;
+		FlxG.save.data.missSoundVolume = missSoundVolume;
+		FlxG.save.data.hitSound = hitSound;
+		FlxG.save.data.osuManiaSustains = osuManiaSustains;
 	
 		FlxG.save.flush();
 
@@ -359,14 +340,8 @@ class ClientPrefs {
 		if(FlxG.save.data.arrowHSV != null) {
 			arrowHSV = FlxG.save.data.arrowHSV;
 		}
-		if(FlxG.save.data.timeBarRed != null) {
-			timeBarRed = FlxG.save.data.timeBarRed;
-		}
-		if(FlxG.save.data.timeBarGreen != null) {
-			timeBarGreen = FlxG.save.data.timeBarGreen;
-		}
-		if(FlxG.save.data.timeBarBlue != null) {
-			timeBarBlue = FlxG.save.data.timeBarBlue;
+		if(FlxG.save.data.timeBarRGB != null) {
+			timeBarRGB = FlxG.save.data.timeBarRGB;
 		}
 		if(FlxG.save.data.uiSkin != null) {
 			uiSkin = FlxG.save.data.uiSkin;
@@ -429,9 +404,6 @@ class ClientPrefs {
 		if(FlxG.save.data.pauseMusic != null) {
 			pauseMusic = FlxG.save.data.pauseMusic;
 		}
-		if(FlxG.save.data.inputType != null) {
-			inputType = FlxG.save.data.inputType;
-		}
 		if(FlxG.save.data.ratingIntensity != null) {
 			ratingIntensity = FlxG.save.data.ratingIntensity;
 		}
@@ -454,26 +426,6 @@ class ClientPrefs {
 			FlxG.sound.muted = FlxG.save.data.mute;
 		}
 
-		if (FlxG.save.data.noAntimash != null)
-			{
-				noAntimash = FlxG.save.data.noAntimash;
-			}
-		
-		if (FlxG.save.data.quartiz != null)
-			{
-				quartiz = FlxG.save.data.quartiz;
-			}
-
-
-		if (FlxG.save.data.randomMode != null)
-			{
-				randomMode = FlxG.save.data.randomMode;
-			}
-
-		if (FlxG.save.data.ghostMode != null)
-			{
-				ghostMode = FlxG.save.data.ghostMode;
-			}
 		if (FlxG.save.data.watermarks != null)
 			{
 				watermarks = FlxG.save.data.watermarks;
@@ -538,9 +490,25 @@ class ClientPrefs {
 			{
 				checkForUpdates = FlxG.save.data.checkForUpdates;
 			}
-		if (FlxG.save.data.darkenBG != null)
+		if (FlxG.save.data.comboStacking != null)
 			{
-				darkenBG = FlxG.save.data.darkenBG;
+				comboStacking = FlxG.save.data.comboStacking;
+			}
+		if (FlxG.save.data.subtitles != null)
+			{
+				subtitles = FlxG.save.data.subtitles;
+			}
+		if (FlxG.save.data.missSoundVolume != null)
+			{
+				missSoundVolume = FlxG.save.data.missSoundVolume;
+			}
+		if (FlxG.save.data.hitSound != null)
+			{
+				hitSound = FlxG.save.data.hitSound;
+			}
+		if (FlxG.save.data.osuManiaSustains != null)
+			{
+				osuManiaSustains = FlxG.save.data.osuManiaSustains;
 			}
 		if (FlxG.save.data.accuracyMode != null)
 			{
@@ -587,4 +555,76 @@ class ClientPrefs {
 		}
 		return copiedArray;
 	}
+}
+
+class Keybinds
+{
+    public static function fill():Array<Array<Dynamic>>
+    {
+        return [
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_one1'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two2'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three3'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four4'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five4')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five5'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six4')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six5')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six6'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven4')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven5')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven6')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven7'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight4')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight5')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight6')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight7')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight8'))
+			],
+			[
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine4')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine5')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine6')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine7')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine8')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine9'))
+			]
+		];
+    }
 }
