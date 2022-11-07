@@ -142,32 +142,12 @@ And of course, all of Psych's 0.5.2h features (not 0.6+, that is GARBO)
 
 ## How to Build
 
-1) Follow FNF's compiling tutorial, which is here: <https://github.com/ninjamuffin99/Funkin>
+1) MAKE SURE YOUR HAXE IS 4.2.5 OR HIGHER!!!
 
-2) MAKE SURE YOUR HAXE IS 4.2.5 OR HIGHER!!!
+2) Run QUICK SETUP.bat
 
-3) Have the following dependencies:
+3) Install Visual Studio Community 2019
 
-    -discord_rpc
-    
-    -flixel
-    
-    -flixel-addons
-    
-    -flixel-ui
-    
-    -hscript
-    
-    -hxcpp
-    
-    -lime
-    
-    -linc luajit
-    
-    -openfl
-    
-    -haxe
-
-4) Do all da shits for compiling Psych engine that arent stated on the FNF compiling tutorial
+4) Install "MSVC v142 - VS 2019 C++ x64/x86 build tools" and "Windows SDK (10.0.17763.0)"
 
 5) Pray that it works
