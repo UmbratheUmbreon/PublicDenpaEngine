@@ -3574,7 +3574,7 @@ class PlayState extends MusicBeatState
 				addCharacterToList(newCharacter, charType);
 
 			case 'Philly Glow':
-				blammedLightsBlack = new FlxSprite().makeGraphic(FlxG.width*2, FlxG.height*2, FlxColor.BLACK);
+				blammedLightsBlack = new FlxSprite().makeGraphic(Std.int(FlxG.width/defaultCamZoom*1.1), Std.int(FlxG.height/defaultCamZoom*1.1), FlxColor.BLACK);
 				blammedLightsBlack.visible = false;
 				blammedLightsBlack.scrollFactor.set();
 				blammedLightsBlack.screenCenter();
@@ -4934,7 +4934,10 @@ class PlayState extends MusicBeatState
 			
 			case 'Philly Glow':
 				var lightId:Int = Std.parseInt(value1);
+				var colorInt:Int = Std.parseInt(value2);
+				trace (colorInt); //??
 				if(Math.isNaN(lightId)) lightId = 0;
+				if(Math.isNaN(colorInt) || colorInt == 0) colorInt = 1;
 
 				var doFlash:Void->Void = function() {
 					var color:FlxColor = FlxColor.WHITE;
@@ -4972,6 +4975,7 @@ class PlayState extends MusicBeatState
 					case 1: //turn on
 						curLightEvent = FlxG.random.int(0, phillyLightsColors.length-1, [curLightEvent]);
 						var color:FlxColor = phillyLightsColors[curLightEvent];
+						if (colorInt != 1) color = FlxColor.fromInt(colorInt);
 
 						if(!phillyGlowGradient.visible)
 						{

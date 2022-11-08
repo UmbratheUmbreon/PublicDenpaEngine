@@ -32,8 +32,6 @@ class DenpaState extends MusicBeatState
 	var logo:FlxSprite;
 	var jonScare:FlxSprite;
 
-	public static var errorFixer:Bool = false;
-
 	var chooseYerIntroMate:Int = FlxG.random.int(0,9);
 
 	override public function create():Void
@@ -87,7 +85,6 @@ class DenpaState extends MusicBeatState
 
 		new FlxTimer().start(0.01, function(tmr:FlxTimer)
 			{
-				errorFixer = true;
 				FlxTransitionableState.skipNextTransIn = true;
 				FlxTransitionableState.skipNextTransOut = true;
 				switch (chooseYerIntroMate){

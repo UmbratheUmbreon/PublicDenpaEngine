@@ -102,7 +102,7 @@ class ChartingState extends MusicBeatState
 		['Hey!', "Plays the \"Hey!\" animation from Bopeebo,\nValue 1: BF = Only Boyfriend, GF = Only Girlfriend,\nSomething else = Both.\nValue 2: Custom animation duration,\nleave it blank for 0.6s"],
 		['Hide HUD', "Value 1: Duration to fade."],
 		['Kill Henchmen', "Kills the Henchmen.\nFor Mom's songs, don't use this please, i love them :("],
-		['Philly Glow', "\"Exclusive\" to Week 3\nValue 1: 0/1/2 = OFF/ON/Reset Gradient\n\nWhen NOT on the week 3 stage:\nValue 1: 0 = OFF, 1 = ON/New Colour.\nShould behave like Blammed Lights."],
+		['Philly Glow', "\"Exclusive\" to Week 3\nValue 1: 0/1/2 = OFF/ON/Reset Gradient\n\nWhen NOT on the week 3 stage:\nValue 1: 0 = OFF, 1 = ON/New Colour.\nShould behave like Blammed Lights.\n\nValue 2: Color. (write as 0xffffffff)"],
 		['Play Animation', "Plays an animation on a Character,\nOnce the animation is completed,\nthe animation changes to Idle\n\nValue 1: Animation to play.\nValue 2: Character (Dad, BF, GF)"],
 		['Screen Shake', "Value 1: Camera shake\nValue 2: HUD shake\n\nEvery value works as the following example: \"1, 0.05\".\nThe first number (1) is the duration.\nThe second number (0.05) is the intensity."],
 		['Set Cam Speed', "Sets Camera's Movement Speed,\nValue 1: Speed to set to."],
@@ -334,45 +334,38 @@ class ChartingState extends MusicBeatState
 		if (FlxG.save.data.ignoreWarnings != null) ignoreWarnings = FlxG.save.data.ignoreWarnings;
 		if (FlxG.save.data.autosave != null) autoSave = FlxG.save.data.autosave;
 		if (FlxG.save.data.autosavelength != null) autoSaveLength = FlxG.save.data.autosavelength;
-		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.scrollFactor.set();
-		bg.color = 0xFF222222;
-		add(bg);
-		/*var grad = flixel.util.FlxGradient.overlayGradientOnFlxSprite(bg, Std.int(bg.width), Std.int(bg.height), [0x0, 0x55000000], 0, 0, 1, 90, true);
-		grad.scrollFactor.set();
-		add(grad);*/
-
 		if (!ClientPrefs.lowQuality) {
+			bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+			bg.scrollFactor.set();
+			bg.color = 0xFF222222;
+			add(bg);
 			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
 			bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
 			bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
 			bgScroll.color = bg.color;
 			add(bgScroll);
-	
 			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
 			bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
 			bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
 			bgScroll2.color = bg.color;
 			add(bgScroll2);
+			gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
+			gradient.antialiasing = ClientPrefs.globalAntialiasing;
+			gradient.color = bg.color;
+			gradient.scrollFactor.set();
+			add(gradient);
+			gradient2 = new FlxSprite(0,-FlxG.height).loadGraphic(Paths.image('gradient'));
+			gradient2.antialiasing = ClientPrefs.globalAntialiasing;
+			gradient2.color = bg.color;
+			gradient2.scrollFactor.set();
+			add(gradient2);
+			gradient3 = new FlxSprite(0,FlxG.height).loadGraphic(Paths.image('gradient'));
+			gradient3.antialiasing = ClientPrefs.globalAntialiasing;
+			gradient3.color = bg.color;
+			gradient3.scrollFactor.set();
+			add(gradient3);
+			intendedColor = bg.color;
 		}
-
-		gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
-		gradient.antialiasing = ClientPrefs.globalAntialiasing;
-		gradient.color = bg.color;
-		gradient.scrollFactor.set();
-		add(gradient);
-		gradient2 = new FlxSprite(0,-FlxG.height).loadGraphic(Paths.image('gradient'));
-		gradient2.antialiasing = ClientPrefs.globalAntialiasing;
-		gradient2.color = bg.color;
-		gradient2.scrollFactor.set();
-		add(gradient2);
-		gradient3 = new FlxSprite(0,FlxG.height).loadGraphic(Paths.image('gradient'));
-		gradient3.antialiasing = ClientPrefs.globalAntialiasing;
-		gradient3.color = bg.color;
-		gradient3.scrollFactor.set();
-		add(gradient3);
-		//gradient.screenCenter();
-		intendedColor = bg.color;
 
 		gridLayer = new FlxTypedGroup<FlxSprite>();
 		add(gridLayer);
@@ -1386,7 +1379,7 @@ class ChartingState extends MusicBeatState
 			if(FileSystem.exists(directory)) {
 				for (file in FileSystem.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file != 'readme.txt' && file.endsWith('.txt')) {
+					if (!FileSystem.isDirectory(path) && file != 'readME.txt' && file.endsWith('.txt')) {
 						var fileToCheck:String = file.substr(0, file.length - 4);
 						if(!eventPushedMap.exists(fileToCheck)) {
 							eventPushedMap.set(fileToCheck, true);
@@ -3009,9 +3002,11 @@ class ChartingState extends MusicBeatState
 			rightIcon.changeIcon(healthIconP1);
 			if (_song.notes[curSection].gfSection) leftIcon.changeIcon('gf');
 		}
-		coolColor = FlxColor.fromInt(CoolUtil.dominantColor(leftIcon));
-		coolColor = FlxColor.subtract(coolColor, 0x00242424);
-		updateColors();
+		if (!ClientPrefs.lowQuality) {
+			coolColor = FlxColor.fromInt(CoolUtil.dominantColor(leftIcon));
+			coolColor = FlxColor.subtract(coolColor, 0x00242424);
+			updateColors();
+		}
 	}
 
 	function updateColors() {
@@ -3239,7 +3234,9 @@ class ChartingState extends MusicBeatState
 				nextRenderedNotes.add(note);
 			}
 		}
-		updateColors();
+		if (!ClientPrefs.lowQuality) {
+			updateColors();
+		}
 	}
 
 	function setupNoteData(i:Array<Dynamic>, isNextSection:Bool):Note

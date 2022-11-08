@@ -8,18 +8,24 @@ import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.display.FlxBackdrop;
-import flixel.effects.FlxFlicker;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import lime.app.Application;
-import flixel.input.keyboard.FlxKey;
 
 using StringTools;
 
+typedef AlbumData =
+{
+	tracks:Array<TrackData>
+}
+typedef TrackData =
+{
+	file:String,
+	name:String,
+	rgb:Array<Int>,
+	bpm:Int
+}
 /**
 * State used to play and select songs for the menus.
 */
@@ -456,6 +462,8 @@ class SoundTestState extends MusicBeatState
 					case 33:
 						setTrackThing('tdm3/33', 'Ending', 255,255,255, 86);
 				}
+			default:
+				//add stuff
 		}
 		tweenColor();
 		setColor = true;
@@ -549,7 +557,7 @@ class SoundTestState extends MusicBeatState
 	function tweenTexts(supaDirection)
 	{
 		if (supaDirection == 'up') {
-			FlxTween.tween(diskTxt, {y: (FlxG.height * -1) - 100}, 0.1, {
+			FlxTween.tween(diskTxt, {y: (-FlxG.height) - 100}, 0.1, {
 				ease: FlxEase.quadInOut,
 				onComplete: function(twn:FlxTween)
 				{
@@ -559,7 +567,7 @@ class SoundTestState extends MusicBeatState
 					});
 				}
 			});
-			FlxTween.tween(trackTxt, {y: (FlxG.height * -1) - 66}, 0.1, {
+			FlxTween.tween(trackTxt, {y: (-FlxG.height) - 66}, 0.1, {
 				ease: FlxEase.quadInOut,
 				onComplete: function(twn:FlxTween)
 				{
@@ -642,6 +650,7 @@ class SoundTestState extends MusicBeatState
 	}
 
 	function setTrackThing(music:String = '', track:String = '', r:Int = 255, g:Int = 255, b:Int = 255, bpm:Float = 100, ?loopStart:Float = null, ?loopEnd:Float = null, ?stream:Bool = false) {
+		Paths.clearUnusedMemory();
 		if (!stream) {
 			FlxG.sound.playMusic(Paths.music(music), 0);
 		} else {
