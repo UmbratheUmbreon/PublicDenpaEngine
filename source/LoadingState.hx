@@ -92,8 +92,11 @@ class LoadingState extends MusicBeatState
 	];
 	override function create()
 	{
-		var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xffcaff4d);
-		add(bg);
+		//clear assets before just for good measure??? -AT
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+		/*var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xffcaff4d);
+		add(bg);*/
 
 		var loading:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image('loadingscreen'));
 		add(loading);

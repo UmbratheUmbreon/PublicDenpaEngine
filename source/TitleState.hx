@@ -36,7 +36,6 @@ using StringTools;
 
 typedef TitleData =
 {
-	
 	titlex:Float,
 	titley:Float,
 	startx:Float,
@@ -49,6 +48,12 @@ typedef TitleData =
 	backgroundSprite:String,
 	bpm:Int
 }
+typedef NGSprData =
+{
+	sprite:String,
+	textArray:Array<String>,
+	height:Float
+}
 class TitleState extends MusicBeatState
 {
 	public static var initialized:Bool = false;
@@ -58,31 +63,24 @@ class TitleState extends MusicBeatState
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
+	#if DENPA_WATERMARKS
 	var credIcon1:FlxSprite;
 	var credIcon2:FlxSprite;
 	var credIcon3:FlxSprite;
 	var credIcon4:FlxSprite;
-	var credIcon5:FlxSprite;
-	var credIcon6:FlxSprite;
-	var sexTop:String = '';
-	var sexMiddle:String = '';
-	var sexBottom:String = '';
-
+	#end
+	var sex:Array<String> = ['In association', 'with', 'Newgrounds'];
 	var curWacky:Array<String> = [];
-
-	var wackyImage:FlxSprite;
 
 	var mustUpdate:Bool = false;
 	
 	var titleJSON:TitleData;
+	var ngSprJSON:NGSprData;
 	
 	public static var updateVersion:String = '';
 
 	override public function create():Void
 	{
-		if (!DenpaState.errorFixer) {
-			InitState.init();
-		}
 		Paths.clearUnusedMemory();
 		var directory:String = 'shared';
 		var weekDir:String = StageData.forceNextDirectory;
@@ -134,11 +132,12 @@ class TitleState extends MusicBeatState
 
 		// DEBUG BULLSHIT
 
-		swagShader = new ColorSwap();
 		super.create();
 
 		// IGNORE THIS!!!
 		titleJSON = Json.parse(Paths.getTextFromFile('images/title/gfDanceTitle.json'));
+		//lmao
+		ngSprJSON = Json.parse(Paths.getTextFromFile('images/title/newgroundsSprite.json'));
 
 		#if FREEPLAY
 		MusicBeatState.switchState(new FreeplayState());
@@ -209,7 +208,9 @@ class TitleState extends MusicBeatState
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
 
-		swagShader = new ColorSwap();
+		if (!ClientPrefs.lowQuality) {
+			swagShader = new ColorSwap();
+		}
 		gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
 
 		gfDance.frames = Paths.getSparrowAtlas('title/gfDanceTitle');
@@ -220,10 +221,12 @@ class TitleState extends MusicBeatState
 		gfDance.antialiasing = titleJSON.gfantialiasing ? ClientPrefs.globalAntialiasing : false;
 		
 		add(gfDance);
-		gfDance.shader = swagShader.shader;
 		add(logoBl);
-		logoBl.shader = swagShader.shader;
-
+		if (!ClientPrefs.lowQuality) {
+			gfDance.shader = swagShader.shader;
+			logoBl.shader = swagShader.shader;
+		}
+		
 		titleText = new FlxSprite(titleJSON.startx, titleJSON.starty);
 		#if (desktop && MODS_ALLOWED)
 		var path = "mods/" + Paths.currentModDirectory + "/images/title/titleEnter.png";
@@ -280,34 +283,30 @@ class TitleState extends MusicBeatState
 
 		credTextShit.visible = false;
 
-		switch (FlxG.random.int(0,#if DENPA_WATERMARKS 3 #else 0 #end))
+		var height:Float = 0.52;
+		var sprite:String = 'newgrounds_logo';
+		ngSpr = new FlxSprite();
+		#if DENPA_WATERMARKS
+		switch (FlxG.random.int(0,3))
 		{
 			case 0:
-				ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/newgrounds_logo'));
-				#if DENPA_WATERMARKS
-				sexTop = 'Not associated';
-				#else
-				sexTop = 'In association';
-				#end
-				sexMiddle = 'with';
-				sexBottom = 'Newgrounds';
+				sex[0] = 'Not associated';
 			case 1:
-				ngSpr = new FlxSprite(0, FlxG.height * 0.43).loadGraphic(Paths.image('title/bambail'));
-				sexTop = 'The good mod';
-				sexMiddle = 'with stridents';
-				sexBottom = 'Bambail Insurgency';
+				sprite = 'bambail';
+				height = 0.43;
+				sex = ['The good mod', 'with stridents', 'Bambail Insurgency'];
 			case 2:
-				ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/penis_2'));
-				sexTop = 'Say hello';
-				sexMiddle = 'to';
-				sexBottom = 'penis (2).png';
-			case 3:
-				ngSpr = new FlxSprite(0, FlxG.height * 0.42).loadGraphic(Paths.image('title/denpa'));
-				sexTop = 'No way';
-				sexMiddle = 'its the';
-				sexBottom = 'Denpa Mod';
+				sprite = 'denpa';
+				height = 0.42;
+				sex = ['No way', 'its the', 'Denpa Mod'];
+			default:
+				sprite = ngSprJSON.sprite;
+				height = ngSprJSON.height;
+				sex = ngSprJSON.textArray;
 		}
-		//ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('penis_2'));
+		#end
+		ngSpr.loadGraphic(Paths.image('title/$sprite'));
+		ngSpr.y = FlxG.height * height;
 		add(ngSpr);
 		ngSpr.visible = false;
 		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
@@ -315,6 +314,7 @@ class TitleState extends MusicBeatState
 		ngSpr.screenCenter(X);
 		ngSpr.antialiasing = ClientPrefs.globalAntialiasing;
 
+		#if DENPA_WATERMARKS
 		credIcon1 = new FlxSprite(150,150).loadGraphic(Paths.image('credits/at'));
 		add(credIcon1);
 		credIcon1.antialiasing = ClientPrefs.globalAntialiasing;
@@ -336,16 +336,7 @@ class TitleState extends MusicBeatState
 		credIcon4.antialiasing = ClientPrefs.globalAntialiasing;
 		credIcon4.visible = false;
 		credIcon4.flipX = false;
-
-		/*credIcon5 = new FlxSprite(75,275).loadGraphic(Paths.image('credits/jorge'));
-		add(credIcon5);
-		credIcon5.antialiasing = ClientPrefs.globalAntialiasing;
-		credIcon5.visible = false;
-
-		credIcon6 = new FlxSprite(FlxG.width-225,275).loadGraphic(Paths.image('credits/egg'));
-		add(credIcon6);
-		credIcon6.antialiasing = ClientPrefs.globalAntialiasing;
-		credIcon6.visible = false;*/
+		#end
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
@@ -424,8 +415,10 @@ class TitleState extends MusicBeatState
 				
 				if(titleText != null) titleText.animation.play('press');
 
-				swagShader.hue = 0;
-				swagShader.brightness = 0;
+				if (!ClientPrefs.lowQuality) {
+					swagShader.hue = 0;
+					swagShader.brightness = 0;
+				}
 				FlxG.camera.flash(ClientPrefs.flashing ? FlxColor.WHITE : 0x4CFFFFFF, 1);
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 
@@ -465,22 +458,24 @@ class TitleState extends MusicBeatState
 			idling = false;
 		}
 
-		if(swagShader != null)
-		{
-			if(controls.UI_LEFT){
-				swagShader.hue -= elapsed * 0.1;
-			} 
-			if(controls.UI_RIGHT){
-				swagShader.hue += elapsed * 0.1;
-			} 
-			if(controls.UI_DOWN){
-				swagShader.brightness -= elapsed * 0.1;
-			} 
-			if(controls.UI_UP){
-				swagShader.brightness += elapsed * 0.1;
-			} 
-			if (idling) {
-				swagShader.hue += elapsed * 0.05;
+		if (!ClientPrefs.lowQuality) {
+			if(swagShader != null)
+			{
+				if(controls.UI_LEFT){
+					swagShader.hue -= elapsed * 0.1;
+				} 
+				if(controls.UI_RIGHT){
+					swagShader.hue += elapsed * 0.1;
+				} 
+				if(controls.UI_DOWN){
+					swagShader.brightness -= elapsed * 0.1;
+				} 
+				if(controls.UI_UP){
+					swagShader.brightness += elapsed * 0.1;
+				} 
+				if (idling) {
+					swagShader.hue += elapsed * 0.05;
+				}
 			}
 		}
 
@@ -552,7 +547,6 @@ class TitleState extends MusicBeatState
 				{
 					case 1:
 						zoomies = 1.1;
-						//Conductor.changeBPM(150);
 						#if DENPA_WATERMARKS
 						createCoolText(['Denpa Engine by'], -115);
 						#else
@@ -564,8 +558,6 @@ class TitleState extends MusicBeatState
 						credIcon2.visible = true;
 						credIcon3.visible = true;
 						credIcon4.visible = true;
-						//credIcon5.visible = true;
-						//credIcon6.visible = true;
 						addMoreText('BlueVapor1234', -55);
 						addMoreText('Bethany Clone', -55);
 						addMoreText('Box', -55);
@@ -577,18 +569,18 @@ class TitleState extends MusicBeatState
 						addMoreText('present');
 						#end
 					case 4:
-						credIcon1.visible = false;
-						credIcon2.visible = false;
-						credIcon3.visible = false;
-						credIcon4.visible = false;
-						//credIcon5.visible = false;
-						//credIcon6.visible = false;
+						#if DENPA_WATERMARKS
+						credIcon1.destroy();
+						credIcon2.destroy();
+						credIcon3.destroy();
+						credIcon4.destroy();
+						#end
 						deleteCoolText();
 					case 5:
-						createCoolText([sexTop, sexMiddle], -115);
+						createCoolText([sex[0], sex[1]], -115);
 						zoomies = 1.2;
 					case 7:
-						addMoreText(sexBottom, -115);
+						addMoreText(sex[2], -115);
 						ngSpr.visible = true;
 					case 8:
 						zoomies = 1.05;
@@ -653,12 +645,10 @@ class TitleState extends MusicBeatState
 			remove(ngSpr);
 			remove(credGroup);
 			#if DENPA_WATERMARKS
-			credIcon1.visible = false;
-			credIcon2.visible = false;
-			credIcon3.visible = false;
-			credIcon4.visible = false;
-			//credIcon5.visible = false;
-			//credIcon6.visible = false;
+			credIcon1.destroy();
+			credIcon2.destroy();
+			credIcon3.destroy();
+			credIcon4.destroy();
 			#end
 			FlxG.camera.flash(FlxColor.WHITE, 3);
 			skippedIntro = true;

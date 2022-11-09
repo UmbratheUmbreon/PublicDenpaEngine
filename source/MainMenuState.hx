@@ -27,9 +27,9 @@ using StringTools;
 class MainMenuState extends MusicBeatState
 {
 	#if !debug
-	public static var denpaEngineVersion:String = '0.7.0'; //This is also used for Discord RPC
+	public static var denpaEngineVersion:String = '0.7.0b'; //This is also used for Discord RPC
 	#else
-	public static var denpaEngineVersion:String = '0.7.0 Nightly'; //For declaring "HEY THIS ISNT FINAL"
+	public static var denpaEngineVersion:String = '0.7.0b Nightly'; //For declaring "HEY THIS ISNT FINAL"
 	#end
 	public static var baseVersion:String = '0.5.2h'; //For those wondering what this engine is based on
 	public static var curSelected:Int = 0;
