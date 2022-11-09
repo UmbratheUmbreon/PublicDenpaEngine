@@ -16,7 +16,7 @@ import cpp.Lib;
 import lime.app.Application;
 import flixel.tweens.FlxEase;
 import Discord.DiscordClient;
-import openfl.Assets;
+import openfl.utils.Assets;
 import hscript.Expr;
 import hscript.Interp;
 import hscript.Parser;
@@ -59,6 +59,49 @@ class HScript
         Reflect.callMethod(interpreter, shit, Arguments);
     }
 
+    public function get(Function:String):Dynamic
+    {
+        if (interpreter == null || parser == null) return;
+        if (!interpreter.variables.exists(Function)) return;
+
+        return interpreter.variables.get(Function);
+    }
+
+    public function set(Function:String, value:Dynamic):Void
+    {
+        if (interpreter == null || parser == null) return;
+        if (!interpreter.variables.exists(Function)) return;
+
+        return interpreter.variables.set(Function, value);
+    }
+
+    public function exists(Function:String){
+        if (interpreter == null || parser == null) return;
+        if (!interpreter.variables.exists(Function)) return;
+
+        return interpreter.variables.exists(Function);
+    }
+
+    public function stop(){
+        interpreter = null;
+        parser = null;
+    }
+
+    public function parseString(daString:String, ?name:String = 'hscript')
+    {
+        if (parser == null) return;
+
+        return parser.parseString(daString, name);
+    }
+
+    public static function parseFile(daFile:String, ?name:String = 'hscript'){
+        if (name == null)
+			name = file;
+        if (parser == null) return;
+
+        return parser.parseString(Assets.getText(file), name);
+    }
+
     function setVars()
     {
         //HELP
@@ -94,5 +137,7 @@ class HScript
         interpreter.variables.set("FlxEase", FlxEase);
         interpreter.variables.set("FlxTimer", FlxTimer);
         //interpreter.variables.set("FlxColor", FlxColor);
+        interpreter.variables.set("Type", Type);
+        interpreter.variables.set("Std", Std);
     }
 }

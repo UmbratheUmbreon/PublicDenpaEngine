@@ -538,7 +538,6 @@ class PlayState extends MusicBeatState
 		// Gameplay settings
 		initModifiers();
 
-		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
