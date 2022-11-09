@@ -61,23 +61,23 @@ class HScript
 
     public function get(Function:String):Dynamic
     {
-        if (interpreter == null || parser == null) return null;
-        if (!interpreter.variables.exists(Function)) return null;
+        // if (interpreter == null || parser == null) return null;
+        // if (!interpreter.variables.exists(Function)) return null;
 
         return interpreter.variables.get(Function);
     }
 
     public function set(Function:String, value:Dynamic):Void
     {
-        if (interpreter == null || parser == null) return;
-        if (!interpreter.variables.exists(Function)) return;
+        // if (interpreter == null || parser == null) return;
+        // if (!interpreter.variables.exists(Function)) return;
 
         return interpreter.variables.set(Function, value);
     }
 
     public function exists(Function:String){
-        if (interpreter == null || parser == null) return null;
-        if (!interpreter.variables.exists(Function)) return null;
+        // if (interpreter == null || parser == null) return null;
+        // if (!interpreter.variables.exists(Function)) return null;
 
         return interpreter.variables.exists(Function);
     }
@@ -89,7 +89,7 @@ class HScript
 
     public function parseString(daString:String, ?name:String = 'hscript')
     {
-        if (parser == null) return null;
+        // if (parser == null) return null;
 
         return parser.parseString(daString, name);
     }
@@ -97,7 +97,7 @@ class HScript
     public function parseFile(daFile:String, ?name:String = 'hscript'){
         if (name == null)
 			name = daFile;
-        if (parser == null) return null;
+        // if (parser == null) return null;
 
         return parser.parseString(Assets.getText(daFile), name);
     }
