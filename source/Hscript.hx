@@ -96,7 +96,7 @@ class HScript
 
     public function parseFile(daFile:String, ?name:String = 'hscript'){
         if (name == null)
-			name = file;
+			name = daFile;
         if (parser == null) return null;
 
         return parser.parseString(Assets.getText(daFile), name);
