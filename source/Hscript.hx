@@ -61,8 +61,8 @@ class HScript
 
     public function get(Function:String):Dynamic
     {
-        if (interpreter == null || parser == null) return;
-        if (!interpreter.variables.exists(Function)) return;
+        if (interpreter == null || parser == null) return null;
+        if (!interpreter.variables.exists(Function)) return null;
 
         return interpreter.variables.get(Function);
     }
@@ -76,8 +76,8 @@ class HScript
     }
 
     public function exists(Function:String){
-        if (interpreter == null || parser == null) return;
-        if (!interpreter.variables.exists(Function)) return;
+        if (interpreter == null || parser == null) return null;
+        if (!interpreter.variables.exists(Function)) return null;
 
         return interpreter.variables.exists(Function);
     }
@@ -89,17 +89,17 @@ class HScript
 
     public function parseString(daString:String, ?name:String = 'hscript')
     {
-        if (parser == null) return;
+        if (parser == null) return null;
 
         return parser.parseString(daString, name);
     }
 
-    public static function parseFile(daFile:String, ?name:String = 'hscript'){
+    public function parseFile(daFile:String, ?name:String = 'hscript'){
         if (name == null)
 			name = file;
-        if (parser == null) return;
+        if (parser == null) return null;
 
-        return parser.parseString(Assets.getText(file), name);
+        return parser.parseString(Assets.getText(daFile), name);
     }
 
     function setVars()
