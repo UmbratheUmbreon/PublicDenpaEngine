@@ -5303,173 +5303,93 @@ class PlayState extends MusicBeatState
 			//note to self: make this reset the values... properly *cough* x and y *cough*
 			case 'Change Modchart':
 				var split:Array<String> = value2.split(',');
+			var manias:Array<Float> = [0.9, 0.85, 0.8, 0.7, 0.66, 0.6, 0.55, 0.5, 0.46];
 				switch (split[0].toLowerCase()) {
 					case 'bf' | 'boyfriend' | 'player':
 						playerStrums.forEach(function(spr:FlxSprite)
+						{
+							if (split[1].toLowerCase() == 'true') {
+								FlxTween.tween(spr, {x: spr.ID * spr.width * 1.05 + 730, y: (ClientPrefs.downScroll ? FlxG.height - 150 : 50)}, 0.25 / playbackRate);
+							} else {
+								spr.x = spr.ID * spr.width * 1.05 + 730;
+								spr.y = (ClientPrefs.downScroll ? FlxG.height - 150 : 50);
+							}
+							spr.angle = 0;
+							spr.scale.x = spr.scale.y = manias[mania];
+							spr.updateHitbox() // YOU NEED TO CALL THIS AFTER MESSING WITH SCALES!!!
+						});
+						for(note in notes)
+						{
+							if(note.mustPress && !note.altNote)
 							{
-								if (split[1].toLowerCase() == 'true') {
-									FlxTween.tween(spr, {x: spr.ID*spr.width*1.05 + 730, y: (ClientPrefs.downScroll ? FlxG.height - 150 : 50)}, 0.25 / playbackRate);
-								} else {
-									spr.x = spr.ID*spr.width*1.05 + 730;
-									spr.y = (ClientPrefs.downScroll ? FlxG.height - 150 : 50);
-								}
-								spr.angle = 0;
-								switch (mania)
-								{
-									case 0:
-										spr.scale.x = 0.9;
-										spr.scale.y = 0.9;
-									case 1:
-										spr.scale.x = 0.85;
-										spr.scale.y = 0.85;
-									case 2:
-										spr.scale.x = 0.8;
-										spr.scale.y = 0.8;
-									case 3:
-										spr.scale.x = 0.7;
-										spr.scale.y = 0.7;
-									case 4:
-										spr.scale.x = 0.66;
-										spr.scale.y = 0.66;
-									case 5:
-										spr.scale.x = 0.6;
-										spr.scale.y = 0.6;
-									case 6:
-										spr.scale.x = 0.55;
-										spr.scale.y = 0.55;
-									case 7:
-										spr.scale.x = 0.5;
-										spr.scale.y = 0.5;
-									case 8:
-										spr.scale.x = 0.46;
-										spr.scale.y = 0.46;
-								}
-							});
-							for(note in notes)
-								{
-									if(note.mustPress && !note.altNote)
-									{
-										if (!note.isSustainNote)
-											note.angle = playerStrums.members[note.noteData].angle;
-											note.scale.x = playerStrums.members[note.noteData].scale.x;
-											note.scale.y = playerStrums.members[note.noteData].scale.y;
-									}
-								}
+								if (!note.isSustainNote)
+									note.angle = playerStrums.members[note.noteData].angle;
+								note.scale.x = playerStrums.members[note.noteData].scale.x;
+								note.scale.y = playerStrums.members[note.noteData].scale.y;
+								note.updateHitbox(); // ALWAYS
+							}
+						}
 						curModChart = value1;
 					case 'dad' | 'opponent' | 'oppt':
 						opponentStrums.forEach(function(spr:FlxSprite)
+						{
+							if (split[1].toLowerCase() == 'true') {
+								FlxTween.tween(spr, {x: spr.ID * spr.width * 1.05 + 85, y: (ClientPrefs.downScroll ? FlxG.height - 150 : 50)}, 0.25 / playbackRate);
+							} else {
+								spr.x = spr.ID * spr.width * 1.05 + 85;
+								spr.y = (ClientPrefs.downScroll ? FlxG.height - 150 : 50);
+							}
+							spr.angle = 0;
+							spr.scale.x = spr.scale.y = manias[mania];
+							spr.updateHitbox(); // IM NOT JOKING
+						});
+						for(note in notes)
+						{
+							if(!note.mustPress && !note.altNote)
 							{
-								if (split[1].toLowerCase() == 'true') {
-									FlxTween.tween(spr, {x: spr.ID*spr.width*1.05 + 85, y: (ClientPrefs.downScroll ? FlxG.height - 150 : 50)}, 0.25 / playbackRate);
-								} else {
-									spr.x = spr.ID*spr.width*1.05 + 85;
-									spr.y = (ClientPrefs.downScroll ? FlxG.height - 150 : 50);
-								}
-								spr.angle = 0;
-								switch (mania)
-								{
-									case 0:
-										spr.scale.x = 0.9;
-										spr.scale.y = 0.9;
-									case 1:
-										spr.scale.x = 0.85;
-										spr.scale.y = 0.85;
-									case 2:
-										spr.scale.x = 0.8;
-										spr.scale.y = 0.8;
-									case 3:
-										spr.scale.x = 0.7;
-										spr.scale.y = 0.7;
-									case 4:
-										spr.scale.x = 0.66;
-										spr.scale.y = 0.66;
-									case 5:
-										spr.scale.x = 0.6;
-										spr.scale.y = 0.6;
-									case 6:
-										spr.scale.x = 0.55;
-										spr.scale.y = 0.55;
-									case 7:
-										spr.scale.x = 0.5;
-										spr.scale.y = 0.5;
-									case 8:
-										spr.scale.x = 0.46;
-										spr.scale.y = 0.46;
-								}
-							});
-							for(note in notes)
-								{
-									if(!note.mustPress && !note.altNote)
-									{
-										if (!note.isSustainNote)
-											note.angle = opponentStrums.members[note.noteData].angle;
-											note.scale.x = opponentStrums.members[note.noteData].scale.x;
-											note.scale.y = opponentStrums.members[note.noteData].scale.y;
-									}
-								}
+								if (!note.isSustainNote)
+									note.angle = opponentStrums.members[note.noteData].angle;
+								note.scale.x = opponentStrums.members[note.noteData].scale.x;
+								note.scale.y = opponentStrums.members[note.noteData].scale.y;
+								note.updateHitbox();
+							}
+						}
 						curDadModChart = value1;
 					case 'player 4' | 'player4' | 'p4':
 						thirdStrums.forEach(function(spr:FlxSprite)
+						{
+							if (split[1].toLowerCase() == 'true') {
+								FlxTween.tween(spr, {x: player4.x, y: player4.y}, 0.25 / playbackRate);
+							} else {
+								spr.x = player4.x;
+								spr.y = player4.y;
+							}
+							spr.angle = 0;
+							spr.scale.x = spr.scale.y = manias[mania];
+							spr.updateHitbox();
+						});
+						for(note in notes)
+						{
+							if(!note.mustPress && note.altNote)
 							{
-								if (split[1].toLowerCase() == 'true') {
-									FlxTween.tween(spr, {x: player4.x, y: player4.y}, 0.25 / playbackRate);
-								} else {
-									spr.x = player4.x;
-									spr.y = player4.y;
-								}
-								spr.angle = 0;
-								switch (mania)
-								{
-									case 0:
-										spr.scale.x = 0.9;
-										spr.scale.y = 0.9;
-									case 1:
-										spr.scale.x = 0.85;
-										spr.scale.y = 0.85;
-									case 2:
-										spr.scale.x = 0.8;
-										spr.scale.y = 0.8;
-									case 3:
-										spr.scale.x = 0.7;
-										spr.scale.y = 0.7;
-									case 4:
-										spr.scale.x = 0.66;
-										spr.scale.y = 0.66;
-									case 5:
-										spr.scale.x = 0.6;
-										spr.scale.y = 0.6;
-									case 6:
-										spr.scale.x = 0.55;
-										spr.scale.y = 0.55;
-									case 7:
-										spr.scale.x = 0.5;
-										spr.scale.y = 0.5;
-									case 8:
-										spr.scale.x = 0.46;
-										spr.scale.y = 0.46;
-								}
-							});
-							for(note in notes)
-								{
-									if(!note.mustPress && note.altNote)
-									{
-										if (!note.isSustainNote)
-											note.angle = thirdStrums.members[note.noteData].angle;
-											note.scale.x = thirdStrums.members[note.noteData].scale.x;
-											note.scale.y = thirdStrums.members[note.noteData].scale.y;
-									}
-								}
+								if (!note.isSustainNote)
+									note.angle = thirdStrums.members[note.noteData].angle;
+								note.scale.x = thirdStrums.members[note.noteData].scale.x;
+								note.scale.y = thirdStrums.members[note.noteData].scale.y;
+								note.updateHitbox();
+							}
+						}
 						curP4ModChart = value1;
 				}
 
 			case 'Toggle Botplay':
 				switch (value1)
 				{
-					case '1':
+					case '1' | 'false':
 						cpuControlled = false;
 						botplayTxt.visible = cpuControlled;
 						if(noBotplay != null) {
-							if (screwYou.visible == false) {
+							if (!screwYou.visible) {
 								noBotplay.y = ClientPrefs.downScroll ? 24 : FlxG.height - 44;
 								noBotplay.visible = !cpuControlled;
 							} else {
@@ -5477,11 +5397,11 @@ class PlayState extends MusicBeatState
 								noBotplay.visible = !cpuControlled;
 							}
 						}
-					case '2':
+					case '2' | 'true':
 						cpuControlled = true;
 						botplayTxt.visible = cpuControlled;
 						if(noBotplay != null) {
-							if (screwYou.visible == false) {
+							if (!screwYou.visible) {
 								noBotplay.y = ClientPrefs.downScroll ? 24 : FlxG.height - 44;
 								noBotplay.visible = !cpuControlled;
 							} else {
@@ -5493,7 +5413,7 @@ class PlayState extends MusicBeatState
 						cpuControlled = !cpuControlled;
 						botplayTxt.visible = cpuControlled;
 						if(noBotplay != null) {
-							if (screwYou.visible == false) {
+							if (!screwYou.visible) {
 								noBotplay.y = ClientPrefs.downScroll ? 24 : FlxG.height - 44;
 								noBotplay.visible = !cpuControlled;
 							} else {
@@ -5507,22 +5427,15 @@ class PlayState extends MusicBeatState
 			case 'Toggle Ghost Tapping':
 				switch (value1)
 				{
-					case '1':
+					case '1' | 'false':
 						tappy = false;
-						if(screwYou != null) {
-							screwYou.visible = !tappy;
-						}
-					case '2':
+					case '2' | 'true':
 						tappy = true;
-						if(screwYou != null) {
-							screwYou.visible = !tappy;
-						}
 					default:
 						tappy = !tappy;
-						if(screwYou != null) {
-							screwYou.visible = !tappy;
-						}
 				}
+			if(screwYou != null) 
+				screwYou.visible = !tappy;
 
 
 			case 'Stage Tint':
@@ -5540,11 +5453,11 @@ class PlayState extends MusicBeatState
 					FlxTween.tween(tint, {alpha: 0}, 0.25 / playbackRate, {
 						onComplete: 
 						function (twn:FlxTween)
-							{
-								tint.kill();
-								behindGfGroup.remove(tint, true);
-								tint.destroy();
-							}
+						{
+							tint.kill();
+							behindGfGroup.remove(tint, true);
+							tint.destroy();
+						}
 					});
 				});
 
@@ -5566,7 +5479,7 @@ class PlayState extends MusicBeatState
 				var val1:Null<Int> = Std.parseInt(value1);
 				if (val1 != null && val1 > -1)
 					beatZoomingInterval = val1;
-			
+
 			case 'Swap Hud':
 				if (!hudIsSwapped) {
 					playerStrums.forEach(function(spr:FlxSprite) {
@@ -5619,7 +5532,6 @@ class PlayState extends MusicBeatState
 				if (ClientPrefs.flashing)
 					camHUD.flash(val2, val1 / playbackRate, null, true);
 
-			
 			case 'Set Cam Speed':
 				var val1:Null<Float> = Std.parseFloat(value1);
 				cameraSpeed = val1;
@@ -5655,7 +5567,7 @@ class PlayState extends MusicBeatState
 						ease: FlxEase.circInOut
 					});
 				}
-			
+
 			case 'Tween Hud Zoom':
 				var val1:Null<Float> = Std.parseFloat(value1);
 				var val2:Null<Float> = Std.parseFloat(value2);
@@ -5665,12 +5577,12 @@ class PlayState extends MusicBeatState
 						ease: FlxEase.circInOut,
 						onComplete: 
 						function (twn:FlxTween)
-							{
-								defaultHudCamZoom = val1;
-							}
+						{
+							defaultHudCamZoom = val1;
+						}
 					});
 				}
-			
+
 			case 'Tween Camera Angle':
 				var val1:Null<Float> = Std.parseFloat(value1);
 				var val2:Null<Float> = Std.parseFloat(value2);
@@ -5680,7 +5592,7 @@ class PlayState extends MusicBeatState
 						ease: FlxEase.circInOut
 					});
 				}
-			
+
 			case 'Tween Camera Zoom':
 				var val1:Null<Float> = Std.parseFloat(value1);
 				var val2:Null<Float> = Std.parseFloat(value2);
@@ -5690,9 +5602,9 @@ class PlayState extends MusicBeatState
 						ease: FlxEase.circInOut,
 						onComplete: 
 						function (twn:FlxTween)
-							{
-								defaultCamZoom = val1;
-							}
+						{
+							defaultCamZoom = val1;
+						}
 					});
 				}
 
@@ -5721,7 +5633,7 @@ class PlayState extends MusicBeatState
 					sub.scrollFactor.set();
 					sub.cameras = [camHUD];
 					sub.setFormat(Paths.font("vcr.ttf"), 32, useIco ? funnyColor : val2, CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK);
-					var subBG:FlxSprite = new FlxSprite(0, ClientPrefs.downScroll ? healthBar.y + 90 : healthBar.y - 90).makeGraphic(Std.int(sub.width+10), Std.int(sub.height+10), FlxColor.BLACK);
+					var subBG:FlxSprite = new FlxSprite(0, ClientPrefs.downScroll ? healthBar.y + 90 : healthBar.y - 90).makeGraphic(Std.int(sub.width + 10), Std.int(sub.height + 10), FlxColor.BLACK);
 					subBG.scrollFactor.set();
 					subBG.cameras = [camHUD];
 					subBG.alpha = 0.5;
@@ -5755,7 +5667,7 @@ class PlayState extends MusicBeatState
 		hscript.call('onEvent', [eventName, value1, value2]);
 	}
 
-	function moveCameraSection(?id:Int = 0):Void {
+	function moveCameraSection(id:Int = 0):Void {
 		if(SONG.notes[id] == null) return;
 
 		if (gf != null && SONG.notes[id].gfSection)
@@ -5933,7 +5845,7 @@ class PlayState extends MusicBeatState
 	{
 		finishSong(false);
 	}
-	public function finishSong(?ignoreNoteOffset:Bool = false):Void
+	public function finishSong(ignoreNoteOffset:Bool = false):Void
 	{
 		var finishCallback:Void->Void = endSong; //In case you want to change it in a specific song.
 
