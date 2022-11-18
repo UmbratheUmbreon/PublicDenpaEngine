@@ -3084,13 +3084,12 @@ class PlayState extends MusicBeatState
 	
 		var introAlts:Array<String> = introAssets.get('default');
 		if (isPixelStage) introAlts = introAssets.get('pixel');
-			
+	
 		for (asset in introAlts)
 			Paths.image(asset);
-			
-		Paths.sound('intro3' + introSoundsSuffix);
-		Paths.sound('intro2' + introSoundsSuffix);
-		Paths.sound('intro1' + introSoundsSuffix);
+
+		for (i in 1...4)
+			Paths.sound('intro' + i + introSoundsSuffix);
 		Paths.sound('introGo' + introSoundsSuffix);
 	}
 
@@ -3099,8 +3098,11 @@ class PlayState extends MusicBeatState
 
 	// For being able to mess with the sprites on Lua
 	public var countdownReady:FlxSprite;
+	public var countdownTexture:String = 'ready';
 	public var countdownSet:FlxSprite;
+	public var countdownSetTexture:String = 'set';
 	public var countdownGo:FlxSprite;
+	public var countdownGoTexture:String = 'go';
 	public static var startOnTime:Float = 0;
 
 	public function startCountdown():Void
@@ -3121,64 +3123,72 @@ class PlayState extends MusicBeatState
 				ease: FlxEase.elasticInOut,
 				onComplete: function(twn:FlxTween)
 				{
-					new FlxTimer().start(1.3/(Conductor.bpm/100)/playbackRate, function(tmr:FlxTimer)
-						{
-							if(songCard != null){
-								FlxTween.tween(songCard, {x: -601}, 0.7, {
-									startDelay: 0.1,
-									ease: FlxEase.elasticInOut,
-									onComplete: function(twn:FlxTween)
-									{
-										songCard.kill();
-										songCard.destroy();
-										mirrorSongCard.kill();
-										mirrorSongCard.destroy();
-										songCreditsTxt.kill();
-										songCreditsTxt.destroy();
-										remixCreditsTxt.kill();
-										remixCreditsTxt.destroy();
-										var i:Int = grpSongNameTxt.members.length-1;
-										while(i >= 0) {
-											var memb:FlxText = grpSongNameTxt.members[i];
-											if(memb != null) {
-												memb.kill();
-												grpSongNameTxt.remove(memb);
-												memb.destroy();
-											}
-											--i;
-										}
-										grpSongNameTxt.clear();
-									}
-								});
-							}
-							if (songCreditsTxt != null){
-								FlxTween.tween(songCreditsTxt, {x: -601}, 0.7, {
-									startDelay: 0.1,
-									ease: FlxEase.elasticInOut
-								});		
-							}
-							if (remixCreditsTxt != null){
-								FlxTween.tween(remixCreditsTxt, {x: -601}, 0.7, {
-									startDelay: 0.1,
-									ease: FlxEase.elasticInOut
-								});
-							}
-							if (grpSongNameTxt != null){
-								grpSongNameTxt.forEach(function(txt:FlxText)
+					new FlxTimer().start(1.3 / (Conductor.bpm / 100) / playbackRate, function(tmr:FlxTimer)
+					{
+						if(songCard != null) {
+							FlxTween.tween(songCard, {x: -601}, 0.7, {
+								startDelay: 0.1,
+								ease: FlxEase.elasticInOut,
+								onComplete: function(twn:FlxTween)
 								{
-									FlxTween.tween(txt, {x: -601}, 0.7, {
-										startDelay: 0.1,
-										ease: FlxEase.quadInOut
-									});
-								});
-							}
-							if(mirrorSongCard != null){
-								FlxTween.tween(mirrorSongCard, {x: -1202}, 0.7, {
+									///*
+									for(flx in [songCard, mirrorSongCard, songCreditsTxt, remixCreditsTxt]) {
+										flx.kill(); // i dont think this is necesary...
+										flx.destroy();
+									}
+									//*/
+									/*
+									songCard.kill();
+									songCard.destroy();
+									mirrorSongCard.kill();
+									mirrorSongCard.destroy();
+									songCreditsTxt.kill();
+									songCreditsTxt.destroy();
+									remixCreditsTxt.kill();
+									remixCreditsTxt.destroy();*/
+
+									var i:Int = grpSongNameTxt.members.length-1;
+									while (i >= 0) {
+										var memb:FlxText = grpSongNameTxt.members[i];
+										if(memb != null) {
+											memb.kill();
+											grpSongNameTxt.remove(memb);
+											memb.destroy();
+										}
+										--i;
+									}
+									grpSongNameTxt.clear();
+								}
+							});
+						}
+						if (songCreditsTxt != null) {
+							FlxTween.tween(songCreditsTxt, {x: -601}, 0.7, {
 								startDelay: 0.1,
 								ease: FlxEase.elasticInOut
+							});		
+						}
+						if (remixCreditsTxt != null) {
+							FlxTween.tween(remixCreditsTxt, {x: -601}, 0.7, {
+								startDelay: 0.1,
+								ease: FlxEase.elasticInOut
+							});
+						}
+						if (grpSongNameTxt != null) {
+							grpSongNameTxt.forEach(function(txt:FlxText)
+							{
+								FlxTween.tween(txt, {x: -601}, 0.7, {
+									startDelay: 0.1,
+									ease: FlxEase.quadInOut
 								});
-							}
-						});
+							});
+						}
+						if(mirrorSongCard != null) {
+							FlxTween.tween(mirrorSongCard, {x: -1202}, 0.7, {
+								startDelay: 0.1,
+								ease: FlxEase.elasticInOut
+							});
+						}
+					});
 				}
 			});
 			FlxTween.tween(mirrorSongCard, {x: -601}, 0.7, {
@@ -3243,7 +3253,7 @@ class PlayState extends MusicBeatState
 				setOnLuas('defaultThirdStrumX' + i, thirdStrums.members[i].x);
 				setOnLuas('defaultThirdStrumY' + i, thirdStrums.members[i].y);
 				thirdStrums.members[i].cameras = [camGame];
-				thirdStrums.members[i].scrollFactor.set(1,1);
+				thirdStrums.members[i].scrollFactor.set(1, 1);
 				if(SONG.assets.enablePlayer4) {
 					thirdStrums.members[i].visible = true;
 				} else {
@@ -3268,7 +3278,7 @@ class PlayState extends MusicBeatState
 
 			startTimer = new FlxTimer().start(Conductor.crochet / 1000 / playbackRate, function(tmr:FlxTimer)
 			{
-				if(SONG.options.autoIdles){
+				if(SONG.options.autoIdles) {
 					if (gf != null &&tmr.loopsLeft % Math.round(gfSpeed * gf.danceEveryNumBeats) == 0 && gf.animation.curAnim != null && !gf.animation.curAnim.name.startsWith("sing") && !gf.stunned)
 					{
 						gf.dance();
@@ -3291,54 +3301,55 @@ class PlayState extends MusicBeatState
 					}
 			}
 
-				if (dad.orbit) {
-					// SO THEIR ANIMATIONS DONT START OFF-SYNCED
-					dad.playAnim('singUP');
-					dadmirror.playAnim('singUP');
-					dad.dance();
-					dadmirror.dance();
+			if (dad.orbit) {
+				// SO THEIR ANIMATIONS DONT START OFF-SYNCED
+				dad.playAnim('singUP');
+				dadmirror.playAnim('singUP');
+				dad.dance();
+				dadmirror.dance();
+			}
+
+			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
+			introAssets.set('default', ['ready', 'set', 'go']);
+			introAssets.set('pixel', ['pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
+
+			var introAlts:Array<String> = introAssets.get('default');
+			var antialias:Bool = ClientPrefs.globalAntialiasing;
+			if(isPixelStage) {
+				introAlts = introAssets.get('pixel');
+				antialias = false;
+			}
+
+			// head bopping for bg characters on Mall
+			if(curStage == 'mall') {
+				if(!ClientPrefs.lowQuality && SONG.options.autoIdles)
+					upperBoppers.dance(true);
+
+				if(SONG.options.autoIdles) {
+					bottomBoppers.dance(true);
+					santa.dance(true);
 				}
+			}
 
-				var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-				introAssets.set('default', ['ready', 'set', 'go']);
-				introAssets.set('pixel', ['pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
+			switch (swagCounter)
+			{
+				case 0:
+					FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
+				case 1:
+					countdownReady = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
+					countdownReady.scrollFactor.set();
+					countdownReady.updateHitbox();
 
-				var introAlts:Array<String> = introAssets.get('default');
-				var antialias:Bool = ClientPrefs.globalAntialiasing;
-				if(isPixelStage) {
-					introAlts = introAssets.get('pixel');
-					antialias = false;
-				}
+					if (PlayState.isPixelStage)
+						countdownReady.setGraphicSize(Std.int(countdownReady.width * daPixelZoom));
 
-				// head bopping for bg characters on Mall
-				if(curStage == 'mall') {
-					if(!ClientPrefs.lowQuality && SONG.options.autoIdles)
-						upperBoppers.dance(true);
-					
-					if(SONG.options.autoIdles){
-						bottomBoppers.dance(true);
-						santa.dance(true);
-					}
-				}
-
-				switch (swagCounter)
-				{
-					case 0:
-						FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
-					case 1:
-						countdownReady = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
-						countdownReady.scrollFactor.set();
-						countdownReady.updateHitbox();
-
-						if (PlayState.isPixelStage)
-							countdownReady.setGraphicSize(Std.int(countdownReady.width * daPixelZoom));
-
-						countdownReady.screenCenter();
-						countdownReady.antialiasing = antialias;
-						countdownReady.cameras = [camHUD];
-						add(countdownReady);
-						FlxTween.tween(countdownReady, {'scale.x': countdownReady.scale.x*1.0228991278, 'scale.y': countdownReady.scale.y*1.0428991278, alpha: 0}, Conductor.crochet / 1000 / playbackRate, {
-							ease: FlxEase.cubeInOut,
+					countdownReady.screenCenter();
+					countdownReady.antialiasing = antialias;
+					countdownReady.cameras = [camHUD];
+					add(countdownReady);
+					FlxTween.tween(countdownReady,
+						{'scale.x': countdownReady.scale.x*1.0228991278, 'scale.y': countdownReady.scale.y*1.0428991278, alpha: 0}, Conductor.crochet / 1000 / playbackRate, {
+						ease: FlxEase.cubeInOut,
 							onComplete: function(twn:FlxTween)
 							{
 								remove(countdownReady);
