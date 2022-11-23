@@ -10,7 +10,6 @@ haxelib remove discord_rpc
 haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
 haxelib remove linc_luajit
 haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
-haxelib update
 echo Libraries installed and updated.
 pause
 echo Setting up Flixel.
