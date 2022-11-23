@@ -2,8 +2,8 @@
 color 0a
 cd ..
 echo Installing and updating libraries.
-haxelib install flixel-addons
-haxelib install flixel-ui
+haxelib install flixel-addons 2.11.0
+haxelib install flixel-ui 2.4.0
 haxelib install hscript
 haxelib install hxcodec
 haxelib remove discord_rpc
