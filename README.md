@@ -150,4 +150,6 @@ And of course, all of Psych's 0.5.2h features (not 0.6+, that is GARBO)
 
 4) Install "MSVC v142 - VS 2019 C++ x64/x86 build tools" and "Windows SDK (10.0.17763.0)"
 
-5) Pray that it works
+5) Run the compile command (lime build windows) or run one of the build batch files
+
+6) Pray that it works
