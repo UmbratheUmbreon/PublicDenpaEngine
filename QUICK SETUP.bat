@@ -5,7 +5,7 @@ echo Installing and updating libraries.
 haxelib install flixel-addons 2.11.0
 haxelib install flixel-ui 2.4.0
 haxelib install hscript
-haxelib install hxcodec
+haxelib install hxcodec 2.5.1
 haxelib remove discord_rpc
 haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
 haxelib remove linc_luajit
