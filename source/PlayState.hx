@@ -5997,16 +5997,11 @@ class PlayState extends MusicBeatState
 		#end
 
 		if(ret != FunkinLua.Function_Stop && !transitioning) {
-			if (SONG.header.validScore)
-			{
-				#if !switch
-				var percent:Float = ratingPercent;
-				var letter:String = ratingName;
-				var intensity:String = ratingIntensity;
-				if(Math.isNaN(percent)) percent = 0;
-				Highscore.saveScore(SONG.header.song, songScore, storyDifficulty, percent, ratingName, ratingIntensity);
-				#end
-			}
+			var percent:Float = ratingPercent;
+			var letter:String = ratingName;
+			var intensity:String = ratingIntensity;
+			if(Math.isNaN(percent)) percent = 0;
+			Highscore.saveScore(SONG.header.song, songScore, storyDifficulty, percent, ratingName, ratingIntensity);
 			playbackRate = 1;
 
 			if (chartingMode)
@@ -6037,14 +6032,9 @@ class PlayState extends MusicBeatState
 					#end
 					MusicBeatState.switchState(new StoryMenuState());
 
-					// if ()
 					if(!ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false)) {
 						StoryMenuState.weekCompleted.set(WeekData.weeksList[storyWeek], true);
-
-						if (SONG.header.validScore)
-						{
-							Highscore.saveWeekScore(WeekData.getWeekFileName(), campaignScore, storyDifficulty);
-						}
+						Highscore.saveWeekScore(WeekData.getWeekFileName(), campaignScore, storyDifficulty);
 
 						FlxG.save.data.weekCompleted = StoryMenuState.weekCompleted;
 						FlxG.save.flush();

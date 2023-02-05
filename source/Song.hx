@@ -33,7 +33,6 @@ typedef SongHeader = {
 	var instVolume:Null<Float>;
 	var vocalsVolume:Null<Float>;
 	var secVocalsVolume:Null<Float>;
-	var validScore:Bool;
 }
 
 /**
@@ -203,11 +202,15 @@ class Song
 		var oldSongJson:OldSong;
 		try {
 			songJson = cast Json.parse(rawJson).song;
-			songJson.header.validScore = true;
 		} catch (e) {
 			//yes honey i know you work, now please shut the fuck up <3
 			//trace('\n<----ERROR---->\n' + e + '\nSong JSON was detected invalid/old, attempting conversion...\n<-------->');
 			oldSongJson = cast Json.parse(rawJson).song;
+			for (e in oldSongJson) {
+				if (e.validScore != null){
+					Reflect.deleteField(e, "validScore");
+				}
+			}
 			//holy shit this hurt my head, im just gonna save this for later
 			/*var oldEvents = oldSongJson.events;
 			var newEvents:Array<SwagEvent>;
@@ -239,7 +242,6 @@ class Song
 					instVolume: oldSongJson.instVolume,
 					vocalsVolume: oldSongJson.vocalsVolume,
 					secVocalsVolume: oldSongJson.secVocalsVolume,
-					validScore: true
 				},
 		
 				assets: {
@@ -343,11 +345,6 @@ class Section
 	public var typeOfSection:Int = 0;
 	public var mustHitSection:Bool = true;
 	public var player4Section:Bool = false;
-
-	/**
-	 *	Copies the first section into the second section!
-	 */
-	public static var COPYCAT:Int = 0;
 
 	public function new(lengthInSteps:Int = 16)
 	{

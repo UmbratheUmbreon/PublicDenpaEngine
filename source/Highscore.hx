@@ -7,19 +7,11 @@ using StringTools;
 */
 class Highscore
 {
-	#if (haxe >= "4.0.0")
 	public static var weekScores:Map<String, Int> = new Map();
 	public static var songScores:Map<String, Int> = new Map();
 	public static var songRating:Map<String, Float> = new Map();
 	public static var songLetter:Map<String, String> = new Map();
 	public static var songIntensity:Map<String, String> = new Map();
-	#else
-	public static var weekScores:Map<String, Int> = new Map();
-	public static var songScores:Map<String, Int> = new Map<String, Int>();
-	public static var songRating:Map<String, Float> = new Map<String, Float>();
-	public static var songLetter:Map<String, String> = new Map<String, String>();
-	public static var songIntensity:Map<String, String> = new Map<String, String>();
-	#end
 
 
 	public static function resetSong(song:String, diff:Int = 0):Void

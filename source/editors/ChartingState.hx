@@ -264,8 +264,7 @@ class ChartingState extends MusicBeatState
 			needsVoices: true,
 			instVolume: 1,
 			vocalsVolume: 1,
-			secVocalsVolume: 1,
-			validScore: false
+			secVocalsVolume: 1
 		},
 
 		assets: {
