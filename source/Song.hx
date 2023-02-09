@@ -206,11 +206,6 @@ class Song
 			//yes honey i know you work, now please shut the fuck up <3
 			//trace('\n<----ERROR---->\n' + e + '\nSong JSON was detected invalid/old, attempting conversion...\n<-------->');
 			oldSongJson = cast Json.parse(rawJson).song;
-			for (e in oldSongJson) {
-				if (e.validScore != null){
-					Reflect.deleteField(e, "validScore");
-				}
-			}
 			//holy shit this hurt my head, im just gonna save this for later
 			/*var oldEvents = oldSongJson.events;
 			var newEvents:Array<SwagEvent>;
