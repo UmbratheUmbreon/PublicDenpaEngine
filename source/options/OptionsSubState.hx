@@ -1145,6 +1145,7 @@ class MiscSettingsSubState extends BaseOptionsMenu
 	}
 
 	function openCrossfadeOptions() {
+		stopLerping = true;
 		for (option in grpOptions) {
 			if (option.text != 'CrossFade Options') {
 				option.align = 'none';

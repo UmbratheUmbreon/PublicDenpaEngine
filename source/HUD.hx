@@ -79,7 +79,7 @@ class HUD extends FlxSpriteGroup {
 			timeBar.createGradientBar([0xFF0a0a0a], [color = FlxColor.fromRGB(PlayState.instance.dad.healthColorArray[0].red, PlayState.instance.dad.healthColorArray[0].green, PlayState.instance.dad.healthColorArray[0].blue), FlxColor.subtract(color, 0x00333333)], blockyness, 90);
 		} catch(e) {
 			timeBar.createGradientBar([0xFF0a0a0a], [color = FlxColor.fromRGB(255,255,255), FlxColor.subtract(color, 0x00333333)], blockyness, 90);
-			trace('exception: ' + e);
+			FlxG.log.add('Error: ' + e + ' at HUD.hx (78-80)');
 		}
 		if (ClientPrefs.settings.get("lowQuality") || PlayState.isPixelStage)
 			timeBar.numDivisions = Std.int((timeBar.width)/4);

@@ -379,7 +379,7 @@ class TitleState extends MusicBeatState
 					titleText.animation.play('press');
 				}
 
-				if (!ClientPrefs.settings.get("lowQuality")) {
+				if (!ClientPrefs.settings.get("lowQuality") && swagShader != null) {
 					swagShader.hue = 0;
 					swagShader.brightness = 0;
 				}

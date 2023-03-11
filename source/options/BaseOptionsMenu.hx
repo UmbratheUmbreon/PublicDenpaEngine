@@ -156,24 +156,27 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	var nextAccept:Int = 5;
 	var holdTime:Float = 0;
 	var holdValue:Float = 0;
+	var stopLerping:Bool = false;
 	override function update(elapsed:Float)
 	{
 		final lerpVal:Float = CoolUtil.clamp(elapsed * 9.6, 0, 1);
-		for (i=>item in grpOptions.members) {
-			@:privateAccess {
-				if (lerpList[i]) {
-					item.y = FlxMath.lerp(item.y, (item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd, lerpVal);
-					if(item.forceX != Math.NEGATIVE_INFINITY) {
-						item.x = item.forceX;
+		if (!stopLerping) {
+			for (i=>item in grpOptions.members) {
+				@:privateAccess {
+					if (lerpList[i]) {
+						item.y = FlxMath.lerp(item.y, (item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd, lerpVal);
+						if(item.forceX != Math.NEGATIVE_INFINITY) {
+							item.x = item.forceX;
+						} else {
+							item.x = FlxMath.lerp(item.x, (item.isBold ? 30 : 15) + item.alignAdd, lerpVal);
+						}
 					} else {
-						item.x = FlxMath.lerp(item.x, (item.isBold ? 30 : 15) + item.alignAdd, lerpVal);
-					}
-				} else {
-					item.y = ((item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd);
-					if(item.forceX != Math.NEGATIVE_INFINITY) {
-						item.x = item.forceX;
-					} else {
-						item.x = ((item.isBold ? 30 : 15) + item.alignAdd);
+						item.y = ((item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd);
+						if(item.forceX != Math.NEGATIVE_INFINITY) {
+							item.x = item.forceX;
+						} else {
+							item.x = ((item.isBold ? 30 : 15) + item.alignAdd);
+						}
 					}
 				}
 			}

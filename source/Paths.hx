@@ -512,7 +512,7 @@ class Paths
 		if (FileSystem.exists('mods/data/stages')) {
 			for (a in FileSystem.readDirectory('mods/data/stages')) {
 				if (!a.endsWith('.json')) continue;
-				characterMap.set(a.substr(0, a.length - 5), '');
+				stageMap.set(a.substr(0, a.length - 5), '');
 			}
 		}
 		if (FileSystem.exists('mods/images/icons')) {
