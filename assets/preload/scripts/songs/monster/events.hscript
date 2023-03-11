@@ -1,0 +1,36 @@
+var PlayState = require("PlayState");
+var FlxTween = require("flixel.tweens.FlxTween");
+
+function onStepHit(curStep) {
+    var camTint = PlayState.instance.camTint;
+	switch (curStep){
+		case 1:
+	    	FlxTween.tween(camTint, {alpha: 0.65}, 3);
+		case 272:
+			PlayState.instance.callOnHscripts("onEvent", ["Lightning Strike", "", ""]);
+			PlayState.instance.jsonSprites.get("halloweenBG").animation.play('monsterLIGHTNING0');
+			PlayState.instance.dad.color = 0xffffffff;
+			PlayState.instance.callOnHscripts("setLitStreetlight", [true]);
+			FlxTween.tween(camTint, {alpha: 0.45}, 3);
+		case 544:
+			PlayState.instance.callOnHscripts("onEvent", ["Lightning Strike", "", ""]);
+			PlayState.instance.jsonSprites.get("halloweenBG").animation.play('monsterLIGHTNING0');
+			PlayState.instance.dad.color = 0xffffffff;
+			PlayState.instance.callOnHscripts("setLitStreetlight", [false]);
+			FlxTween.tween(camTint, {alpha: 0.9}, 1.2);
+		case 784:
+			PlayState.instance.callOnHscripts("onEvent", ["Lightning Strike", "", ""]);
+			PlayState.instance.jsonSprites.get("halloweenBG").animation.play('monsterLIGHTNING0');
+			PlayState.instance.dad.color = 0xffffffff;
+			PlayState.instance.callOnHscripts("setLitStreetlight", [true]);
+			FlxTween.tween(camTint, {alpha: 0.2}, 0.25);
+		case 905:
+			FlxTween.tween(camTint, {alpha: 0.55}, 2);
+        case 1248:
+			PlayState.instance.callOnHscripts("onEvent", ["Lightning Strike", "", ""]);
+			PlayState.instance.jsonSprites.get("halloweenBG").animation.play('monsterLIGHTNING0');
+			PlayState.instance.dad.color = 0xffffffff;
+			PlayState.instance.callOnHscripts("setLitStreetlight", [false]);
+            FlxTween.tween(camTint, {alpha: 0.9}, 1.2);
+	}	
+}

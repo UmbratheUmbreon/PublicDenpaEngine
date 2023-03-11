@@ -1,0 +1,63 @@
+{
+	"directory": "",
+	"defaultZoom": 1.05,
+	"isPixelStage": false,
+
+	"boyfriend": [770, 100],
+	"girlfriend": [400, 130],
+	"opponent": [100, 100],
+	"p4": [-300, -1200],
+	"hide_girlfriend": false,
+
+	"camera_boyfriend": [0, 0],
+	"camera_opponent": [0, 0],
+	"camera_girlfriend": [0, 0],
+	"camera_speed": 1,
+
+	"sprites": [
+		{
+			"animated": true,
+			"animation_index": 0,
+			"layer_pos": 0,
+			"image": "vanilla/week2/halloween_bg",
+			"position": [
+				-200,
+				-100
+			],
+			"tag": "halloweenBG",
+			"scroll": [
+				1,
+				1
+			],
+			"antialiasing": true,
+			"size": [
+				1,
+				1
+			],
+
+			"gf_front": false,
+			"hide_lq": false
+		}
+	],
+
+	"animations": [
+		[
+			{
+				"name": "halloweem bg0",
+				"xml_prefix": "halloweem bg0",
+				"framerate": 24,
+				"looped": false,
+				"flip_x": false,
+				"flip_y": false
+			},
+			{
+				"name": "halloweem bg lightning strike",
+				"xml_prefix": "halloweem bg lightning strike",
+				"framerate": 24,
+				"looped": false,
+				"flip_x": false,
+				"flip_y": false
+			}
+		]
+	]
+}

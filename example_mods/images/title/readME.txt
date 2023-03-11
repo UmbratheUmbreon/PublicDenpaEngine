@@ -1,1 +1,1 @@
-This is where your title screen .pngs/.xmls/.jsons go.
+This is where your title screen .pngs/.xmls go.

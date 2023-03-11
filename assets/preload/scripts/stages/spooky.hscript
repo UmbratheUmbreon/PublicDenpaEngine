@@ -1,0 +1,25 @@
+var FlxG = require("flixel.FlxG");
+var PlayState = require ("PlayState");
+
+var lightningStrikeBeat:Int = 0;
+var lightningOffset:Int = 8;
+
+function onCreate() {
+	PlayState.instance.addHscript("events/Lightning Strike");
+}
+
+function onBeatHit(curBeat) {
+	if(PlayState.instance.generatedMusic) {
+		if (FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
+		{
+			PlayState.instance.callOnHscripts("onEvent", ["Lightning Strike", "", "0.6"]);
+			PlayState.instance.jsonSprites.get("halloweenBG").animation.play('halloweem bg lightning strike');
+			resetLightningOffsets(curBeat);
+		}
+	}
+}
+
+function resetLightningOffsets(curBeat:Int) {
+	lightningStrikeBeat = curBeat;
+	lightningOffset = FlxG.random.int(8, 24);
+}

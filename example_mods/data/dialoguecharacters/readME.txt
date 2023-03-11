@@ -1,0 +1,1 @@
+This is where your dialogue character .jsons go.

@@ -1,0 +1,5 @@
+-this is the (very small) source for the crash handler
+
+compile the same way you compile the actual game (lime test windows on this folder)
+
+the compiled build will AUTOMATICALLY be put into any release builds of the engine!!

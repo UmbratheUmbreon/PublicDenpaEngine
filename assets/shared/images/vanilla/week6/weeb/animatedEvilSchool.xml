@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="animatedEvilSchool.png">
+<SubTexture name="background 2 instance 0000" x="0" y="0" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0001" x="315" y="0" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0002" x="630" y="0" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0003" x="945" y="0" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0004" x="0" y="164" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0005" x="315" y="164" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0006" x="630" y="164" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0007" x="945" y="164" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0008" x="0" y="328" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0009" x="315" y="328" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0010" x="630" y="328" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0011" x="945" y="328" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0012" x="0" y="492" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0013" x="315" y="492" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0014" x="630" y="492" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0015" x="945" y="492" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0016" x="0" y="656" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0017" x="315" y="656" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0018" x="630" y="656" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0019" x="945" y="656" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0020" x="0" y="820" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0021" x="315" y="820" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0022" x="630" y="820" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0023" x="945" y="820" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0024" x="0" y="984" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0025" x="315" y="984" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0026" x="630" y="984" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0027" x="945" y="984" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0028" x="0" y="1148" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0029" x="315" y="1148" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0030" x="630" y="1148" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0031" x="945" y="1148" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0032" x="0" y="1312" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0033" x="315" y="1312" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0034" x="630" y="1312" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0035" x="945" y="1312" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0036" x="0" y="1476" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0037" x="315" y="1476" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0038" x="630" y="1476" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+<SubTexture name="background 2 instance 0039" x="945" y="1476" width="315" height="164" frameX="-100" frameY="-174" frameWidth="513" frameHeight="512" />
+</TextureAtlas>

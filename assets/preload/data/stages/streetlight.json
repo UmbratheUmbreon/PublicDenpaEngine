@@ -1,0 +1,71 @@
+{
+	"directory": "",
+	"defaultZoom": 0.91,
+	"isPixelStage": false,
+
+	"boyfriend": [1330, 250],
+	"girlfriend": [1330, 250],
+	"opponent": [340, 250],
+	"p4": [-300, -1200],
+	"hide_girlfriend": true,
+
+	"camera_boyfriend": [100, 60],
+	"camera_opponent": [-80, -80],
+	"camera_girlfriend": [0, 0],
+	"camera_speed": 0.8,
+
+	"sprites": [
+		{
+			"animated": true,
+			"animation_index": 0,
+			"layer_pos": 0,
+			"image": "vanilla/week2/streetlight/monster_bg_2",
+			"position": [
+				-200,
+				-100
+			],
+			"tag": "halloweenBG",
+			"scroll": [
+				1,
+				1
+			],
+			"antialiasing": true,
+			"size": [
+				1.3,
+				1.3
+			],
+
+			"gf_front": false,
+			"hide_lq": false
+		}
+	],
+
+	"animations": [
+		[
+			{
+				"name": "monster bg",
+				"xml_prefix": "monster bg",
+				"framerate": 24,
+				"looped": false,
+				"flip_x": false,
+				"flip_y": false
+			},
+			{
+				"name": "monsterSPOT0",
+				"xml_prefix": "monsterSPOT0",
+				"framerate": 24,
+				"looped": false,
+				"flip_x": false,
+				"flip_y": false
+			},
+			{
+				"name": "monsterLIGHTNING0",
+				"xml_prefix": "monsterLIGHTNING0",
+				"framerate": 24,
+				"looped": false,
+				"flip_x": false,
+				"flip_y": false
+			}
+		]
+	]
+}

@@ -2,8 +2,6 @@ package;
 
 import Conductor.BPMChangeEvent;
 import flixel.FlxSubState;
-import flixel.FlxBasic;
-import flixel.FlxSprite;
 
 /**
 * Basic substate to use for substates in the game.
@@ -14,21 +12,19 @@ class MusicBeatSubstate extends FlxSubState
 	public function new()
 	{
 		super();
+		curInstance = this;
 	}
-
-	private var lastBeat:Float = 0;
-	private var lastStep:Float = 0;
 
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var controls(get, never):Controls;
+	public static var curInstance:MusicBeatSubstate = null;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
 	override function update(elapsed:Float)
 	{
-		//everyStep();
 		var oldStep:Int = curStep;
 
 		updateCurStep();
@@ -36,7 +32,6 @@ class MusicBeatSubstate extends FlxSubState
 
 		if (oldStep != curStep && curStep > 0)
 			stepHit();
-
 
 		super.update(elapsed);
 	}
@@ -66,5 +61,10 @@ class MusicBeatSubstate extends FlxSubState
 	public function beatHit():Void
 	{
 		//do literally nothing dumbass
+	}
+	
+	override public function close() {
+		curInstance = null;
+		super.close();
 	}
 }

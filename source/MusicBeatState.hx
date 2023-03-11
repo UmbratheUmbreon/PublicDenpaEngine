@@ -1,10 +1,13 @@
 package;
 
 import Conductor.BPMChangeEvent;
-import flixel.addons.ui.FlxUIState;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.FlxState;
 import flixel.FlxCamera;
+import flixel.FlxState;
+import flixel.FlxSubState;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.addons.ui.FlxUIState;
+import flixel.input.keyboard.FlxKey;
+import openfl.events.KeyboardEvent;
 
 /**
 * Basic state to use for states in the game.
@@ -12,20 +15,28 @@ import flixel.FlxCamera;
 */
 class MusicBeatState extends FlxUIState
 {
-	private var lastBeat:Float = 0;
-	private var lastStep:Float = 0;
-
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 
 	private var controls(get, never):Controls;
 
 	public static var camBeat:FlxCamera;
+	public static var curInstance:MusicBeatState = null;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
+	override function destroy() {
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPress);
+        FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, keyRelease);
+        super.destroy();
+    }
+
 	override function create() {
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
+        FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
+
+		curInstance = this; //why was this not done yet?
 		camBeat = FlxG.camera;
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		super.create();
@@ -38,7 +49,6 @@ class MusicBeatState extends FlxUIState
 
 	override function update(elapsed:Float)
 	{
-		//everyStep();
 		var oldStep:Int = curStep;
 
 		updateCurStep();
@@ -47,9 +57,100 @@ class MusicBeatState extends FlxUIState
 		if (oldStep != curStep && curStep > 0)
 			stepHit();
 
-		if(FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
-
 		super.update(elapsed);
+	}
+
+	var trackedBPMChanges:Int = 0;
+	/**
+	 * A handy function to calculate how many seconds it takes for the given steps to all be hit.
+	 * 
+	 * This function takes the future BPM into account.
+	 * If you feel this is not necessary, use `stepsToSecs_simple` instead.
+	 * @param targetStep The step value to calculate with.
+	 * @param isFixedStep If true, calculation will assume `targetStep` is not being calculated as in "after `targetStep` steps", but rather as in "time until `targetStep` is hit".
+	 * @return The amount of seconds as a float.
+	 */
+	inline function stepsToSecs(targetStep:Int, isFixedStep:Bool = false):Float {
+		final playbackRate:Single = PlayState.instance != null ? PlayState.instance.playbackRate : 1;
+		function calc(stepVal:Single, crochetBPM:Int = -1) {
+			return ((crochetBPM == -1 ? Conductor.getCrochet(Conductor.bpm)/4 : Conductor.getCrochet(crochetBPM)/4) * (stepVal - curStep)) / 1000;
+		}
+
+		final realStep:Single = isFixedStep ? targetStep : targetStep + curStep;
+		var secRet:Float = calc(realStep);
+
+		for(i in 0...Conductor.bpmChangeMap.length - trackedBPMChanges) {
+			var nextChange = Conductor.bpmChangeMap[trackedBPMChanges+i];
+			if(realStep < nextChange.stepTime) break;
+
+			final diff = realStep - nextChange.stepTime;
+			if(i == 0) secRet -= calc(diff);
+			else secRet -= calc(diff, Std.int(Conductor.bpmChangeMap[(trackedBPMChanges+i) - 1].bpm)); //calc away bpm from before, not beginning bpm
+
+			secRet += calc(diff, Std.int(nextChange.bpm));
+		}
+		trace(secRet);
+		return secRet / playbackRate;
+	}
+
+	inline function beatsToSecs(targetBeat:Int, isFixedBeat:Bool = false):Float
+		return stepsToSecs(targetBeat * 4, isFixedBeat);
+
+	/**
+	 * A handy function to calculate how many seconds it takes for the given steps to all be hit.
+	 * 
+	 * This function does not take the future BPM into account.
+	 * If you need to account for BPM, use `stepsToSecs` instead.
+	 * @param targetStep The step value to calculate with.
+	 * @param isFixedStep If true, calculation will assume `targetStep` is not being calculated as in "after `targetStep` steps", but rather as in "time until `targetStep` is hit".
+	 * @return The amount of seconds as a float.
+	 */
+	inline function stepsToSecs_simple(targetStep:Int, isFixedStep:Bool = false):Float {
+		final playbackRate:Single = PlayState.instance != null ? PlayState.instance.playbackRate : 1;
+
+		return ((Conductor.stepCrochet * (isFixedStep ? targetStep : curStep + targetStep)) / 1000) / playbackRate;
+	}
+
+	//Now we keep track of the names!!
+	override public function openSubState(tState:FlxSubState) {
+		tState.name = Type.getClassName(Type.getClass(tState));
+		FlxSubState.curInstance = tState;
+
+		super.openSubState(tState);
+	}
+
+	function openManual() {
+		persistentUpdate = persistentDraw = false;
+		openSubState(new ManualSubState(this));
+	}
+
+	public function keyPress(event:KeyboardEvent):Void
+    {
+		var eventKey:FlxKey = event.keyCode;
+		var key:Int = keyInt(eventKey);
+        if (key == -1) return;
+
+		//yippie
+		if (ClientPrefs.keyBinds.get('manual').contains(key) && !(FlxSubState.curInstance != null && FlxSubState.curInstance.name == 'ManualSubState')) 
+			openManual();
+		//toggle debug display
+		if (ClientPrefs.keyBinds.get('debug_3').contains(key) && FlxG.keys.checkStatus(key, JUST_PRESSED) && Main.fpsCounter.visible)
+			Main.toggleMEM(!Main.ramCount.visible);
+		if (ClientPrefs.keyBinds.get('debug_4').contains(key) && FlxG.keys.checkStatus(key, JUST_PRESSED) && Main.fpsCounter.visible)
+			Main.togglePIE(!Main.ramPie.visible);
+    }
+
+    public function keyRelease(event:KeyboardEvent):Void
+    {
+		var eventKey:FlxKey = event.keyCode;
+		var key:Int = keyInt(eventKey);
+		if (key == -1) return;
+    }
+
+    public function keyInt(key:FlxKey):Int
+	{
+		if(key != NONE) return key;
+		return -1;
 	}
 
 	private function updateBeat():Void
@@ -66,14 +167,17 @@ class MusicBeatState extends FlxUIState
 		}
 		for (i in 0...Conductor.bpmChangeMap.length)
 		{
-			if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime)
+			if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime) {
+				trackedBPMChanges++;
+				trace(trackedBPMChanges);
 				lastChange = Conductor.bpmChangeMap[i];
+			}
 		}
 
-		curStep = lastChange.stepTime + Math.floor(((Conductor.songPosition - ClientPrefs.noteOffset) - lastChange.songTime) / Conductor.stepCrochet);
+		curStep = lastChange.stepTime + Math.floor(((Conductor.songPosition - ClientPrefs.settings.get("noteOffset")) - lastChange.songTime) / Conductor.stepCrochet);
 	}
 
-	public static function switchState(nextState:FlxState, ?fadeDuration:Float = 0.35) {
+	public static function switchState(nextState:FlxState, ?fadeDuration:Float = 0.35/*, ?dumpCache:Bool = false*/) {
 		// Custom made Trans in
 		var curState:Dynamic = FlxG.state;
 		var leState:MusicBeatState = curState;
@@ -83,27 +187,26 @@ class MusicBeatState extends FlxUIState
 				CustomFadeTransition.finishCallback = function() {
 					FlxG.resetState();
 				};
-				//trace('resetted');
 			} else {
 				CustomFadeTransition.finishCallback = function() {
 					FlxG.switchState(nextState);
 				};
-				//trace('changed state');
 			}
 			return;
 		}
 		FlxTransitionableState.skipNextTransIn = false;
-		FlxG.switchState(nextState);
+		if (nextState == FlxG.state)
+			FlxG.resetState();
+		else
+			FlxG.switchState(nextState);
 	}
 
-	public static function resetState() {
+	inline public static function resetState() {
 		MusicBeatState.switchState(FlxG.state);
 	}
 
-	public static function getState():MusicBeatState {
-		var curState:Dynamic = FlxG.state;
-		var leState:MusicBeatState = curState;
-		return leState;
+	inline public static function getState():MusicBeatState {
+		return cast(FlxG.state, MusicBeatState);
 	}
 
 	public function stepHit():Void

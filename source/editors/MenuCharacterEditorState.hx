@@ -3,57 +3,43 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
+import Character.MenuCharacter;
+import Character.MenuCharacterFile;
+import flash.net.FileFilter;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.system.FlxSound;
-import flixel.math.FlxRandom;
-import flixel.addons.ui.FlxInputText;
-import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.text.FlxText;
 import flixel.ui.FlxButton;
-import Character.MenuCharacter;
-import Character.MenuCharacterFile;
-import openfl.net.FileReference;
+import flixel.util.FlxColor;
+import haxe.Json;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import flash.net.FileFilter;
-import haxe.Json;
-
-using StringTools;
+import openfl.net.FileReference;
 
 /**
 * State used to create and edit `Menu Character` jsons.
 */
 class MenuCharacterEditorState extends MusicBeatState
 {
+	var music:EditorMusic;
 	var grpWeekCharacters:FlxTypedGroup<MenuCharacter>;
 	var characterFile:MenuCharacterFile = null;
 	var txtOffsets:FlxText;
 	var defaultCharacters:Array<String> = ['dad', 'bf', 'gf'];
 
+	override function destroy() {
+		music.reset();
+		super.destroy();
+	}
+
 	override function create()
 	{
-		Paths.clearUnusedMemory();
-		var musicID:Int = FlxG.random.int(0, 2);
-		switch (musicID)
-		{
-			case 0:
-				FlxG.sound.playMusic(Paths.music('shop'), 0.5);
-			case 1:
-				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
-			case 2:
-				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
-			case 3:
-				FlxG.sound.playMusic(Paths.music('dsi'), 0.5);
-		}
+		music = new EditorMusic();
 		characterFile = {
 			image: 'Menu_Dad',
 			scale: 1,
@@ -286,6 +272,9 @@ class MenuCharacterEditorState extends MusicBeatState
 		var blockInput:Bool = false;
 		for (inputText in blockPressWhileTypingOn) {
 			if(inputText.hasFocus) {
+				if(FlxG.keys.justPressed.ENTER) {
+					inputText.hasFocus = false;
+				}
 				FlxG.sound.muteKeys = [];
 				FlxG.sound.volumeDownKeys = [];
 				FlxG.sound.volumeUpKeys = [];
@@ -302,7 +291,8 @@ class MenuCharacterEditorState extends MusicBeatState
 			FlxG.sound.volumeUpKeys = InitState.volumeUpKeys;
 			if(FlxG.keys.justPressed.ESCAPE) {
 				MusicBeatState.switchState(new editors.MasterEditorMenu());
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				FlxG.sound.playMusic(Paths.music(SoundTestState.playingTrack));
+				Conductor.changeBPM(SoundTestState.playingTrackBPM);
 			}
 
 			var shiftMult:Int = 1;

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="realPillowGIF.png">
+<SubTexture name="explode0000" x="0" y="0" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0001" x="282" y="0" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0002" x="564" y="0" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0003" x="846" y="0" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0004" x="0" y="492" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0005" x="282" y="492" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0006" x="564" y="492" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0007" x="846" y="492" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0008" x="1128" y="0" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0009" x="1128" y="492" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0010" x="1410" y="0" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0011" x="1410" y="492" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+<SubTexture name="explode0012" x="0" y="984" width="279" height="492" frameX="0" frameY="0" frameWidth="270" frameHeight="480" />
+</TextureAtlas>

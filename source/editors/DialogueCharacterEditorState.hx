@@ -3,39 +3,30 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
+import DialogueBoxDenpa;
+import flash.net.FileFilter;
+import flixel.FlxCamera;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.system.FlxSound;
-import flixel.math.FlxRandom;
-import flixel.addons.ui.FlxInputText;
-import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
+import flixel.group.FlxSpriteGroup;
+import flixel.text.FlxText;
 import flixel.ui.FlxButton;
-import openfl.net.FileReference;
+import flixel.util.FlxColor;
+import haxe.Json;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import flash.net.FileFilter;
-import haxe.Json;
-import DialogueBoxDenpa;
-import flixel.FlxCamera;
-import flixel.group.FlxSpriteGroup;
-import lime.system.Clipboard;
-
-using StringTools;
+import openfl.net.FileReference;
 
 /**
 * State used to create and edit `Dialogue Character` jsons.
 */
 class DialogueCharacterEditorState extends MusicBeatState
 {
+	var music:EditorMusic;
 	var box:FlxSprite;
 	var daText:Alphabet = null;
 
@@ -72,21 +63,14 @@ class DialogueCharacterEditorState extends MusicBeatState
 
 	var curAnim:Int = 0;
 
+	override function destroy() {
+		music.reset();
+		super.destroy();
+	}
+
 	override function create()
 	{
-		Paths.clearUnusedMemory();
-		var musicID:Int = FlxG.random.int(0, 2);
-		switch (musicID)
-		{
-			case 0:
-				FlxG.sound.playMusic(Paths.music('shop'), 0.5);
-			case 1:
-				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
-			case 2:
-				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
-			case 3:
-				FlxG.sound.playMusic(Paths.music('dsi'), 0.5);
-		}
+		music = new EditorMusic();
 		Alphabet.setDialogueSound();
 
 		persistentUpdate = persistentDraw = true;
@@ -129,7 +113,6 @@ class DialogueCharacterEditorState extends MusicBeatState
 		box = new FlxSprite(70, 370);
 		box.frames = Paths.getSparrowAtlas('speech_bubble');
 		box.scrollFactor.set();
-		box.antialiasing = ClientPrefs.globalAntialiasing;
 		box.animation.addByPrefix('normal', 'speech bubble normal', 24);
 		box.animation.addByPrefix('center', 'speech bubble middle', 24);
 		box.animation.play('normal', true);
@@ -541,11 +524,6 @@ class DialogueCharacterEditorState extends MusicBeatState
 				FlxG.sound.volumeUpKeys = [];
 				blockInput = true;
 
-				if(FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.V && Clipboard.text != null) { //Copy paste
-					inputText.text = ClipboardAdd(inputText.text);
-					inputText.caretIndex = inputText.text.length;
-					getEvent(FlxUIInputText.CHANGE_EVENT, inputText, null, []);
-				}
 				if(FlxG.keys.justPressed.ENTER) inputText.hasFocus = false;
 				break;
 			}
@@ -700,7 +678,8 @@ class DialogueCharacterEditorState extends MusicBeatState
 
 			if(FlxG.keys.justPressed.ESCAPE) {
 				MusicBeatState.switchState(new editors.MasterEditorMenu());
-				FlxG.sound.playMusic(Paths.music('freakyMenu'), 1);
+				FlxG.sound.playMusic(Paths.music(SoundTestState.playingTrack), 1);
+				Conductor.changeBPM(SoundTestState.playingTrackBPM);
 				transitioning = true;
 			}
 
@@ -831,15 +810,5 @@ class DialogueCharacterEditorState extends MusicBeatState
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 		_file = null;
 		FlxG.log.error("Problem saving file");
-	}
-
-	function ClipboardAdd(prefix:String = ''):String {
-		if(prefix.toLowerCase().endsWith('v')) //probably copy paste attempt
-		{
-			prefix = prefix.substring(0, prefix.length-1);
-		}
-
-		var text:String = prefix + Clipboard.text.replace('\n', '');
-		return text;
 	}
 }

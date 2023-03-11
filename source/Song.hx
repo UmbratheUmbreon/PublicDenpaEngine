@@ -1,10 +1,6 @@
 package;
 
 import haxe.Json;
-import haxe.format.JsonParser;
-import lime.utils.Assets;
-
-using StringTools;
 
 /**
 * Typedef used to create `Song` jsons.
@@ -20,7 +16,7 @@ typedef SwagSong =
 	//chart shit
 	var options:SongOptions;
 	var notes:Array<SwagSection>;
-	var events:Array<Dynamic>;
+	var events:Array<Array<Dynamic>>;
 }
 
 /**
@@ -30,10 +26,9 @@ typedef SongHeader = {
 	var song:String;
 	var bpm:Float;
 	var needsVoices:Bool;
-	var instVolume:Null<Float>;
-	var vocalsVolume:Null<Float>;
-	var secVocalsVolume:Null<Float>;
-	var validScore:Bool;
+	var ?instVolume:Null<Float>;
+	var ?vocalsVolume:Null<Float>;
+	var ?secVocalsVolume:Null<Float>;
 }
 
 /**
@@ -42,13 +37,13 @@ typedef SongHeader = {
 typedef SongAssets = {
 	var player1:String;
 	var player2:String;
-	var player3:String; //deprecated, now replaced by gfVersion
+	var ?player3:String; //deprecated, now replaced by gfVersion
+	var ?player4:String;
 	var gfVersion:String;
-	var enablePlayer4:Bool;
-	var player4:String;
-	var arrowSkin:String;
-	var splashSkin:String;
-	var stage:String;
+	var ?enablePlayer4:Bool;
+	var ?arrowSkin:String;
+	var ?splashSkin:String;
+	var ?stage:String;
 }
 
 /**
@@ -57,23 +52,20 @@ typedef SongAssets = {
 typedef SongOptions =
 {
 	var speed:Float;
-	var mania:Null<Int>;
-	var autoIcons:Bool;
-	var autoIdles:Bool;
-	var autoZooms:Bool;
-	var dangerMiss:Bool;
-	var crits:Bool;
-	var allowBot:Bool;
-	var allowGhostTapping:Bool;
-	var beatDrain:Bool;
-	var tintRed:Null<Int>;
-	var tintGreen:Null<Int>;
-	var tintBlue:Null<Int>;
-	var modchart:String;
-	var dadModchart:String;
-	var p4Modchart:String;
-	var credits:String;
-	var remixCreds:String;
+	var ?mania:Null<Int>;
+	var ?dangerMiss:Null<Bool>;
+	var ?crits:Null<Bool>;
+	var ?allowBot:Null<Bool>;
+	var ?allowGhostTapping:Null<Bool>;
+	var ?beatDrain:Null<Bool>;
+	var ?tintRed:Null<Int>;
+	var ?tintGreen:Null<Int>;
+	var ?tintBlue:Null<Int>;
+	var ?modchart:String;
+	var ?dadModchart:String;
+	var ?p4Modchart:String;
+	var ?credits:String;
+	var ?remixCreds:String;
 }
 
 /**
@@ -85,26 +77,45 @@ class Song
 	public var assets:SongAssets;
 	public var options:SongOptions;
 	public var notes:Array<SwagSection>;
-	public var events:Array<Dynamic>;
+	public var events:Array<Array<Dynamic>>;
 
-	private static function onLoadJson(songJson:SwagSong) // Convert old charts to newest format
+	private static function onLoadJson(songJson:SwagSong):SwagSong // Convert old charts to newest format
 	{
 		//DONT MESS WITH THIS SHIT!!! -AT
 		if (songJson.assets.gfVersion == null) {
 			songJson.assets.gfVersion = songJson.assets.player3;
 			songJson.assets.player3 = null;
 		}
-		//idk if this works or not but i cant really test it
-		if (songJson.options.mania == null)
-        {
-			/*var estimateMania:Int = 0;
+
+		if (songJson.options.mania == null) /*{
+			var max:Int = 0;
 			for (section in songJson.notes) {
 				for (note in section.sectionNotes) {
-					if (note[1] > estimateMania) estimateMania == note[1];
+					max = (note[1] % uhhhhh > max ? note[1] % uhhhhh : max);
 				}
-			}*/
+			}
+			songJson.options.mania = max;
+		}*/
             songJson.options.mania = Note.defaultMania;
-        }
+
+		if (songJson.options.allowBot == null)
+			songJson.options.allowBot = true;
+
+		if (songJson.options.allowGhostTapping == null)
+			songJson.options.allowGhostTapping = true;
+
+		if (songJson.options.dangerMiss == null)
+			songJson.options.dangerMiss = false;
+
+		if (songJson.options.beatDrain == null)
+			songJson.options.beatDrain = false;
+
+		if (songJson.options.crits == null)
+			songJson.options.crits = false;
+
+		if (songJson.assets.splashSkin == 'noteSplashes')
+			songJson.assets.splashSkin = 'splashes/noteSplashes';
+
 
 		//dont need it i think???
 		if(songJson.events == null)
@@ -130,20 +141,26 @@ class Song
 				}
 			}
 		}
+		return songJson;
 	}
 
-	public function new(song, notes, bpm)
-	{
-		this.header.song = song;
-		this.notes = notes;
-		this.header.bpm = bpm;
+	public function new(name:String) loadFromJson(name);
+
+	//this would be so much faster if all i had to do was return song.notes.length... BUT THE NOTES ARE NESTED INSIDE THE SECTIONS!
+	inline public static function getNoteCount(song:SwagSong):Int {
+		var total:Int = 0;
+		for (section in song.notes) {
+			total += section.sectionNotes.length;
+		}
+		return total;
 	}
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
 		var rawJson = null;
 		
-		var formattedFolder:String = Paths.formatToSongPath(folder);
+		var formattedFolder:String = 'charts/' + Paths.formatToSongPath(folder);
+		if (formattedFolder == 'charts/') formattedFolder = 'charts';
 		var formattedSong:String = Paths.formatToSongPath(jsonInput);
 		#if MODS_ALLOWED
 		var path:String = Paths.modsJson(formattedFolder + '/' + formattedSong);
@@ -153,7 +170,6 @@ class Song
 		#else
 		var path:String = Paths.json(formattedFolder + '/' + formattedSong);
 		#end
-		//trace (path);
 
 		#if MODS_ALLOWED
 		if(FileSystem.exists(path)) {
@@ -172,114 +188,105 @@ class Song
 		while (!rawJson.endsWith("}"))
 		{
 			rawJson = rawJson.substr(0, rawJson.length - 1);
-			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
-
-		// FIX THE CASTING ON WINDOWS/NATIVE
-		// Windows???
-		// trace(songData);
-
-		// trace('LOADED FROM JSON: ' + songData.notes);
-		/* 
-			for (i in 0...songData.notes.length)
-			{
-				trace('LOADED FROM JSON: ' + songData.notes[i].sectionNotes);
-				// songData.notes[i].sectionNotes = songData.notes[i].sectionNotes
-			}
-
-				daNotes = songData.notes;
-				daSong = songData.song;
-				daBpm = songData.bpm; */
 
 		var songJson:SwagSong = parseJSONshit(rawJson);
 		if(jsonInput != 'events') StageData.loadDirectory(songJson);
-		onLoadJson(songJson);
+		return onLoadJson(songJson);
+	}
+
+	static inline function convertChart(rawJson:String) {
+		var songJson:SwagSong;
+		var oldSongJson:OldSong;
+		oldSongJson = cast Json.parse(rawJson).song;
+		//holy shit this hurt my head, im just gonna save this for later
+		/*var oldEvents = oldSongJson.events;
+		var newEvents:Array<SwagEvent>;
+		if (oldEvents != null) {
+			for (event in oldEvents) {
+				var newEventData:Array<SwaggerEvent>;
+				var oldEventShitter:Array<Array<Dynamic>> = oldEvents[1];
+				for (eventers in oldEventShitter) {
+					var newShitter:SwaggerEvent = {
+						name: eventers[0],
+						value1: eventers[1],
+						value2: eventers[2]
+					}
+					newEventData.push(newShitter);
+				}
+				var newEvent:SwagEvent = {
+					msTime: event[0],
+					events: newEventData
+				}
+				newEvents.push(newEvent);
+			}
+		}*/
+		//casting my beloathed
+		var newLengths:Array<Dynamic> = [];
+		if (oldSongJson.notes != null) {
+			for (secData in oldSongJson.notes) {
+				if(secData.sectionBeats != null) {
+					newLengths.push(Std.int(secData.sectionBeats*4));
+				} else {
+					newLengths.push(16);
+					continue;
+				}
+			}
+			for (i in 0...oldSongJson.notes.length) {
+				if(oldSongJson.notes[i].lengthInSteps == null) {
+					oldSongJson.notes[i].lengthInSteps = newLengths[i];
+				}
+			} //Adds support for psych 0.6+ charts???
+		}
+		songJson = null;
+		songJson = {
+			header: {
+				song: oldSongJson.song,
+				bpm: oldSongJson.bpm,
+				needsVoices: oldSongJson.needsVoices,
+				instVolume: oldSongJson.instVolume,
+				vocalsVolume: oldSongJson.vocalsVolume,
+				secVocalsVolume: oldSongJson.secVocalsVolume,
+			},
+			assets: {
+				player1: oldSongJson.player1,
+				player2: oldSongJson.player2,
+				player3: oldSongJson.player3,
+				gfVersion: oldSongJson.gfVersion,
+				enablePlayer4: oldSongJson.enablePlayer4,
+				player4: oldSongJson.player4,
+				arrowSkin: oldSongJson.arrowSkin,
+				splashSkin: oldSongJson.splashSkin,
+				stage: oldSongJson.stage
+			},
+			options: {
+				speed: oldSongJson.speed,
+				mania: oldSongJson.mania,
+				dangerMiss: oldSongJson.dangerMiss,
+				crits: oldSongJson.crits,
+				allowBot: oldSongJson.allowBot,
+				allowGhostTapping: oldSongJson.allowGhostTapping,
+				beatDrain: oldSongJson.beatDrain,
+				tintRed: oldSongJson.tintRed,
+				tintGreen: oldSongJson.tintGreen,
+				tintBlue: oldSongJson.tintBlue,
+				modchart: oldSongJson.modchart,
+				dadModchart: oldSongJson.dadModchart,
+				p4Modchart: oldSongJson.p4Modchart,
+				credits: oldSongJson.credits,
+				remixCreds: oldSongJson.remixCreds
+			},
+			notes: oldSongJson.notes,
+			events: oldSongJson.events
+		}
+		oldSongJson = null;
 		return songJson;
 	}
 
 	public static function parseJSONshit(rawJson:String):SwagSong
 	{
-		var songJson:SwagSong;
-		var oldSongJson:OldSong;
-		try {
-			songJson = cast Json.parse(rawJson).song;
-			songJson.header.validScore = true;
-		} catch (e) {
-			//yes honey i know you work, now please shut the fuck up <3
-			//trace('\n<----ERROR---->\n' + e + '\nSong JSON was detected invalid/old, attempting conversion...\n<-------->');
-			oldSongJson = cast Json.parse(rawJson).song;
-			//holy shit this hurt my head, im just gonna save this for later
-			/*var oldEvents = oldSongJson.events;
-			var newEvents:Array<SwagEvent>;
-			if (oldEvents != null) {
-				for (event in oldEvents) {
-					var newEventData:Array<SwaggerEvent>;
-					var oldEventShitter:Array<Array<Dynamic>> = oldEvents[1];
-					for (eventers in oldEventShitter) {
-						var newShitter:SwaggerEvent = {
-							name: eventers[0],
-							value1: eventers[1],
-							value2: eventers[2]
-						}
-						newEventData.push(newShitter);
-					}
-					var newEvent:SwagEvent = {
-						msTime: event[0],
-						events: newEventData
-					}
-					newEvents.push(newEvent);
-				}
-			}*/
-			songJson = null;
-			songJson = {
-				header: {
-					song: oldSongJson.song,
-					bpm: oldSongJson.bpm,
-					needsVoices: oldSongJson.needsVoices,
-					instVolume: oldSongJson.instVolume,
-					vocalsVolume: oldSongJson.vocalsVolume,
-					secVocalsVolume: oldSongJson.secVocalsVolume,
-					validScore: true
-				},
-		
-				assets: {
-					player1: oldSongJson.player1,
-					player2: oldSongJson.player2,
-					player3: oldSongJson.player3,
-					gfVersion: oldSongJson.gfVersion,
-					enablePlayer4: oldSongJson.enablePlayer4,
-					player4: oldSongJson.player4,
-					arrowSkin: oldSongJson.arrowSkin,
-					splashSkin: oldSongJson.splashSkin,
-					stage: oldSongJson.stage
-				},
-		
-				options: {
-					speed: oldSongJson.speed,
-					mania: oldSongJson.mania,
-					autoIcons: oldSongJson.autoIcons,
-					autoIdles: oldSongJson.autoIdles,
-					autoZooms: oldSongJson.autoZooms,
-					dangerMiss: oldSongJson.dangerMiss,
-					crits: oldSongJson.crits,
-					allowBot: oldSongJson.allowBot,
-					allowGhostTapping: oldSongJson.allowGhostTapping,
-					beatDrain: oldSongJson.beatDrain,
-					tintRed: oldSongJson.tintRed,
-					tintGreen: oldSongJson.tintGreen,
-					tintBlue: oldSongJson.tintBlue,
-					modchart: oldSongJson.modchart,
-					dadModchart: oldSongJson.dadModchart,
-					p4Modchart: oldSongJson.p4Modchart,
-					credits: oldSongJson.credits,
-					remixCreds: oldSongJson.remixCreds
-				},
-				notes: oldSongJson.notes,
-				events: oldSongJson.events
-			}
-			oldSongJson = null;
-		}
-		return songJson;
+		final songJson:SwagSong = cast Json.parse(rawJson).song;
+		return (songJson.header == null ? convertChart(rawJson) : songJson);
 	}
 }
 
@@ -289,7 +296,8 @@ class Song
 typedef SwagSection =
 {
 	var sectionNotes:Array<Dynamic>;
-	var lengthInSteps:Int;
+	var lengthInSteps:Null<Int>;
+	var ?sectionBeats:Null<Float>;
 	var typeOfSection:Int;
 	var mustHitSection:Bool;
 	var player4Section:Bool;
@@ -308,7 +316,7 @@ typedef SwagNote =
 	var msTime:Float;
 	var data:Int;
 	var sustainLength:Float;
-	var type:String;
+	var ?type:String;
 }
 
 /**
@@ -331,72 +339,43 @@ typedef SwaggerEvent =
 }
 
 /**
-* Class containing all related functions for section loading and control.
-*/
-class Section
-{
-	public var sectionNotes:Array<Dynamic> = [];
-
-	public var lengthInSteps:Int = 16;
-	public var gfSection:Bool = false;
-	public var crossFade:Bool = false;
-	public var typeOfSection:Int = 0;
-	public var mustHitSection:Bool = true;
-	public var player4Section:Bool = false;
-
-	/**
-	 *	Copies the first section into the second section!
-	 */
-	public static var COPYCAT:Int = 0;
-
-	public function new(lengthInSteps:Int = 16)
-	{
-		this.lengthInSteps = lengthInSteps;
-	}
-}
-
-/**
 * Typedef used to convert old song jsons into the new song jsons.
 */
 typedef OldSong =
 {
 	var song:String;
 	var notes:Array<SwagSection>;
-	var events:Array<Dynamic>;
+	var events:Array<Array<Dynamic>>;
 	var bpm:Float;
-	var instVolume:Null<Float>;
-	var vocalsVolume:Null<Float>;
-	var secVocalsVolume:Null<Float>;
+	var ?instVolume:Null<Float>;
+	var ?vocalsVolume:Null<Float>;
+	var ?secVocalsVolume:Null<Float>;
 	var needsVoices:Bool;
-	var autoIcons:Bool;
-	var autoIdles:Bool;
-	var autoZooms:Bool;
-	var dangerMiss:Bool;
-	var crits:Bool;
-	var allowBot:Bool;
-	var allowGhostTapping:Bool;
-	var beatDrain:Bool;
-	var enablePlayer4:Bool;
+	var ?dangerMiss:Bool;
+	var ?crits:Bool;
+	var ?allowBot:Bool;
+	var ?allowGhostTapping:Bool;
+	var ?beatDrain:Bool;
+	var ?enablePlayer4:Bool;
 	var speed:Float;
-	var tintRed:Null<Int>;
-	var tintGreen:Null<Int>;
-	var tintBlue:Null<Int>;
+	var ?tintRed:Null<Int>;
+	var ?tintGreen:Null<Int>;
+	var ?tintBlue:Null<Int>;
 
 	var player1:String;
 	var player2:String;
-	var player4:String;
-	var player3:String; //deprecated, now replaced by gfVersion
+	var ?player4:String;
+	var ?player3:String; //deprecated, now replaced by gfVersion
 	var gfVersion:String;
-	var stage:String;
-	var modchart:String;
-	var dadModchart:String;
-	var p4Modchart:String;
-	var credits:String;
-	var remixCreds:String;
+	var ?stage:String;
+	var ?modchart:String;
+	var ?dadModchart:String;
+	var ?p4Modchart:String;
+	var ?credits:String;
+	var ?remixCreds:String;
 
-	var mania:Null<Int>;
+	var ?mania:Null<Int>;
 
-	var arrowSkin:String;
-	var splashSkin:String;
-	var validScore:Bool;
+	var ?arrowSkin:String;
+	var ?splashSkin:String;
 }

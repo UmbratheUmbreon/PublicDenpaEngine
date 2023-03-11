@@ -1,0 +1,17 @@
+var PlayState = require("PlayState");
+
+function onEvent(name, value1, value2) {
+    if (name == "Toggle Ghost Tapping") {
+		switch (value1.toLowerCase())
+		{
+			case '1' | 'false' | 'off':
+				PlayState.instance.tappy = false;
+			case '2' | 'true' | 'on':
+				PlayState.instance.tappy = true;
+			default:
+				PlayState.instance.tappy = !PlayState.instance.tappy;
+		}
+		PlayState.instance.hud.updateGS(!PlayState.instance.tappy);
+		PlayState.instance.hud.updateNBot(!PlayState.instance.cpuControlled);
+    }
+}

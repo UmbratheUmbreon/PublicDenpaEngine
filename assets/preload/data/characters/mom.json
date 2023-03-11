@@ -1,0 +1,98 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "Mom Idle"
+		},
+		{
+			"offsets": [
+				250,
+				-23
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "Mom Left Pose"
+		},
+		{
+			"offsets": [
+				10,
+				-60
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "Mom Pose Left"
+		},
+		{
+			"offsets": [
+				20,
+				-160
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "MOM DOWN POSE"
+		},
+		{
+			"offsets": [
+				14,
+				71
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "Mom Up Pose"
+		}
+	],
+	"sarvente_floating": false,
+	"no_antialiasing": false,
+	"image": "characters/Week4/Mom_Assets",
+	"position": [
+		0,
+		0
+	],
+	"healthbar_count": 3,
+	"flip_x": false,
+	"icon_props": {
+		"name": "mom",
+		"offsets": [0,0],
+		"antialiasing": true
+	},
+	"healthbar_colors": [
+		{
+			"red": 216,
+			"green": 85,
+			"blue": 142
+		},
+		{
+			"red": 196,
+			"green": 65,
+			"blue": 122
+		},
+		{
+			"red": 176,
+			"green": 45,
+			"blue": 102
+		}
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"float_magnitude": null,
+	"sing_duration": 4,
+	"scale": 1,
+	"flixel_trail": false
+}

@@ -1,25 +1,22 @@
 package editors;
 
+import flixel.FlxSprite;
+import flixel.addons.display.FlxBackdrop;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.input.keyboard.FlxKey;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import openfl.events.KeyboardEvent;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.display.FlxBackdrop;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.system.FlxSound;
-
-using StringTools;
 
 /**
 * State with shortcuts to all other editor menus.
 */
 class MasterEditorMenu extends MusicBeatState
 {
-	var options:Array<String> = [
+	final options:Array<String> = [
 		'Week Editor',
 		'Menu Character Editor',
 		'Dialogue Editor',
@@ -38,9 +35,7 @@ class MasterEditorMenu extends MusicBeatState
 	private var directoryTxt:FlxText;
 
 	override function create()
-	{
-		Paths.clearStoredMemory();
-		Paths.clearUnusedMemory();
+	{	
 		FlxG.camera.bgColor = FlxColor.BLACK;
 		#if desktop
 		// Updating Discord Rich Presence
@@ -50,27 +45,25 @@ class MasterEditorMenu extends MusicBeatState
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.scrollFactor.set();
 		bg.color = 0xFF353535;
+		bg.active = false;
 		add(bg);
 
-		if (!ClientPrefs.lowQuality) {
-			var bgScroll:FlxBackdrop = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
+		if (!ClientPrefs.settings.get("lowQuality")) {
+			var bgScroll:FlxBackdrop = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll.velocity.set(29, 30);
 			bgScroll.color = 0xFF353535;
 			add(bgScroll);
 	
-			var bgScroll2:FlxBackdrop = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
+			var bgScroll2:FlxBackdrop = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll2.velocity.set(-29, -30);
 			bgScroll2.color = 0xFF353535;
 			add(bgScroll2);
 		}
 
 		var gradient:FlxSprite = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
-		gradient.antialiasing = ClientPrefs.globalAntialiasing;
 		gradient.color = 0xFF353535;
+		gradient.active = false;
 		add(gradient);
-		//gradient.screenCenter();
 
 		grpTexts = new FlxTypedGroup<Alphabet>();
 		add(grpTexts);
@@ -86,11 +79,13 @@ class MasterEditorMenu extends MusicBeatState
 		#if MODS_ALLOWED
 		var textBG:FlxSprite = new FlxSprite(0, FlxG.height - 42).makeGraphic(FlxG.width, 42, 0xFF000000);
 		textBG.alpha = 0.6;
+		textBG.active = false;
 		add(textBG);
 
 		directoryTxt = new FlxText(textBG.x, textBG.y + 4, FlxG.width, '', 32);
 		directoryTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
 		directoryTxt.scrollFactor.set();
+		directoryTxt.active = false;
 		add(directoryTxt);
 		
 		for (folder in Paths.getModDirectories())
@@ -108,33 +103,25 @@ class MasterEditorMenu extends MusicBeatState
 		super.create();
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function keyPress(event:KeyboardEvent) {
+		super.keyPress(event);
+
 		if (controls.UI_UP_P)
-		{
 			changeSelection(-1);
-		}
 		if (controls.UI_DOWN_P)
-		{
 			changeSelection(1);
-		}
 		#if MODS_ALLOWED
 		if(controls.UI_LEFT_P)
-		{
 			changeDirectory(-1);
-		}
 		if(controls.UI_RIGHT_P)
-		{
 			changeDirectory(1);
-		}
 		#end
-
-		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
-		{
+		if (controls.BACK) {
+			FlxG.sound.play(Paths.sound('cancelMenu'));
 			MusicBeatState.switchState(new MainMenuState());
 		}
 
-		if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
+		if (controls.ACCEPT)
 		{
 			switch(options[curSelected]) {
 				case 'Character Editor':
@@ -158,23 +145,6 @@ class MasterEditorMenu extends MusicBeatState
 			FreeplayState.destroyFreeplayVocals();
 			#end
 		}
-		
-		var bullShit:Int = 0;
-		for (item in grpTexts.members)
-		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
-
-			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
-			}
-		}
-		super.update(elapsed);
 	}
 
 	function changeSelection(change:Int = 0)
@@ -187,6 +157,20 @@ class MasterEditorMenu extends MusicBeatState
 			curSelected = options.length - 1;
 		if (curSelected >= options.length)
 			curSelected = 0;
+
+		var bullShit:Int = 0;
+		for (item in grpTexts.members)
+		{
+			item.targetY = bullShit - curSelected;
+			bullShit++;
+
+			item.alpha = 0.6;
+
+			if (item.targetY == 0)
+			{
+				item.alpha = 1;
+			}
+		}
 	}
 
 	#if MODS_ALLOWED

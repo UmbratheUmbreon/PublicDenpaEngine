@@ -1,0 +1,1 @@
+All stored data related to updates is kept here, downloaded patches for example!

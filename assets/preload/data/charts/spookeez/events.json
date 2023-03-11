@@ -1,0 +1,145 @@
+{
+	"song": {
+		"events": [
+			[
+				1600,
+				[
+					[
+						"Lightning Strike",
+						"false",
+						"0.5"
+					]
+				]
+			],
+			[
+				6400,
+				[
+					[
+						"Change Zoom Interval",
+						"2",
+						""
+					]
+				]
+			],
+			[
+				15600,
+				[
+					[
+						"Add Camera Zoom",
+						"0.1",
+						"0.03"
+					]
+				]
+			],
+			[
+				18800,
+				[
+					[
+						"Add Camera Zoom",
+						"0.1",
+						"0.03"
+					]
+				]
+			],
+			[
+				41200,
+				[
+					[
+						"Add Camera Zoom",
+						"0.1",
+						"0.03"
+					]
+				]
+			],
+			[
+				44400,
+				[
+					[
+						"Add Camera Zoom",
+						"0.1",
+						"0.03"
+					]
+				]
+			],
+			[
+				56900,
+				[
+					[
+						"Change Zoom Interval",
+						"4",
+						""
+					]
+				]
+			],
+			[
+				57500,
+				[
+					[
+						"Stage Tint",
+						"0.7",
+						"39,0xff000000"
+					],
+					[
+						"Lightning Strike",
+						"false",
+						"0.6"
+					]
+				]
+			],
+			[
+				64000,
+				[
+					[
+						"Lightning Strike",
+						"false",
+						"0.4"
+					]
+				]
+			],
+			[
+				70400,
+				[
+					[
+						"Lightning Strike",
+						"false",
+						"0.4"
+					]
+				]
+			],
+			[
+				76800,
+				[
+					[
+						"Lightning Strike",
+						"false",
+						"0.4"
+					]
+				]
+			],
+			[
+				83200,
+				[
+					[
+						"Lightning Strike",
+						"false",
+						"0.4"
+					]
+				]
+			],
+			[
+				89600,
+				[
+					[
+						"Lightning Strike",
+						"false",
+						"0.4"
+					]
+				]
+			]
+		],
+		"notes": [],
+		"options": null,
+		"header": null,
+		"assets": null
+	}
+}

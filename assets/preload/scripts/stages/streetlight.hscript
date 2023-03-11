@@ -1,0 +1,42 @@
+var FlxG = require("flixel.FlxG");
+var PlayState = require ("PlayState");
+
+function onCreate() {
+	PlayState.instance.addHscript("events/Lightning Strike");
+}
+
+var useLitStreetlight:Bool = false;
+function onCreatePost() {
+	PlayState.instance.jsonSprites.get("halloweenBG").animation.play('monsterSPOT0');
+	PlayState.instance.dad.color = 0xff444444;
+	PlayState.instance.jsonSprites.get("halloweenBG").animation.finishCallback = name -> {
+		if (name == 'monsterLIGHTNING0') {
+			PlayState.instance.jsonSprites.get("halloweenBG").animation.play((useLitStreetlight ? 'monster bg' : 'monsterSPOT0'));
+			if (!useLitStreetlight) PlayState.instance.dad.color = 0xff444444;
+		}
+	}
+}
+
+var lightningStrikeBeat:Int = 0;
+var lightningOffset:Int = 8;
+
+function onBeatHit(curBeat) {
+	if(PlayState.instance.generatedMusic) {
+		if (FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
+		{
+			PlayState.instance.callOnHscripts("onEvent", ["Lightning Strike", "", "0.8"]);
+			PlayState.instance.jsonSprites.get("halloweenBG").animation.play('monsterLIGHTNING0');
+			PlayState.instance.dad.color = 0xffffffff;
+			resetLightningOffsets(curBeat);
+		}
+	}
+}
+
+function resetLightningOffsets(curBeat:Int) {
+	lightningStrikeBeat = curBeat;
+	lightningOffset = FlxG.random.int(8, 24);
+}
+
+function setLitStreetlight(value:Bool) {
+	useLitStreetlight = value;
+}

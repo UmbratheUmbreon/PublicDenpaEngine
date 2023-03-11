@@ -1,0 +1,171 @@
+var PlayState = require("PlayState");
+var FlxBasic = require("flixel.FlxBasic");
+var BGSprite = require("BGSprite");
+var ClientPrefs = require("ClientPrefs");
+var FlxSound = require("flixel.system.FlxSound");
+var FlxG = require("flixel.FlxG");
+var FlxColor = require("flixel.util.FlxColor");
+var Std = require("Std");
+var Conductor = require("Conductor");
+var Paths = require("Paths");
+var Math = require("Math");
+
+var phillyWindow:BGSprite;
+var phillyTrain:BGSprite;
+var trainSound:FlxSound;
+var phillyStreet:BGSprite;
+var phillyLightsColors:Array<FlxColor> = [0xFF31A2FD, 0xFF31FD8C, 0xFFFB33F5, 0xFFFD4531, 0xFFFBA633];
+var streetBehind:BGSprite;
+function onCreate() {
+	var layerArray:Array<FlxBasic> = [];
+	
+	var city:BGSprite = new BGSprite('vanilla/week3/philly/city', -10, 0, 0.3, 0.3);
+	city.setGraphicSize(Std.int(city.width * 0.85));
+	city.updateHitbox();
+	
+	phillyWindow = new BGSprite('vanilla/week3/philly/window', city.x, city.y, 0.3, 0.3);
+	phillyWindow.setGraphicSize(Std.int(phillyWindow.width * 0.85));
+	phillyWindow.updateHitbox();
+	
+	phillyTrain = new BGSprite('vanilla/week3/philly/train', 2000, 360);
+
+	trainSound = new FlxSound().loadEmbedded(Paths.sound('vanilla/week3/train_passes'));
+	FlxG.sound.list.add(trainSound);
+	
+	phillyStreet = new BGSprite('vanilla/week3/philly/street', -40, 50);
+
+	if(!ClientPrefs.settings.get("lowQuality")) { 
+		var bg:BGSprite = new BGSprite('vanilla/week3/philly/sky', -100, 0, 0.1, 0.1);
+		streetBehind = new BGSprite('vanilla/week3/philly/behindTrain', -40, 50);
+		layerArray = [bg, city, phillyWindow, streetBehind, phillyTrain, phillyStreet];
+	} else {
+		layerArray = [city, phillyWindow, phillyTrain, phillyStreet];
+	}
+	
+    for (object in layerArray) {
+        PlayState.instance.add(object);
+    }
+	phillyWindow.alpha = 0.001;
+}
+
+function onCreatePost() {
+    var pos = PlayState.instance.members.indexOf(PlayState.instance.phillyGroupThing);
+    PlayState.instance.remove(PlayState.instance.phillyGroupThing);
+    PlayState.instance.insert(pos-(ClientPrefs.settings.get("lowQuality") ? 3 : 4), PlayState.instance.phillyGroupThing);
+}
+
+var trainMoving:Bool = false;
+var trainFrameTiming:Float = 0;
+
+var trainCars:Int = 8;
+var trainFinishing:Bool = false;
+var trainCooldown:Int = 0;
+
+function trainStart(?cutscene:Bool = false)
+{
+	trainMoving = true;
+	if (!trainSound.playing && !cutscene)
+		trainSound.play(true);
+}
+
+var startedMoving:Bool = false;
+
+function updateTrainPos()
+{
+	if (trainSound.time >= 4700)
+	{
+		startedMoving = true;
+        var gf = PlayState.instance.gf;
+		if (gf != null)
+		{
+			gf.playAnim('hairBlow');
+			gf.specialAnim = true;
+		}
+	}
+
+	if (startedMoving)
+	{
+		phillyTrain.x -= 400;
+
+		if (phillyTrain.x < -2000 && !trainFinishing)
+		{
+			phillyTrain.x = -1150;
+			trainCars -= 1;
+
+			if (trainCars <= 0)
+				trainFinishing = true;
+		}
+
+		if (phillyTrain.x < -4000 && trainFinishing)
+			trainReset();
+	}
+}
+
+function trainReset()
+{
+    var gf = PlayState.instance.gf;
+	if(gf != null)
+	{
+		gf.danced = false; //Sets head to the correct position once the animation ends
+		gf.playAnim('hairFall');
+		gf.specialAnim = true;
+	}
+	phillyTrain.x = FlxG.width + 200;
+	trainMoving = false;
+	trainCars = 8;
+	trainFinishing = false;
+	startedMoving = false;
+}
+
+var curLight:Int = 0;
+var curLightEvent:Int = 0;
+function onBeatHit(curBeat) {
+    if (!trainMoving) trainCooldown += 1;
+
+    if (curBeat % 4 == 0)
+    {
+        curLight = FlxG.random.int(0, phillyLightsColors.length - 1, [curLight]);
+        phillyWindow.color = phillyLightsColors[curLight];
+        phillyWindow.alpha = 1;
+    }
+
+    if (curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8 && !trainSound.playing)
+    {
+        trainCooldown = FlxG.random.int(-4, 0);
+        trainStart();
+    }
+}
+
+function onUpdate(elapsed)
+{
+    if (trainMoving)
+	{
+		trainFrameTiming += elapsed;
+
+		if (trainFrameTiming >= 1 / 24)
+		{
+			updateTrainPos();
+			trainFrameTiming = 0;
+		}
+	}
+	phillyWindow.alpha -= (Conductor.crochet / 1000 / PlayState.instance.playbackRate) * FlxG.elapsed * 1.5;
+}
+
+function onEvent(name, value1, value2) {
+    if (name != 'Philly Glow') return;
+    var lightId:Int = Std.parseInt(value1);
+    if(Math.isNaN(lightId)) lightId = 0;
+    switch(lightId)
+    {
+        case 0:
+            phillyStreet.color = 0xffffffff;
+            phillyTrain.color = 0xffffffff;
+            if (!ClientPrefs.settings.get("lowQuality"))
+                streetBehind.color = 0xffffffff;
+        case 1:
+            phillyStreet.color = PlayState.instance.phillyWindowEvent.color;
+            phillyTrain.color = PlayState.instance.phillyWindowEvent.color;
+            if (!ClientPrefs.settings.get("lowQuality"))
+                streetBehind.color = PlayState.instance.phillyWindowEvent.color;
+    }
+}

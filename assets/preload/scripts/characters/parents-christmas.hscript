@@ -1,0 +1,10 @@
+var PlayState = require("PlayState");
+
+function onMoveCamera(character) {
+    if (character != 'dad' || PlayState.SONG == null || PlayState.SONG.notes[PlayState.instance.curSection] == null) return;
+
+    if (PlayState.SONG.notes[PlayState.instance.curSection].altAnim) {
+        PlayState.instance.camFollow.x += 180;
+        PlayState.instance.camFollow.y += 10;
+    }
+}

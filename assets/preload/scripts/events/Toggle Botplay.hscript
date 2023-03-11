@@ -1,0 +1,18 @@
+var PlayState = require("PlayState");
+
+function onEvent(name, value1, value2) {
+    if (name == "Toggle Botplay") {
+        switch (value1.toLowerCase())
+		{
+			case '1' | 'false' | 'off':
+			    PlayState.instance.cpuControlled = false;
+	    	case '2' | 'true' | 'on':
+				PlayState.instance.cpuControlled = true;
+			default:
+				PlayState.instance.cpuControlled = !PlayState.instance.cpuControlled;
+		}
+		PlayState.instance.hud.updateNBot(!PlayState.instance.cpuControlled);
+		PlayState.instance.hud.updateGS(!PlayState.instance.tappy);
+		PlayState.instance.recalculateIconAnimations();
+    }
+}

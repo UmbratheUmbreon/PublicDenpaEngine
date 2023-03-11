@@ -3,46 +3,37 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.text.FlxText;
+import StageData;
+import flash.net.FileFilter;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
+import flixel.text.FlxText;
 import flixel.ui.FlxButton;
-import openfl.net.FileReference;
+import haxe.Json;
+import haxe.io.Path;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import flash.net.FileFilter;
-import haxe.Json;
-import StageData;
-import haxe.io.Path;
-
-using StringTools;
+import openfl.net.FileReference;
 
 /**
 * State used to create and edit `Stage` jsons.
 */
 class StageEditorState extends MusicBeatState
 {
+	var music:EditorMusic;
 	var stageFile:StageFile = null;
+
+	override function destroy() {
+		music.reset();
+		super.destroy();
+	}
 
 	override function create()
 	{
-		Paths.clearStoredMemory();
-		Paths.clearUnusedMemory();
-		var musicID:Int = FlxG.random.int(0, 2);
-		switch (musicID)
-		{
-			case 0:
-				FlxG.sound.playMusic(Paths.music('shop'), 0.5);
-			case 1:
-				FlxG.sound.playMusic(Paths.music('sneaky'), 0.5);
-			case 2:
-				FlxG.sound.playMusic(Paths.music('mii'), 0.5);
-			case 3:
-				FlxG.sound.playMusic(Paths.music('dsi'), 0.5);
-		}
+		music = new EditorMusic();
 		stageFile = {
 				directory: "",
 				defaultZoom: 0.9,
@@ -90,7 +81,8 @@ class StageEditorState extends MusicBeatState
 						flip_y: null,
 
 						gf_front: false,
-						origin: null
+						origin: null,
+						hide_lq: false
 					},
 					{
 						animated: false,
@@ -121,7 +113,8 @@ class StageEditorState extends MusicBeatState
 						flip_y: null,
 
 						gf_front: false,
-						origin: null
+						origin: null,
+						hide_lq: false
 					}
 				],
 				animations: [[]]
@@ -505,6 +498,9 @@ class StageEditorState extends MusicBeatState
 		var blockInput:Bool = false;
 		for (inputText in blockPressWhileTypingOn) {
 			if(inputText.hasFocus) {
+				if(FlxG.keys.justPressed.ENTER) {
+					inputText.hasFocus = false;
+				}
 				FlxG.sound.muteKeys = [];
 				FlxG.sound.volumeDownKeys = [];
 				FlxG.sound.volumeUpKeys = [];
@@ -548,7 +544,8 @@ class StageEditorState extends MusicBeatState
 			FlxG.sound.volumeUpKeys = InitState.volumeUpKeys;
 			if(FlxG.keys.justPressed.ESCAPE) {
 				MusicBeatState.switchState(new editors.MasterEditorMenu());
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				FlxG.sound.playMusic(Paths.music(SoundTestState.playingTrack));
+				Conductor.changeBPM(SoundTestState.playingTrackBPM);
 			}
 		}
 
@@ -750,7 +747,7 @@ class StageEditorState extends MusicBeatState
 	}
 
 	function getCurrentDataPath(stageName:String = 'stage'):String {
-		var stagePath:String = 'stages/' + stageName + '.json';
+		var stagePath:String = 'data/stages/' + stageName + '.json';
 
 		var path:String;
 		#if MODS_ALLOWED

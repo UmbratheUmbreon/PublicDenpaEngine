@@ -2,10 +2,8 @@ package;
 
 import flixel.input.keyboard.FlxKey;
 
-using StringTools;
-
 class InputFormatter {
-	public static function getKeyName(key:FlxKey):String {
+	inline public static function getKeyName(key:FlxKey):String {
 		switch (key) {
 			case BACKSPACE: return "BckSpc";
 			case CONTROL: return "Ctrl";
@@ -23,37 +21,35 @@ class InputFormatter {
 			case SEVEN: return "7";
 			case EIGHT: return "8";
 			case NINE: return "9";
-			case NUMPADZERO: return "#0";
-			case NUMPADONE: return "#1";
-			case NUMPADTWO: return "#2";
-			case NUMPADTHREE: return "#3";
-			case NUMPADFOUR: return "#4";
-			case NUMPADFIVE: return "#5";
-			case NUMPADSIX: return "#6";
-			case NUMPADSEVEN: return "#7";
-			case NUMPADEIGHT: return "#8";
-			case NUMPADNINE: return "#9";
-			case NUMPADMULTIPLY: return "#*";
-			case NUMPADPLUS: return "#+";
-			case NUMPADMINUS: return "#-";
-			case NUMPADPERIOD: return "#.";
+			case NUMPADZERO: return "NmPd 0";
+			case NUMPADONE: return "NmPd 1";
+			case NUMPADTWO: return "NmPd 2";
+			case NUMPADTHREE: return "NmPd 3";
+			case NUMPADFOUR: return "NmPd 4";
+			case NUMPADFIVE: return "NmPd 5";
+			case NUMPADSIX: return "NmPd 6";
+			case NUMPADSEVEN: return "NmPd 7";
+			case NUMPADEIGHT: return "NmPd 8";
+			case NUMPADNINE: return "NmPd 9";
+			case NUMPADMULTIPLY: return "NmPd *";
+			case NUMPADPLUS: return "NmPd +";
+			case NUMPADMINUS: return "NmPd -";
+			case NUMPADPERIOD: return "NmPd .";
 			case SEMICOLON: return ";";
 			case COMMA: return ",";
 			case PERIOD: return ".";
-			//case SLASH:
-			//	return "/";
+			case SLASH: return "Slash";
 			case GRAVEACCENT: return "`";
 			case LBRACKET: return "[";
-			//case BACKSLASH:
-			//	return "\\";
+			case BACKSLASH: return "BckSlsh";
 			case RBRACKET: return "]";
 			case QUOTE: return "'";
 			case PRINTSCREEN: return "PrtScrn";
 			case NONE: return '---';
 			default:
-				var label:String = '' + key;
-				if(label.toLowerCase() == 'null') return '---';
-				return '' + label.charAt(0).toUpperCase() + label.substr(1).toLowerCase();
+                if (key != 'null')
+				    return CoolUtil.toTitleCase(key.toString().toLowerCase());
+                return '---';
 		}
 	}
 }

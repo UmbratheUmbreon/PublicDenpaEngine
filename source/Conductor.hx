@@ -2,11 +2,6 @@ package;
 
 import Song.SwagSong;
 
-/**
- * ...
- * @author
- */
-
 typedef BPMChangeEvent =
 {
 	var stepTime:Int;
@@ -19,42 +14,54 @@ typedef BPMChangeEvent =
 */
 class Conductor
 {
+	/**
+	* Current Beats per Minute (NOT AN INTEGER!).
+	*/
 	public static var bpm:Float = 100;
-	public static var crochet:Float = ((60 / bpm) * 1000); // beats in milliseconds
-	public static var stepCrochet:Float = crochet / 4; // steps in milliseconds
-	public static var songPosition:Float=0;
-	public static var lastSongPos:Float;
-	public static var offset:Float = 0;
+	/**
+	* Current Beats per Minute in Milliseconds.
+	*/
+	public static var crochet:Float = ((60 / bpm) * 1000);
+	/**
+	* Current Steps per Minute in Milliseconds.
+	*/
+	public static var stepCrochet:Float = crochet / 4;
+	/**
+	* Current Song position in Milliseconds.
+	*/
+	public static var songPosition:Float = 0;
+	@:keep public static var lastSongPos:Float; // just in case DCE tries to remove them (when you're not using hscript)
+	@:keep public static var offset:Float = 0;
 
-	//public static var safeFrames:Int = 10;
-	public static var safeZoneOffset:Float = (ClientPrefs.safeFrames / 60) * 1000; // is calculated in create(), is safeFrames in milliseconds
+	public static var safeZoneOffset:Float = (ClientPrefs.settings.get("safeFrames") / 60) * 1000; // is calculated in create(), is safeFrames in milliseconds
 
+	/**
+	* Map of the bpm changes in the current song.
+	* Each element of the array contains stepTime, songTime, and the new bpm.
+	*/
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
-	public function new()
+	public static function judgeNote(note:Note, diff:Float=0, ?bot:Bool = false)
 	{
-	}
+		if (bot) return 'perfect';
 
-	public static function judgeNote(note:Note, diff:Float=0, ?bot:Bool = false) //STOLEN FROM KADE ENGINE (bbpanzu) - I had to rewrite it later anyway after i added the custom hit windows lmao (Shadow Mario)
-	{
-		if (bot) {
-			return 'perfect';
-		}
-		//tryna do MS based judgment due to popular demand
-		var timingWindows:Array<Int> = [ClientPrefs.perfectWindow, ClientPrefs.sickWindow, ClientPrefs.goodWindow, ClientPrefs.badWindow, ClientPrefs.shitWindow];
-		var windowNames:Array<String> = ['perfect', 'sick', 'good', 'bad', 'shit'];
+		final timingWindows:Array<Int> = [ClientPrefs.settings.get("perfectWindow"), ClientPrefs.settings.get("sickWindow"), ClientPrefs.settings.get("goodWindow"), ClientPrefs.settings.get("badWindow"), ClientPrefs.settings.get("shitWindow")];
+		final windowNames:Array<String> = ['perfect', 'sick', 'good', 'bad', 'shit'];
 
-		// var diff = Math.abs(note.strumTime - Conductor.songPosition) / (PlayState.songMultiplier >= 1 ? PlayState.songMultiplier : 1);
-		for(i in 0...timingWindows.length) // based on 4 timing windows, will break with anything else
+		for(i in 0...timingWindows.length)
 		{
-			if (diff <= timingWindows[Math.round(Math.min(i, timingWindows.length - 1))])
-			{
+			if (diff <= timingWindows[i]) {
 				return windowNames[i];
 			}
 		}
 		return 'wtf';
 	}
 
+	/**
+	 * Creates a new `bpmChangeMap` from the inputted song.
+	 *
+	 * @param	song	Song to take the BPM and time signature changes from.
+	 */	
 	public static function mapBPMChanges(song:SwagSong)
 	{
 		bpmChangeMap = [];
@@ -79,14 +86,24 @@ class Conductor
 			totalSteps += deltaSteps;
 			totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 		}
-		trace("new BPM map BUDDY " + bpmChangeMap);
+		//trace("new BPM map BUDDY " + bpmChangeMap);
 	}
 
+	/**
+	 * Changes the Conductor's BPM.
+	 *
+	 * @param	newBpm	The BPM to change to.
+	 */
 	public static function changeBPM(newBpm:Float)
 	{
-		bpm = newBpm;
+		if (newBpm <= 0) return;
 
-		crochet = ((60 / bpm) * 1000);
+		bpm = newBpm;
+		crochet = getCrochet(bpm);
 		stepCrochet = crochet / 4;
+	}
+
+	inline public static function getCrochet(bpm:Float){
+		return (60 / bpm) * 1000;
 	}
 }

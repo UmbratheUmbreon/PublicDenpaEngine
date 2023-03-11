@@ -1,0 +1,85 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [
+				37,
+				11
+			],
+			"anim": "firstDeath",
+			"fps": 24,
+			"name": "BF dies",
+			"indices": []
+		},
+		{
+			"loop": true,
+			"offsets": [
+				37,
+				5
+			],
+			"anim": "deathLoop",
+			"fps": 24,
+			"name": "BF Dead Loop",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				37,
+				69
+			],
+			"anim": "deathConfirm",
+			"fps": 24,
+			"name": "BF Dead confirm",
+			"indices": []
+		}
+	],
+	"sarvente_floating": false,
+	"player": true,
+	"image": "characters/BOYFRIEND_DEAD",
+	"trail_length": 4,
+	"trail_delay": 24,
+	"position": [
+		0,
+		350
+	],
+	"trail_diff": 0,
+	"trail_alpha": 1,
+	"health_drain": false,
+	"shake_screen": false,
+	"orbit": false,
+	"healthbar_count": 3,
+	"flip_x": true,
+	"icon_props": {
+		"name": "bf",
+		"offsets": [0,0],
+		"antialiasing": true
+	},
+	"healthbar_colors": [
+		{
+			"red": 49,
+			"green": 176,
+			"blue": 209
+		},
+		{
+			"red": 29,
+			"green": 156,
+			"blue": 189
+		},
+		{
+			"red": 9,
+			"green": 136,
+			"blue": 169
+		}
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"float_magnitude": null,
+	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
+	"scale": 1,
+	"flixel_trail": false
+}

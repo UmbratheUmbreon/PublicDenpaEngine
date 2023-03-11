@@ -8,7 +8,7 @@ import flixel.FlxSprite;
 class BGSprite extends FlxSprite
 {
 	private var idleAnim:String;
-	public var animOffsets:Map<String, Array<Dynamic>>;
+	public var animOffsets:Map<String, Array<Float>>;
 	private var skipAllOffsets:Bool = true;
 	public function new(image:String, x:Float = 0, y:Float = 0, ?scrollX:Float = 1, ?scrollY:Float = 1, ?animArray:Array<String> = null, ?loop:Bool = false, ?skipOffsets:Bool = true) {
 		super(x, y);
@@ -24,11 +24,7 @@ class BGSprite extends FlxSprite
 					playAnim(anim, true, false, 0);
 				}
 			}
-			#if (haxe >= "4.0.0")
 			animOffsets = new Map();
-			#else
-			animOffsets = new Map<String, Array<Dynamic>>();
-			#end
 		} else {
 			if(image != null) {
 				loadGraphic(Paths.image(image));
@@ -36,7 +32,6 @@ class BGSprite extends FlxSprite
 			active = false;
 		}
 		scrollFactor.set(scrollX, scrollY);
-		antialiasing = ClientPrefs.globalAntialiasing;
 	}
 
 	public function dance(?forceplay:Bool = false) {
@@ -45,7 +40,6 @@ class BGSprite extends FlxSprite
 		}
 	}
 
-	//Basically copied from Character.hx lol
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
 		animOffsets[name] = [x, y];

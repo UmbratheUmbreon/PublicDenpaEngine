@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="credits image.png">
+	<!-- Created with Adobe Animate version 19.2.1.408 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="T-San0000" x="20" y="20" width="275" height="296"/>
+	<SubTexture name="T-San0001" x="20" y="326" width="275" height="296"/>
+	<SubTexture name="T-San0002" x="20" y="632" width="275" height="296"/>
+	<SubTexture name="T-San0003" x="20" y="938" width="275" height="296"/>
+	<SubTexture name="T-San0004" x="20" y="1244" width="275" height="296"/>
+	<SubTexture name="T-San0005" x="20" y="1550" width="275" height="296"/>
+	<SubTexture name="T-San0006" x="20" y="632" width="275" height="296"/>
+	<SubTexture name="T-San0007" x="305" y="20" width="275" height="296"/>
+	<SubTexture name="T-San0008" x="305" y="326" width="275" height="296"/>
+	<SubTexture name="T-San0009" x="305" y="632" width="275" height="296"/>
+	<SubTexture name="T-San0010" x="305" y="938" width="275" height="296"/>
+	<SubTexture name="T-San0011" x="20" y="1550" width="275" height="296"/>
+	<SubTexture name="T-San0012" x="305" y="1244" width="275" height="296"/>
+	<SubTexture name="T-San0013" x="20" y="1550" width="275" height="296"/>
+	<SubTexture name="T-San0014" x="20" y="632" width="275" height="296"/>
+	<SubTexture name="T-San0015" x="305" y="20" width="275" height="296"/>
+</TextureAtlas>

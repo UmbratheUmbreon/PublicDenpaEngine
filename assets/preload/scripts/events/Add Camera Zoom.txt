@@ -1,0 +1,5 @@
+Used on MILF on that one \"hard\" part
+
+Value 1: Camera zoom add (Default: 0.015)
+Value 2: UI zoom add (Default: 0.03)
+Leave the values blank if you want to use Default.

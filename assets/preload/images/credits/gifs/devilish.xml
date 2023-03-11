@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="devilish.png">
+<SubTexture name="devilish0000" x="0" y="0" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0001" x="194" y="0" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0002" x="388" y="0" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0003" x="582" y="0" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0004" x="776" y="0" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0005" x="0" y="236" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0006" x="194" y="236" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0007" x="388" y="236" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0008" x="582" y="236" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0009" x="776" y="236" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0010" x="0" y="472" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0011" x="194" y="472" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0012" x="388" y="472" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0013" x="582" y="472" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0014" x="776" y="472" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0015" x="0" y="708" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0016" x="194" y="708" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0017" x="388" y="708" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0018" x="582" y="708" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0019" x="776" y="708" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0020" x="0" y="944" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0021" x="194" y="944" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0022" x="388" y="944" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0023" x="582" y="944" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0024" x="776" y="944" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0025" x="0" y="1180" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+<SubTexture name="devilish0026" x="194" y="1180" width="194" height="236" frameX="0" frameY="0" frameWidth="192" frameHeight="234" />
+</TextureAtlas>

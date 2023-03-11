@@ -1,0 +1,7 @@
+Sets GF head bopping speed,
+
+Value 1: 1 = Normal speed,
+2 = 1/2 speed, 4 = 1/4 speed etc.
+Used on Fresh during the beatbox parts.
+
+Warning: Value must be integer!

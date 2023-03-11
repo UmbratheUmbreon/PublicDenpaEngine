@@ -250,6 +250,7 @@ class FlxInputText extends FlxText
 
 		backgroundSprite = FlxDestroyUtil.destroy(backgroundSprite);
 		fieldBorderSprite = FlxDestroyUtil.destroy(fieldBorderSprite);
+		caret = FlxDestroyUtil.destroy(caret);
 		callback = null;
 
 		#if sys

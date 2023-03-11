@@ -1,0 +1,178 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [
+				0,
+				0
+			],
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "Mom Idle"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				250,
+				-23
+			],
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "Mom Left Pose"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				10,
+				-60
+			],
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "Mom Pose Left"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				20,
+				-160
+			],
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "MOM DOWN POSE"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				14,
+				71
+			],
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "Mom Up Pose"
+		},
+		{
+			"loop": true,
+			"offsets": [
+				0,
+				0
+			],
+			"anim": "idle-loop",
+			"fps": 24,
+			"name": "Mom Idle",
+			"indices": [
+				10,
+				11,
+				12,
+				13
+			]
+		},
+		{
+			"loop": true,
+			"offsets": [
+				250,
+				-23
+			],
+			"anim": "singLEFT-loop",
+			"fps": 24,
+			"name": "Mom Left Pose",
+			"indices": [
+				6,
+				7,
+				8,
+				9
+			]
+		},
+		{
+			"loop": true,
+			"offsets": [
+				14,
+				71
+			],
+			"anim": "singUP-loop",
+			"fps": 24,
+			"name": "Mom Up Pose",
+			"indices": [
+				11,
+				12,
+				13,
+				14
+			]
+		},
+		{
+			"loop": true,
+			"offsets": [
+				10,
+				-60
+			],
+			"anim": "singRIGHT-loop",
+			"fps": 24,
+			"name": "Mom Pose Left",
+			"indices": [
+				6,
+				7,
+				8,
+				9
+			]
+		},
+		{
+			"loop": true,
+			"offsets": [
+				20,
+				-160
+			],
+			"anim": "singDOWN-loop",
+			"fps": 24,
+			"name": "MOM DOWN POSE",
+			"indices": [
+				11,
+				12,
+				13,
+				14
+			]
+		}
+	],
+	"sarvente_floating": false,
+	"no_antialiasing": false,
+	"image": "characters/Week4/momCar",
+	"position": [
+		0,
+		0
+	],
+	"healthbar_count": 3,
+	"flip_x": false,
+	"icon_props": {
+		"name": "mom",
+		"offsets": [0,0],
+		"antialiasing": true
+	},
+	"healthbar_colors": [
+		{
+			"red": 216,
+			"green": 85,
+			"blue": 142
+		},
+		{
+			"red": 196,
+			"green": 65,
+			"blue": 122
+		},
+		{
+			"red": 176,
+			"green": 45,
+			"blue": 102
+		}
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"float_magnitude": null,
+	"sing_duration": 4,
+	"scale": 1,
+	"flixel_trail": false
+}

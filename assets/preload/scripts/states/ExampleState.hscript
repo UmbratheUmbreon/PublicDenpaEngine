@@ -1,0 +1,29 @@
+var FlxSprite = require('flixel.FlxSprite');
+var Paths = require("Paths");
+var FlxG = require("flixel.FlxG");
+var FlxSubState = require("flixel.FlxSubState");
+
+var testSprite:FlxSprite;
+var staticString:String = "static1";
+var publicStaticString:String = "publicstatic1";
+
+function onCreate() {
+    testSprite = new FlxSprite().loadGraphic(Paths.image('ready'));
+    testSprite.screenCenter();
+    FlxG.mouse.visible = true;
+
+    instance.add(testSprite);
+    instance.persistentUpdate = true;
+}
+
+function update(elapsed) {
+    if(FlxG.keys.justPressed.M) {
+        if(FlxSubState.curInstance == null) openSubState('Prompt', ['Lower Alpha by 0.1 ?', 0, ()-> {testSprite.alpha -= 0.1;}, null]);
+        else FlxSubState.curInstance.close();
+    }
+    if(FlxG.keys.justPressed.N) {
+        if(FlxSubState.curInstance != null) FlxSubState.curInstance.close();
+        FlxG.mouse.visible = false;
+        openState('TitleState');
+    }
+}

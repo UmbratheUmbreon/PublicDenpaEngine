@@ -1,12 +1,10 @@
 package;
 
-import flixel.group.FlxGroup.FlxTypedGroup;
+import Alphabet;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import Alphabet;
-
-using StringTools;
 
 /**
 * Substate used to alter the Gamplay Modifers map.
@@ -23,6 +21,8 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 	function getOptions()
 	{
+		var skip:Bool = pauseMenu != null;
+
 		var goption:GameplayOption = new GameplayOption('Scroll Type', 'scrolltype', 'string', 'multiplicative', ["multiplicative", "constant"]);
 		optionsArray.push(goption);
 
@@ -43,16 +43,14 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 		optionsArray.push(option);
 
-		#if !html5
 		var option:GameplayOption = new GameplayOption('Playback Rate', 'songspeed', 'float', 1);
 		option.scrollSpeed = 2;
 		option.changeValue = 0.25;
 		option.minValue = 0.1;
-		option.maxValue = 4;
+		option.maxValue = 10; //peeps wanted 10x speed
 		option.displayFormat = '%vX';
 		option.decimals = 2;
 		optionsArray.push(option);
-		#end
 
 		var option:GameplayOption = new GameplayOption('Health Gain Multiplier', 'healthgain', 'float', 1);
 		option.scrollSpeed = 2.5;
@@ -76,20 +74,27 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		var option:GameplayOption = new GameplayOption('Sick Only', 'sickonly', 'bool', false);
 		optionsArray.push(option);
 
-		var option:GameplayOption = new GameplayOption('Poison', 'poison', 'bool', false);
-		optionsArray.push(option);
-
-		var option:GameplayOption = new GameplayOption('Freeze', 'freeze', 'bool', false);
-		optionsArray.push(option);
-
-		var option:GameplayOption = new GameplayOption('Flashlight', 'flashlight', 'bool', false);
-		optionsArray.push(option);
+		if (!skip) {
+			var option:GameplayOption = new GameplayOption('Poison', 'poison', 'bool', false);
+			optionsArray.push(option);
+	
+			var option:GameplayOption = new GameplayOption('Freeze', 'freeze', 'bool', false);
+			optionsArray.push(option);
+	
+			var option:GameplayOption = new GameplayOption('Flashlight', 'flashlight', 'bool', false);
+			optionsArray.push(option);
+		}
 
 		var option:GameplayOption = new GameplayOption('Ghost Mode', 'ghostmode', 'bool', false);
 		optionsArray.push(option);
 
-		var option:GameplayOption = new GameplayOption('Random Mode', 'randommode', 'bool', false);
-		optionsArray.push(option);
+		if (!skip) {
+			var option:GameplayOption = new GameplayOption('Random Mode', 'randommode', 'bool', false);
+			optionsArray.push(option);
+	
+			var option:GameplayOption = new GameplayOption('Flip', 'flip', 'bool', false);
+			optionsArray.push(option);
+		}
 
 		var option:GameplayOption = new GameplayOption('Quartiz', 'quartiz', 'bool', false);
 		optionsArray.push(option);
@@ -116,10 +121,13 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 	private var bg:FlxSprite;
 
-	public function new()
+	private var pauseMenu:MusicBeatSubstate = null;
+	public function new(?pause:MusicBeatSubstate = null)
 	{
 		super();
 		
+		this.pauseMenu = pause;
+
 		bg = new FlxSprite(-1280, 0).loadGraphic(Paths.image('loadingscreen'));
 		bg.angle = 27;
 		bg.alpha = 0;
@@ -143,8 +151,6 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			var optionText:Alphabet = new Alphabet(0, 70 * i, optionsArray[i].name, true, false, 0.05, 0.8);
 			optionText.altRotation = true;
 			optionText.x += 300;
-			/*optionText.forceX = 300;
-			optionText.yMult = 90;*/
 			optionText.xAdd = 20;
 			optionText.targetY = i;
 			grpOptions.add(optionText);
@@ -178,6 +184,15 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		}
 		changeSelection();
 		reloadCheckboxes();
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+	}
+
+	override function destroy() {
+		if (pauseMenu != null)  {
+			pauseMenu.persistentUpdate = true;
+			PlayState.instance.initModifiers(true);
+		}
+		super.destroy();
 	}
 
 	var nextAccept:Int = 5;
@@ -194,12 +209,12 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			changeSelection(1);
 		}
 
-		if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+		if(FlxG.mouse.wheel != 0)
 		{
 			changeSelection(-FlxG.mouse.wheel);
 		}
 
-		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
+		if (controls.BACK) {
 			ClientPrefs.saveSettings();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			FlxTween.tween(bg, {x: -1280, angle: 27, alpha: 0}, 0.22, {ease: FlxEase.quadOut, onComplete: function(_) {
@@ -220,7 +235,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 			if(usesCheckbox)
 			{
-				if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
+				if(controls.ACCEPT)
 				{
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					curOption.setValue((curOption.getValue() == true) ? false : true);

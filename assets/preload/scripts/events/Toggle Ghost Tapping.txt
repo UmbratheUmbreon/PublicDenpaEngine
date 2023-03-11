@@ -1,0 +1,4 @@
+Toggles/Sets Ghost Tapping.
+
+Value 1: Type of toggle
+0 = Toggle, 1 = Turn Off, 2 = Turn On.

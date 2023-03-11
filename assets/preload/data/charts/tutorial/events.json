@@ -1,0 +1,280 @@
+{
+	"song": {
+		"events": [
+			[
+				9600,
+				[
+					[
+						"Add Subtitle",
+						"Left!",
+						"0xffc24b99,3"
+					]
+				]
+			],
+			[
+				10800,
+				[
+					[
+						"Add Subtitle",
+						"Right!",
+						"0xfff9393f,3"
+					]
+				]
+			],
+			[
+				12000,
+				[
+					[
+						"Add Subtitle",
+						"Left!",
+						"0xffc24b99,3"
+					]
+				]
+			],
+			[
+				13200,
+				[
+					[
+						"Add Subtitle",
+						"Right!",
+						"0xfff9393f,3"
+					]
+				]
+			],
+			[
+				18000,
+				[
+					[
+						"Add Subtitle",
+						"Thats how you do it!",
+						"dad,6"
+					]
+				]
+			],
+			[
+				18650,
+				[
+					[
+						"Hey!",
+						"2",
+						""
+					]
+				]
+			],
+			[
+				19200,
+				[
+					[
+						"Add Subtitle",
+						"Up!",
+						"0xff12fa05,3"
+					]
+				]
+			],
+			[
+				20400,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,3"
+					]
+				]
+			],
+			[
+				21600,
+				[
+					[
+						"Add Subtitle",
+						"Up!",
+						"0xff12fa05,3"
+					]
+				]
+			],
+			[
+				22800,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,3"
+					]
+				]
+			],
+			[
+				27600,
+				[
+					[
+						"Add Subtitle",
+						"Thats how you do it!",
+						"dad,6"
+					]
+				]
+			],
+			[
+				28250,
+				[
+					[
+						"Hey!",
+						"2",
+						""
+					]
+				]
+			],
+			[
+				28800,
+				[
+					[
+						"Add Subtitle",
+						"Left!",
+						"0xffc24b99,3"
+					]
+				]
+			],
+			[
+				30000,
+				[
+					[
+						"Add Subtitle",
+						"Up!",
+						"0xff12fa05,3"
+					]
+				]
+			],
+			[
+				31200,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,3"
+					]
+				]
+			],
+			[
+				32400,
+				[
+					[
+						"Add Subtitle",
+						"Right.",
+						"0xfff9393f,3"
+					]
+				]
+			],
+			[
+				38400,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,3"
+					]
+				]
+			],
+			[
+				39000,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,3"
+					]
+				]
+			],
+			[
+				39600,
+				[
+					[
+						"Add Subtitle",
+						"Up!",
+						"0xff12fa05,3"
+					]
+				]
+			],
+			[
+				40800,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,3"
+					]
+				]
+			],
+			[
+				41400,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,3"
+					]
+				]
+			],
+			[
+				42000,
+				[
+					[
+						"Add Subtitle",
+						"Right.",
+						"0xfff9393f,3"
+					]
+				]
+			],
+			[
+				48000,
+				[
+					[
+						"Add Subtitle",
+						"Down!",
+						"0xff00ffff,1"
+					]
+				]
+			],
+			[
+				48300,
+				[
+					[
+						"Add Subtitle",
+						"Up!",
+						"0xff12fa05,1"
+					]
+				]
+			],
+			[
+				48600,
+				[
+					[
+						"Add Subtitle",
+						"Right!",
+						"0xfff9393f,1"
+					]
+				]
+			],
+			[
+				48900,
+				[
+					[
+						"Add Subtitle",
+						"Up!",
+						"0xff12fa05,3"
+					]
+				]
+			],
+			[
+				49800,
+				[
+					[
+						"Add Subtitle",
+						"Right!",
+						"0xfff9393f,3"
+					]
+				]
+			]
+		],
+		"notes": [],
+		"options": null,
+		"header": null,
+		"assets": null
+	}
+}

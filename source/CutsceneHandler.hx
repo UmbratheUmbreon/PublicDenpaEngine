@@ -1,18 +1,9 @@
 package;
 
-import flixel.FlxCamera;
 import flixel.FlxBasic;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.graphics.atlas.FlxAtlas;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxSound;
-import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.group.FlxSpriteGroup;
-import animateatlas.AtlasFrameMaker;
 import flixel.util.FlxSort;
 
 /**
@@ -27,6 +18,7 @@ class CutsceneHandler extends FlxBasic
 	public var onStart:Void->Void = null;
 	public var endTime:Float = 0;
 	public var objects:Array<FlxSprite> = [];
+	public var tweens:Array<FlxTween> = [];
 	public var music:String = null;
 	public var sounds:Array<FlxSound> = [];
 	public var canSkip:Bool = false;
@@ -78,28 +70,39 @@ class CutsceneHandler extends FlxBasic
 		}
 
 		if (canSkip) {
-			if (FlxG.keys.anyJustPressed(acceptKeys) || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
+			if (FlxG.keys.anyJustPressed(acceptKeys))
+			{
+				finishCallback();
+				if(finishCallback2 != null) finishCallback2();
+		
+				for (spr in objects)
 				{
-					finishCallback();
-					if(finishCallback2 != null) finishCallback2();
-		
-					for (spr in objects)
-					{
-						spr.kill();
-						PlayState.instance.remove(spr);
-						spr.destroy();
-					}
-		
-					for (sound in sounds)
-					{
-						if (sound.playing)
-							sound.stop();
-					}
-		
-					kill();
-					destroy();
-					PlayState.instance.remove(this);
+					spr.kill();
+					PlayState.instance.remove(spr);
+					spr.destroy();
+					objects.remove(spr);
 				}
+		
+				for (sound in sounds)
+				{
+					if (sound.playing)
+						sound.stop();
+					sounds.remove(sound);
+				}
+
+				for (tween in tweens)
+				{
+					if (tween != null) tween.cancel();
+					tween = null;
+					tweens.remove(tween);
+				}
+
+				timedEvents = [];
+		
+				kill();
+				destroy();
+				PlayState.instance.remove(this);
+			}
 		}
 		
 		while(timedEvents.length > 0 && timedEvents[0][0] <= cutsceneTime)
@@ -109,18 +112,18 @@ class CutsceneHandler extends FlxBasic
 		}
 	}
 
-	public function push(spr:FlxSprite)
+	inline public function push(spr:FlxSprite)
 	{
 		objects.push(spr);
 	}
 
-	public function timer(time:Float, func:Void->Void)
+	inline public function timer(time:Float, func:Void->Void)
 	{
 		timedEvents.push([time, func]);
 		timedEvents.sort(sortByTime);
 	}
 
-	function sortByTime(Obj1:Array<Dynamic>, Obj2:Array<Dynamic>):Int
+	inline function sortByTime(Obj1:Array<Dynamic>, Obj2:Array<Dynamic>):Int
 	{
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1[0], Obj2[0]);
 	}

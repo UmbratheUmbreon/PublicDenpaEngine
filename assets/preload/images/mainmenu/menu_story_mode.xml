@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <TextureAtlas imagePath="menu_story_mode.png">
 <SubTexture name="story_mode basic0000" x="0" y="0" width="160" height="156" frameX="-20" frameY="-22" frameWidth="200" frameHeight="200" />
-<SubTexture name="story_mode white0000" x="160" y="0" width="200" height="156" frameX="0" frameY="-22" frameWidth="200" frameHeight="200" />
+<SubTexture name="story_mode white0000" x="161" y="0" width="199" height="156" frameX="-1" frameY="-22" frameWidth="200" frameHeight="200" />
 </TextureAtlas>

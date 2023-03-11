@@ -1,0 +1,316 @@
+{	
+	"beats": [
+		{
+			"beat": 1,
+			"actions": [
+				{
+					"name": "setZoom",
+					"values": [1.1]
+				},
+				{
+					"name": "createStartText",
+					"values": [
+						["Denpa Engine by"],
+						-115
+					]
+				}
+			]
+		},
+		{
+			"beat": 3,
+			"actions": [
+				{
+					"name": "icons",
+					"values": [0]
+				},
+				{
+					"name": "addMoreText",
+					"values": [
+						"BlueVapor1234",
+						-55
+					]
+				},
+				{
+					"name": "addMoreText",
+					"values": [
+						"Bethany Clone",
+						-55
+					]
+				},
+				{
+					"name": "addMoreText",
+					"values": [
+						"YanniZ06",
+						-55
+					]
+				},
+				{
+					"name": "addMoreText",
+					"values": [
+						"ThriftySoles",
+						-55
+					]
+				},
+				{
+					"name": "addMoreText",
+					"values": [
+						"Toadette8394",
+						-55
+					]
+				},
+				{
+					"name": "addMoreText",
+					"values": [
+						"Ziad",
+						-55
+					]
+				},
+				{
+					"name": "addMoreText",
+					"values": [
+						"_Jorge",
+						-55
+					]
+				}
+			]
+		},
+		{
+			"beat": 4,
+			"actions": [
+				{
+					"name": "deleteText",
+					"values": []
+				},
+				{
+					"name": "icons",
+					"values": [1]
+				}
+			]
+		},
+		{
+			"beat": 5,
+			"actions": [
+				{
+					"name": "newgrounds",
+					"values": [0]
+				},
+				{
+					"name": "setZoom",
+					"values": [1.2]
+				}
+			]
+		},
+		{
+			"beat": 7,
+			"actions": [
+				{
+					"name": "newgrounds",
+					"values": [1]
+				}
+			]
+		},
+		{
+			"beat": 8,
+			"actions": [
+				{
+					"name": "setZoom",
+					"values": [1.05]
+				},
+				{
+					"name": "newgrounds",
+					"values": [2]
+				}
+			]
+		},
+		{
+			"beat": 9,
+			"actions": [
+				{
+					"name": "changeBPM",
+					"values": [150]
+				},
+				{
+					"name": "addRandomText",
+					"values": [0]
+				}
+			]
+		},
+		{
+			"beat": 10,
+			"actions": [
+				{
+					"name": "addRandomText",
+					"values": [1]
+				}
+			]
+		},
+		{
+			"beat": 11,
+			"actions": [
+				{
+					"name": "deleteText",
+					"values": [0]
+				},
+				{
+					"name": "setRandomText",
+					"values": []
+				}
+			]
+		},
+		{
+			"beat": 12,
+			"actions": [
+				{
+					"name": "addRandomText",
+					"values": [0]
+				}
+			]
+		},
+		{
+			"beat": 13,
+			"actions": [
+				{
+					"name": "addRandomText",
+					"values": [1]
+				}
+			]
+		},
+		{
+			"beat": 14,
+			"actions": [
+				{
+					"name": "setZoom",
+					"values": [1.13]
+				},
+				{
+					"name": "deleteText",
+					"values": []
+				},
+				{
+					"name": "changeBPM",
+					"values": [300]
+				}
+			]
+		},
+		{
+			"beat": 17,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["Drop"]
+				}
+			]
+		},
+		{
+			"beat": 18,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["The"]
+				}
+			]
+		},
+		{
+			"beat": 19,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["Beat"]
+				}
+			]
+		},
+		{
+			"beat": 20,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["Drop"]
+				}
+			]
+		},
+		{
+			"beat": 21,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["The"]
+				}
+			]
+		},
+		{
+			"beat": 22,
+			"actions": [
+				{
+					"name": "deleteText",
+					"values": []
+				}
+			]
+		},
+		{
+			"beat": 23,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["Drop"]
+				}
+			]
+		},
+		{
+			"beat": 24,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["The"]
+				}
+			]
+		},
+		{
+			"beat": 25,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["Beat"]
+				}
+			]
+		},
+		{
+			"beat": 26,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["Drop"]
+				}
+			]
+		},
+		{
+			"beat": 27,
+			"actions": [
+				{
+					"name": "addMoreText",
+					"values": ["The"]
+				}
+			]
+		},
+		{
+			"beat": 28,
+			"actions": [
+				{
+					"name": "changeBPM",
+					"values": [100]
+				},
+				{
+					"name": "setZoom",
+					"values": [1.025]
+				},
+				{
+					"name": "deleteText",
+					"values": []
+				},
+				{
+					"name": "skipIntro",
+					"values": []
+				}
+			]
+		}
+	]
+}

@@ -2,7 +2,7 @@
 color 0a
 cd ..
 echo Testing Release.
-haxelib run lime test windows -release
+haxelib run lime test windows
 echo.
 echo done.
 pause

@@ -1,0 +1,12 @@
+{
+	"dialogue": [
+		{
+			"expression": "talk",
+			"text": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM\\nNOPQRSTUVWXYZ1234567890|~#&$%()*+-:;\\n<=>@[]^_.,'\"!?{}\\/×↑→←↓♥😡",
+			"boxState": "normal",
+			"sound": "",
+			"speed": 0.05,
+			"portrait": "bf"
+		}
+	]
+}

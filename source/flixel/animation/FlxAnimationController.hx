@@ -180,6 +180,7 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   Looped      Whether or not the animation is looped or just plays once.
 	 * @param   FlipX       Whether the frames should be flipped horizontally.
 	 * @param   FlipY       Whether the frames should be flipped vertically.
+	 * @param   LoopPoint    The frame where the looped animation restarts from.
 	 */
 	public function add(Name:String, Frames:Array<Int>, FrameRate:Float = 30, Looped:Bool = true, FlipX:Bool = false, FlipY:Bool = false, ?LoopPoint:Int = 0):Void
 	{
@@ -266,6 +267,7 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   Looped       Whether or not the animation is looped or just plays once.
 	 * @param   FlipX        Whether the frames should be flipped horizontally.
 	 * @param   FlipY        Whether the frames should be flipped vertically.
+	 * @param   LoopPoint    The frame where the looped animation restarts from.
 	 */
 	public function addByNames(Name:String, FrameNames:Array<String>, FrameRate:Int = 30, Looped:Bool = true, FlipX:Bool = false, FlipY:Bool = false, ?LoopPoint:Int = 0):Void
 	{
@@ -317,6 +319,7 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   Looped      Whether or not the animation is looped or just plays once.
 	 * @param   FlipX       Whether the frames should be flipped horizontally.
 	 * @param   FlipY       Whether the frames should be flipped vertically.
+	 * @param   LoopPoint    The frame where the looped animation restarts from.
 	 */
 	public function addByStringIndices(Name:String, Prefix:String, Indices:Array<String>, Postfix:String, FrameRate:Int = 30, Looped:Bool = true,
 			FlipX:Bool = false, FlipY:Bool = false, ?LoopPoint:Int = 0):Void
@@ -373,6 +376,7 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   Looped      Whether or not the animation is looped or just plays once.
 	 * @param   FlipX       Whether the frames should be flipped horizontally.
 	 * @param   FlipY       Whether the frames should be flipped vertically.
+	 * @param   LoopPoint    The frame where the looped animation restarts from.
 	 */
 	public function addByIndices(Name:String, Prefix:String, Indices:Array<Int>, Postfix:String, FrameRate:Int = 30, Looped:Bool = true, FlipX:Bool = false,
 			FlipY:Bool = false, ?LoopPoint:Int = 0):Void
@@ -454,6 +458,7 @@ class FlxAnimationController implements IFlxDestroyable
 	 * @param   Looped      Whether or not the animation is looped or just plays once.
 	 * @param   FlipX       Whether the frames should be flipped horizontally.
 	 * @param   FlipY       Whether the frames should be flipped vertically.
+	 * @param   LoopPoint    The frame where the looped animation restarts from.
 	 */
 	public function addByPrefix(Name:String, Prefix:String, FrameRate:Int = 30, Looped:Bool = true, FlipX:Bool = false, FlipY:Bool = false, ?LoopPoint:Int = 0):Void
 	{

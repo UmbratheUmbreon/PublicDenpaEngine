@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="upperBopRight.png">
+	<!-- Created with Adobe Animate version 19.0.0.326 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Upper Crowd Bob right0000" x="0" y="0" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0001" x="0" y="0" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0002" x="0" y="0" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0003" x="0" y="0" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0004" x="975" y="0" width="974" height="299" frameX="0" frameY="-3" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0005" x="975" y="0" width="974" height="299" frameX="0" frameY="-3" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0006" x="0" y="299" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0007" x="0" y="299" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0008" x="0" y="299" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0009" x="0" y="299" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0010" x="0" y="299" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0011" x="0" y="299" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right0012" x="0" y="299" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0000" x="972" y="299" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0001" x="972" y="299" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0002" x="972" y="299" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0003" x="972" y="299" width="975" height="291" frameX="0" frameY="-11" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0004" x="0" y="601" width="974" height="299" frameX="0" frameY="-3" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0005" x="0" y="601" width="974" height="299" frameX="0" frameY="-3" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0006" x="974" y="601" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0007" x="974" y="601" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0008" x="974" y="601" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0009" x="974" y="601" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0010" x="974" y="601" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0011" x="974" y="601" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+	<SubTexture name="Upper Crowd Bob right no lemon0012" x="974" y="601" width="972" height="302" frameX="0" frameY="0" frameWidth="975" frameHeight="302"/>
+</TextureAtlas>

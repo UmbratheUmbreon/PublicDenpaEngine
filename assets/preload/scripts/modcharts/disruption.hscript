@@ -1,0 +1,51 @@
+var PlayState = require("PlayState");
+var FlxTypedGroup = require("flixel.group.FlxGroup.FlxTypedGroup");
+var StrumNote = require("Note.StrumNote");
+var FlxG = require("flixel.FlxG");
+var ClientPrefs = require("ClientPrefs");
+var Math = require("Math");
+
+var strum:FlxTypedGroup<StrumNote>;
+var strumNum:Int = 0;
+
+function onStartModchart(str) {
+    switch (str) {
+        case 0:
+            strum = PlayState.instance.playerStrums;
+        case 1:
+            strum = PlayState.instance.opponentStrums;
+        case 2:
+            strum = PlayState.instance.thirdStrums;
+    }
+    strumNum = str;
+}
+
+function onUpdatePost(elapsed) {
+    var elapsedtime = PlayState.instance.elapsedtime;
+    var add = (strumNum == 2 ? [PlayState.instance.player4.x, PlayState.instance.player4.y] : [0,0]);
+    var funnyNumber = (strumNum == 0 ? 750 : 85);
+	var krunkThing = 60;
+    var notes = PlayState.instance.notes;
+    var sustains = PlayState.instance.sustains;
+	strum.forEach(function(spr:StrumNote)
+	{
+		spr.x = ((spr.ID*spr.width*1.05 + funnyNumber) + (Math.sin(elapsedtime) * ((spr.ID % 2) == 0 ? 1 : -1)) * krunkThing) + add[0];
+		spr.y = (ClientPrefs.settings.get("downScroll") ? FlxG.height - 150 - (spr.ID + 50 + Math.sin(elapsedtime - 5) * ((spr.ID % 2) == 0 ? 1 : -1) * krunkThing) : spr.ID + 50 + Math.sin(elapsedtime - 5) * ((spr.ID % 2) == 0 ? 1 : -1) * krunkThing) + add[1];
+	
+		spr.scale.x = Math.abs(Math.sin(elapsedtime - 5) * ((spr.ID % 2) == 0 ? 1 : -1)) / 4;
+	
+		spr.scale.y = Math.abs((Math.sin(elapsedtime) * ((spr.ID % 2) == 0 ? 1 : -1)) / 2);
+	
+		spr.scale.x += 0.2;
+		spr.scale.y += 0.2;
+	
+		spr.scale.x *= 1.5;
+		spr.scale.y *= 1.5;
+	});
+	notes.forEachAlive(function(spr:Note){
+		if (spr.strum == strumNum) {
+			spr.scaleHackHitbox = true;
+			spr.copyScale = true;
+		}
+	});
+}

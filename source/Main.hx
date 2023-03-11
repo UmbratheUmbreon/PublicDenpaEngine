@@ -1,130 +1,180 @@
 package;
 
+import compiletime.GameVersion;
 import flixel.FlxGame;
 import flixel.FlxState;
+import lime.app.Application;
+import openfl.Assets;
 import openfl.Lib;
-import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
-import stats.CustomFPS;
-import stats.CustomFPS.CustomMEM;
-//crash handler stuff
-#if desktop
-import lime.app.Application;
-import openfl.events.UncaughtErrorEvent;
+import openfl.utils.AssetCache;
+import stats.DebugDisplay;
+import stats.DebugPie;
+import stats.FramerateDisplay;
+#if (target.threaded && sys)
+import sys.thread.ElasticThreadPool;
+#end
+#if CRASH_HANDLER
 import haxe.CallStack;
 import haxe.io.Path;
+import openfl.events.UncaughtErrorEvent;
+import sys.io.Process;
+#end
+#if desktop
 import Discord.DiscordClient;
 #end
-
-using StringTools;
+#if cpp
+import cpp.vm.Gc;
+#end
 
 class Main extends Sprite
 {
-	//1280, 720
-	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var initialState:Class<FlxState> = InitState; // The FlxState the game starts with.
-	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
-	var framerate:Int = 60; // How many frames per second the game should run at.
-	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
-	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
-	public static var fpsVar:FPS;
-
-	// You can pretty much ignore everything from here on - your code should go in your states.
-
 	public static function main():Void
-	{
 		Lib.current.addChild(new Main());
-	}
 
 	public function new()
 	{
 		super();
 
 		if (stage != null)
-		{
 			init();
-		}
 		else
-		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
-		}
 	}
 
 	private function init(?E:Event):Void
 	{
 		if (hasEventListener(Event.ADDED_TO_STAGE))
-		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-		}
 
 		setupGame();
 	}
 
+	/**
+	 * Current engine version.
+	 * 
+	 * Use `version` to get the raw version.
+	 * 
+	 * Use `formatted` to get the formatted version.
+	 * 
+	 * Use `debugVersion` to get the version with build date.
+	 */
+	public static final denpaEngineVersion:GameVersion = new GameVersion(0, 8, 0, '');
+
+	public static var fpsCounter:FramerateDisplay;
+	public static var ramCount:DebugDisplay;
+	public static var ramPie:DebugPie;
+
+	inline public static function toggleFPS(fpsEnabled:Bool):Void
+		if(fpsCounter != null) fpsCounter.visible = fpsEnabled;
+ 
+	inline public static function toggleMEM(memEnabled:Bool):Void
+		if(ramCount != null) ramCount.visible = memEnabled;
+
+	inline public static function togglePIE(pieEnabled:Bool):Void
+		if(ramPie != null) ramPie.visible = pieEnabled;
+
+	#if (target.threaded && sys)
+	public static var threadPool:ElasticThreadPool;
+	#end
+	
 	private function setupGame():Void
 	{
-		var stageWidth:Int = Lib.current.stage.stageWidth;
-		var stageHeight:Int = Lib.current.stage.stageHeight;
-
-		if (zoom == -1)
-		{
-			var ratioX:Float = stageWidth / gameWidth;
-			var ratioY:Float = stageHeight / gameHeight;
-			zoom = Math.min(ratioX, ratioY);
-			gameWidth = Math.ceil(stageWidth / zoom);
-			gameHeight = Math.ceil(stageHeight / zoom);
-		}
-	
-		ClientPrefs.loadDefaultKeys();
-		
-		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
-		#if FLIXEL_STUDIO
-		flixel.addons.studio.FlxStudio.create();
+		#if cpp 
+		Gc.enable(true);
 		#end
 
-		fpsCounter = new CustomFPS(10, 3, 0xFFFFFF);
+		final gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
+		final gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
+		final initialState:Class<FlxState> = InitState; // The FlxState the game starts with.
+		final framerate:Int = 60; // How many frames per second the game should run at.
+		final skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
+		final startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
+
+		//do not "funkingame" me, it is slower
+		addChild(new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen));
+
+		fpsCounter = new FramerateDisplay(6, 3, 0xFFFFFF);
+		FlxG.addChildBelowMouse(fpsCounter, 1);
 		addChild(fpsCounter);
-		toggleFPS(ClientPrefs.showFPS);
 
-		#if debug
-		ramCount = new CustomMEM(10, 16, 0xffffff);
+		//me on my way to perfectly position this fucking debug display so it doesnt piss me off:
+		ramCount = new DebugDisplay(6, 13, 0xffffff);
 		addChild(ramCount);
-		toggleMEM(ClientPrefs.showFPS);
+		toggleMEM(false);
+
+		ramPie = new DebugPie(1080, 3, 0xffffff);
+		addChild(ramPie);
+		togglePIE(false);
+
+		#if (target.threaded && sys)
+		threadPool = new ElasticThreadPool(12, 30);
 		#end
+
+		inline function gc(?minor:Bool = false) {
+			#if cpp
+			Gc.run(!minor);
+			if (!minor) Gc.compact();
+			//trace('${Gc.memInfo(0) / 1024 / 1024} MB NEEDED\n${Gc.memInfo(1) / 1024 / 1024} MB RESERVED\n${Gc.memInfo(2) / 1024 / 1024} MB IN USE');
+			#else
+			openfl.system.System.gc();
+			#end
+		}
+
+		ClientPrefs.controllerEnabled = (FlxG.gamepads.getActiveGamepads() != null);
+		FlxG.gamepads.deviceConnected.add(gamepad -> ClientPrefs.controllerEnabled = true);
+		FlxG.gamepads.deviceDisconnected.add(gamepad -> ClientPrefs.controllerEnabled = false);
+
+		//negates need for constant clearStored etc
+		FlxG.signals.preStateSwitch.add(() -> {
+			Paths.clearStoredCache(true);
+			FlxG.bitmap.dumpCache();
+			FlxG.sound.destroy(false);
+
+			var cache = cast(Assets.cache, AssetCache);
+			for (key=>font in cache.font)
+				cache.removeFont(key);
+			for (key=>sound in cache.sound)
+				cache.removeSound(key);
+			cache = null;
+
+			gc();
+		});
+		FlxG.signals.postStateSwitch.add(() -> {
+			Paths.clearUnusedCache();
+			gc(true);
+		});
 
 		#if html5
 		FlxG.autoPause = false;
 		FlxG.mouse.visible = false;
 		#end
-		#if desktop
+
+		#if CRASH_HANDLER
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
+		#end
+
+		#if desktop
+		if (!DiscordClient.isInitialized) {
+			DiscordClient.initialize();
+			Application.current.window.onClose.add(function() {
+				DiscordClient.shutdown();
+			});
+		}
 		#end
 	}
 
-	public static var fpsCounter:CustomFPS;
-	public static var ramCount:CustomMEM;
-
-	public static function toggleFPS(fpsEnabled:Bool):Void
-		fpsCounter.visible = fpsEnabled;
-
-	public static function toggleMEM(fpsEnabled:Bool):Void
-		ramCount.visible = fpsEnabled;
-
-	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
-	// very cool person for real they don't get enough credit for their work
-	#if desktop
+	#if CRASH_HANDLER
 	function onCrash(e:UncaughtErrorEvent):Void
 	{
 		var errMsg:String = "";
-		var path:String;
-		var callStack:Array<StackItem> = CallStack.exceptionStack(true);
+		final callStack:Array<StackItem> = CallStack.exceptionStack(true);
 		var dateNow:String = Date.now().toString();
 
-		dateNow = dateNow.replace(" ", "_");
-		dateNow = dateNow.replace(":", "'");
+		dateNow = dateNow.replace(" ", "_").replace(":", "'");
 
-		path = "./crash/" + "DenpaEngine_" + dateNow + ".txt";
+		final path = "./crshhndlr/logs/" + "DenpaEngine_" + dateNow + ".txt";
 
 		for (stackItem in callStack)
 		{
@@ -137,19 +187,23 @@ class Main extends Sprite
 			}
 		}
 
-		errMsg += "\nUncaught Error: " + e.error + "\nPlease report this error to the GitHub page: https://github.com/UmbratheUmbreon/PublicDenpaEngine\n\n> Crash Handler written by: sqirra-rng";
+		final errorLinesSorted:Array<String> = [
+			'\nUncaught Error: ${e.error}!',
+			'\nPlease report this error to the GitHub page\n(Will automatically open when exiting!)',
+			'\nAlternatively, report it in the official server\n(Will also be opened automatically!)',
+			'\n\nOriginal CrashHandler code written by squirra-rng (https://github.com/gedehari)'
+		];
+		for(line in errorLinesSorted) { errMsg += line; }
 
-		if (!FileSystem.exists("./crash/"))
-			FileSystem.createDirectory("./crash/");
+		if (!FileSystem.exists("./crshhndlr/logs/")) FileSystem.createDirectory("./crshhndlr/logs/");
 
 		File.saveContent(path, errMsg + "\n");
 
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
-		var randoms:Array<String> = ['Error!', 'Uh Oh!', 'Wipe Out!', 'Dangit!', 'Shit!', 'I Messed Up!', 'Oops!', 'Ouch!', 'Sorry!', 'God damnit!', 'Try Again!', 'Crash!', 'Ow!', 'That Stinks!', 'Help!', 'Oh Come On!', 'Really?!', 'Ugh!', 'That Was Stupid!'];
-		Application.current.window.alert(errMsg, randoms[FlxG.random.int(0,randoms.length-1)]);
 		DiscordClient.shutdown();
+		new Process("./crshhndlr/DENPACRASHHANDLER.exe", [errMsg]);
 		Sys.exit(1);
 	}
 	#end

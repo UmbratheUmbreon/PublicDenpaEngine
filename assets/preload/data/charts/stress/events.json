@@ -1,0 +1,504 @@
+{
+	"song": {
+		"speed": 2.6,
+		"stage": "tank",
+		"player1": "bf-holding-gf",
+		"player2": "tankman",
+		"player3": null,
+		"player4": null,
+		"dangerMiss": null,
+		"autoIcons": true,
+		"autoIdles": true,
+		"events": [
+			[
+				29662.9213483146,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.95",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				30000,
+				[
+					[
+						"Tween Camera Zoom",
+						"1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				30337.0786516854,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.05",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				30674.1573033708,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				31011.2359550562,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.15",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				31348.3146067416,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.2",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				31685.393258427,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.25",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				31853.9325842697,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.3",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				32022.4719101124,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.35",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				32191.0112359551,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.4",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				32359.5505617978,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				41797.7528089888,
+				[
+					[
+						"Tween Camera Zoom",
+						"1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				42134.8314606742,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				42556.1797752809,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.2",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				42724.7191011236,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.3",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				42893.2584269663,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				52584.2696629213,
+				[
+					[
+						"Tween Camera Zoom",
+						"1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				52921.3483146067,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				53258.4269662921,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.2",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				53426.9662921348,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.3",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				53595.5056179775,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				62022.4719101124,
+				[
+					[
+						"Play Animation",
+						"singDOWN-alt",
+						"dad"
+					],
+					[
+						"Tween Camera Zoom",
+						"1.08",
+						"0.1,circInOut"
+					],
+					[
+						"Camera Follow Pos",
+						"320",
+						"504"
+					]
+				]
+			],
+			[
+				64719.1011235955,
+				[
+					[
+						"Camera Follow Pos",
+						"",
+						""
+					],
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				75505.6179775281,
+				[
+					[
+						"Stage Tint",
+						"0.75",
+						"5,0xff000000"
+					],
+					[
+						"Tween Camera Zoom",
+						"1.05",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				80898.8764044945,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				95730.3370786518,
+				[
+					[
+						"Tween Camera Zoom",
+						"1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				96067.4157303372,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.1",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				96404.4943820226,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.2",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				96573.0337078653,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.3",
+						"0.1,circInOut"
+					]
+				]
+			],
+			[
+				96741.573033708,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.3,circInOut"
+					]
+				]
+			],
+			[
+				98426.966292135,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				99101.1235955058,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				101123.595505618,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				101797.752808989,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				107865.168539326,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				108539.325842697,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				109213.483146068,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				109887.640449438,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				113258.426966292,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				113932.584269663,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				114606.741573034,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				115280.898876405,
+				[
+					[
+						"Add Camera Zoom",
+						"",
+						""
+					]
+				]
+			],
+			[
+				118651.685393259,
+				[
+					[
+						"Tween Camera Zoom",
+						"1.1",
+						"0.1,circInOut"
+					],
+					[
+						"Camera Follow Pos",
+						"700",
+						"240"
+					]
+				]
+			],
+			[
+				121348.314606742,
+				[
+					[
+						"Tween Camera Zoom",
+						"0.9",
+						"0.1,circInOut"
+					],
+					[
+						"Camera Follow Pos",
+						"",
+						""
+					]
+				]
+			]
+		],
+		"allowBot": true,
+		"notes": [],
+		"splashSkin": null,
+		"modchart": null,
+		"validScore": false,
+		"beatDrain": null,
+		"tintBlue": null,
+		"gfVersion": "pico-speaker",
+		"bpm": 178,
+		"mania": 3,
+		"arrowSkin": null,
+		"needsVoices": true,
+		"enablePlayer4": null,
+		"allowGhostTapping": true,
+		"crits": null,
+		"song": "Stress",
+		"autoZooms": true,
+		"tintRed": null,
+		"tintGreen": null
+	}
+}

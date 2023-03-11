@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="panache.png">
+<SubTexture name="mm0000" x="0" y="0" width="113" height="99" frameX="0" frameY="0" frameWidth="104" frameHeight="90" />
+<SubTexture name="mm0001" x="116" y="0" width="113" height="99" frameX="0" frameY="0" frameWidth="104" frameHeight="90" />
+<SubTexture name="mm0002" x="0" y="102" width="113" height="99" frameX="0" frameY="0" frameWidth="104" frameHeight="90" />
+<SubTexture name="mm0003" x="116" y="102" width="113" height="99" frameX="0" frameY="0" frameWidth="104" frameHeight="90" />
+<SubTexture name="mm0004" x="232" y="0" width="113" height="99" frameX="0" frameY="0" frameWidth="104" frameHeight="90" />
+</TextureAtlas>

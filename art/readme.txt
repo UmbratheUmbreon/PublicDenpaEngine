@@ -3,8 +3,9 @@
 Sup!
 Thank you for downloading DENPA Engine!
 We hope you enjoy your time with this mod that we poured our blood sweat and tears into!
-If you ever want to, leave a like or a post on the gamebanana page!
+If you ever want to, leave a like/star/post/etc. on the Gamebanana/Gamejolt/Github page!
 It really helps out :D
+(Maybe share with your friends too lol)
 
 Oh, and if you downloaded this from anywhere other than Gamebanana, Gamejolt, or Github, DELETE THE DOWNLOAD AND RUN AN ANTIVIRUS SCAN.
 Anywhere but those three sites are NOT officially endorsed, affiliated, nor supported by us.

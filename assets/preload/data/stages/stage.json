@@ -1,0 +1,138 @@
+{
+	"directory": "",
+	"defaultZoom": 0.9,
+	"isPixelStage": false,
+
+	"boyfriend": [770, 100],
+	"girlfriend": [400, 130],
+	"opponent": [100, 100],
+	"p4": [-300, -1200],
+	"hide_girlfriend": false,
+
+	"camera_boyfriend": [0, 0],
+	"camera_opponent": [0, 0],
+	"camera_girlfriend": [0, 0],
+	"camera_speed": 1,
+
+	"sprites": [
+		{
+			"animated": false,
+			"animation_index": 0,
+			"layer_pos": 0,
+			"image": "stageback",
+			"position": [
+				-600,
+				-200
+			],
+			"tag": "bg",
+			"scroll": [
+				0.95,
+				0.95
+			],
+			"antialiasing": true,
+			"size": [
+				1,
+				1
+			],
+
+			"gf_front": false,
+			"hide_lq": false
+		},
+		{
+			"animated": false,
+			"animation_index": 0,
+			"layer_pos": 1,
+			"image": "stagefront",
+			"position": [
+				-650,
+				600
+			],
+			"tag": "stageFront",
+			"scroll": [
+				1,
+				1
+			],
+			"antialiasing": true,
+			"size": [
+				1.1,
+				1.1
+			],
+
+			"gf_front": false,
+			"hide_lq": false
+		},
+		{
+			"animated": false,
+			"animation_index": 0,
+			"layer_pos": 0,
+			"image": "stage_light",
+			"position": [
+				-125,
+				-100
+			],
+			"tag": "stageLight",
+			"scroll": [
+				0.98,
+				0.98
+			],
+			"antialiasing": true,
+			"size": [
+				1.1,
+				1.1
+			],
+
+			"front": true,
+			"gf_front": false,
+			"hide_lq": true
+		},
+		{
+			"animated": false,
+			"animation_index": 0,
+			"layer_pos": 1,
+			"image": "stage_light",
+			"position": [
+				1225,
+				-100
+			],
+			"tag": "stageLightMirror",
+			"scroll": [
+				0.98,
+				0.98
+			],
+			"antialiasing": true,
+			"size": [
+				1.1,
+				1.1
+			],
+
+			"flip_x": true,
+			"front": true,
+			"gf_front": false,
+			"hide_lq": true
+		},
+		{
+			"animated": false,
+			"animation_index": 0,
+			"layer_pos": 2,
+			"image": "stagecurtains",
+			"position": [
+				-450,
+				-300
+			],
+			"tag": "stageCurtains",
+			"scroll": [
+				1.3,
+				1.3
+			],
+			"antialiasing": true,
+			"size": [
+				0.9,
+				0.9
+			],
+
+			"front": true,
+			"gf_front": false,
+			"hide_lq": true
+		}
+	]
+}

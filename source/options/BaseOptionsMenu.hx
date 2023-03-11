@@ -3,28 +3,13 @@ package options;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flash.text.TextField;
+import Alphabet;
+import Controls;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flash.text.TextField;
-import flixel.FlxSprite;
-import flixel.util.FlxSave;
-import haxe.Json;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import Controls;
-import Alphabet;
-
-using StringTools;
 
 /**
 * Base substate for all options substates.
@@ -35,7 +20,8 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	private var curSelected:Int = 0;
 	private var optionsArray:Array<Option>;
 
-	private var grpOptions:FlxTypedGroup<Alphabet>;
+	public var grpOptions:FlxTypedGroup<Alphabet>;
+	var lerpList:Array<Bool> = [];
 	private var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
 	private var grpTexts:FlxTypedGroup<AttachedText>;
 
@@ -65,23 +51,19 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFF98f0f8;
 		bg.screenCenter();
-		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 
-		if (!ClientPrefs.lowQuality) {
-			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
+		if (!ClientPrefs.settings.get("lowQuality")) {
+			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll.velocity.set(29, 30);
 			add(bgScroll);
 	
-			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
+			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll2.velocity.set(-29, -30);
 			add(bgScroll2);
 		}
 
 		gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
-		gradient.antialiasing = ClientPrefs.globalAntialiasing;
 		gradient.scrollFactor.set(0, 0);
 		add(gradient);
 
@@ -95,10 +77,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		checkboxGroup = new FlxTypedGroup<CheckboxThingie>();
 		add(checkboxGroup);
 
-		/*var titleText:Alphabet = new Alphabet(0, 0, title, true, false, 0, 0.6);
-		titleText.x += 60;
-		titleText.y += 40;
-		titleText.alpha = 0.4;*/
 		var titleText:FlxText = new FlxText(0, 20, 0, title, 24);
 		titleText.setFormat(Paths.font("calibri-regular.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xff59136d);
 		titleText.x += 22;
@@ -111,7 +89,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		add(titleText);
 
 		descText = new FlxText(FlxG.width - 600, 600, 550, "", 24);
-		descText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT/*, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK*/);
+		descText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT);
 		descText.scrollFactor.set();
 		//descText.borderSize = 2.4;
 
@@ -122,15 +100,13 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		for (i in 0...optionsArray.length)
 		{
-			var optionText:Alphabet = new Alphabet(0, 70 * i, optionsArray[i].name, false, false);
-			optionText.align = 'left';
-			optionText.x += 300;
-			/*optionText.forceX = 300;
-			optionText.yMult = 90;*/
+			var optionText:Alphabet = new Alphabet(0, 70, optionsArray[i].name, optionsArray[i].type == 'link', false);
+			optionText.x += 15;
 			optionText.xAdd = 200;
 			optionText.targetY = i;
 			optionText.yMult = 100;
-			optionText.yAdd = -90;
+			optionText.yAdd = (optionText.isBold ? -35 : -90);
+			lerpList.push(true);
 			grpOptions.add(optionText);
 
 			if(optionsArray[i].type == 'bool') {
@@ -141,7 +117,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 				checkbox.offsetX = 12;
 				checkbox.offsetY = 6;
 				checkboxGroup.add(checkbox);
-			} else {
+			} else if (optionsArray[i].type != 'link') {
 				optionText.x -= 80;
 				optionText.xAdd -= 80;
 				var valueText:AttachedText = new AttachedText('' + optionsArray[i].getValue(), optionText.width + 80);
@@ -163,12 +139,13 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		reloadCheckboxes();
 
 		bg.color = SoundTestState.getDaColor();
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
 			bgScroll.color = SoundTestState.getDaColor();
 			bgScroll2.color = SoundTestState.getDaColor();
 		}
 		gradient.color = SoundTestState.getDaColor();
 
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
 	public function addOption(option:Option) {
@@ -181,6 +158,27 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	var holdValue:Float = 0;
 	override function update(elapsed:Float)
 	{
+		final lerpVal:Float = CoolUtil.clamp(elapsed * 9.6, 0, 1);
+		for (i=>item in grpOptions.members) {
+			@:privateAccess {
+				if (lerpList[i]) {
+					item.y = FlxMath.lerp(item.y, (item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd, lerpVal);
+					if(item.forceX != Math.NEGATIVE_INFINITY) {
+						item.x = item.forceX;
+					} else {
+						item.x = FlxMath.lerp(item.x, (item.isBold ? 30 : 15) + item.alignAdd, lerpVal);
+					}
+				} else {
+					item.y = ((item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd);
+					if(item.forceX != Math.NEGATIVE_INFINITY) {
+						item.x = item.forceX;
+					} else {
+						item.x = ((item.isBold ? 30 : 15) + item.alignAdd);
+					}
+				}
+			}
+		}
+
 		if (controls.UI_UP_P)
 		{
 			changeSelection(-1);
@@ -192,30 +190,34 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		var shiftMult:Int = 1;
 
-		if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
-			{
-				changeSelection(-shiftMult * FlxG.mouse.wheel);
-			}
+		if(FlxG.mouse.wheel != 0)
+		{
+			changeSelection(-shiftMult * FlxG.mouse.wheel);
+		}
 
-		if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
+		if (controls.BACK) {
 			close();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
 
+		var lerpVal:Float = CoolUtil.clamp(elapsed * 12, 0, 1);
+		descText.x = FlxMath.lerp(descText.x, FlxG.width - 600, lerpVal);
+		descBox.x = FlxMath.lerp(descBox.x, FlxG.width - 610, lerpVal);
+
 		if(nextAccept <= 0)
 		{
 			var usesCheckbox = true;
-			if(curOption.type != 'bool')
+			if(curOption.type != 'bool' && curOption.type != 'link')
 			{
 				usesCheckbox = false;
 			}
 
 			if(usesCheckbox)
 			{
-				if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls))
+				if(controls.ACCEPT)
 				{
-					FlxG.sound.play(Paths.sound('scrollMenu'));
-					curOption.setValue((curOption.getValue() == true) ? false : true);
+					FlxG.sound.play(Paths.sound((curOption.type == 'link' ? 'confirmMenu' : 'scrollMenu')));
+					if (curOption.type == 'bool') curOption.setValue((curOption.getValue() == true) ? false : true);
 					curOption.change();
 					reloadCheckboxes();
 				}
@@ -293,19 +295,32 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 			if(controls.RESET)
 			{
-				for (i in 0...optionsArray.length)
-				{
-					var leOption:Option = optionsArray[i];
-					leOption.setValue(leOption.defaultValue);
-					if(leOption.type != 'bool')
+				if (FlxG.keys.pressed.SHIFT) {
+					for (i in 0...optionsArray.length)
 					{
-						if(leOption.type == 'string')
+						var leOption:Option = optionsArray[i];
+						leOption.setValue(leOption.defaultValue);
+						if(leOption.type != 'bool')
 						{
-							leOption.curOption = leOption.options.indexOf(leOption.getValue());
+							if(leOption.type == 'string')
+							{
+								leOption.curOption = leOption.options.indexOf(leOption.getValue());
+							}
+							updateTextFrom(leOption);
 						}
-						updateTextFrom(leOption);
+						leOption.change();
 					}
-					leOption.change();
+				} else {
+					curOption.setValue(curOption.defaultValue);
+					if(curOption.type != 'bool')
+					{
+						if(curOption.type == 'string')
+						{
+							curOption.curOption = curOption.options.indexOf(curOption.getValue());
+						}
+						updateTextFrom(curOption);
+					}
+					curOption.change();
 				}
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				reloadCheckboxes();
@@ -349,16 +364,27 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		descText.text = optionsArray[curSelected].description;
 		descText.screenCenter(Y);
 		descText.y += 270;
+		descText.x = FlxG.width - 550;
 
 		var bullShit:Int = 0;
 
-		for (item in grpOptions.members) {
+		for (i=>item in grpOptions.members) {
+			item.active = item.visible = lerpList[i] = true;
 			item.targetY = bullShit - curSelected;
 			bullShit++;
 
 			item.alpha = 0.6;
 			if (item.targetY == 0) {
 				item.alpha = 1;
+			}
+			if (Math.abs(item.targetY) > 6 && !(curSelected == 0 || curSelected == optionsArray.length - 1)) {
+				item.active = item.visible = lerpList[i] = false;
+			}
+		}
+		for (checkbox in checkboxGroup) {
+			checkbox.active = checkbox.visible = true;
+			if (checkbox.sprTracker.visible == false) {
+				checkbox.active = checkbox.visible = false;
 			}
 		}
 		for (text in grpTexts) {
@@ -368,7 +394,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			}
 		}
 
-		descBox.setPosition(descText.x - 10, descText.y - 10);
+		descBox.setPosition(FlxG.width - 560, descText.y - 10);
 		descBox.setGraphicSize(Std.int(descText.width + 20), Std.int(descText.height + 25));
 		descBox.updateHitbox();
 

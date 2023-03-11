@@ -1,0 +1,31 @@
+var FlxG = require('FlxG');
+
+extends('flixel.FlxSprite', [0, 0]);
+public static var sex(get, default):String = 'nahh';
+static var sex2(default, set):String = 'oooh';
+public var sex3(null, null):String = 'gahh';
+
+function init() {
+    trace(sex);
+    sex2 = 'SKIN INFANT BABIES';
+}
+
+static function get_sex():String {
+    return sex + 'fuck';
+}
+static function set_sex2(newSex:String):String {
+    sex2 += newSex;
+    trace(sex2);
+    return sex2;
+}
+
+function setFlxG() { //more testing!!!
+    FlxG.mouse.scale.x = 5;
+}
+public static function getReal(fiveGuys:String) {
+    var fiveGuysPlus:String = fiveGuys+'plus';
+    function localFunc(som:String) {
+        var ssss:String = 'brr';
+    }
+    trace(fiveGuysPlus);
+}

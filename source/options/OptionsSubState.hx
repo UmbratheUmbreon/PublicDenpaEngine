@@ -1,34 +1,24 @@
 package options;
 
-import flixel.group.FlxSpriteGroup;
+import Alphabet;
+import AttachedSprite.NGAttachedSprite;
+import Character;
+import Controls;
+import Shaders.ColorSwap;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxBackdrop;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.input.keyboard.FlxKey;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
+import lime.app.Application;
+import lime.utils.Assets;
+import openfl.events.KeyboardEvent;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flash.text.TextField;
-import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.display.FlxBackdrop;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flixel.util.FlxSave;
-import haxe.Json;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import Controls;
-import flixel.FlxCamera;
-import openfl.Lib;
-import Alphabet;
-import Shaders.ColorSwap;
-import Note.StrumNote;
-
-using StringTools;
 
 /**
 * State used to adjust HSB of the notes.
@@ -60,34 +50,30 @@ class NotesSubState extends MusicBeatSubstate
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFF98f0f8;
 		bg.screenCenter();
-		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 
-		if (!ClientPrefs.lowQuality) {
-			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
+		//??? why was this set to global antialiasing before ???
+		if (!ClientPrefs.settings.get("lowQuality")) {
+			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll.velocity.set(29, 30);
 			add(bgScroll);
 	
-			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
+			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll2.velocity.set(-29, -30);
 			add(bgScroll2);
 		}
 
 		gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
-		gradient.antialiasing = ClientPrefs.globalAntialiasing;
 		gradient.scrollFactor.set(0, 0);
 		add(gradient);
 
 		bg.color = SoundTestState.getDaColor();
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
 			bgScroll.color = SoundTestState.getDaColor();
 			bgScroll2.color = SoundTestState.getDaColor();
 		}
 		gradient.color = SoundTestState.getDaColor();
 
-		
 		blackBG = new FlxSprite(posX - 25).makeGraphic(1140, 200, FlxColor.BLACK);
 		blackBG.alpha = 0.4;
 		add(blackBG);
@@ -127,7 +113,6 @@ class NotesSubState extends MusicBeatSubstate
 			var animation = Note.gfxLetter[i];
 			note.animation.addByPrefix('idle', animation + '0');
 			note.animation.play('idle');
-			note.antialiasing = ClientPrefs.globalAntialiasing;
 			note.ID = i;
 			grpNotes.add(note);
 
@@ -144,6 +129,8 @@ class NotesSubState extends MusicBeatSubstate
 		add(hsbText);
 
 		changeSelection();
+
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
 	var changingNote:Bool = false;
@@ -152,7 +139,7 @@ class NotesSubState extends MusicBeatSubstate
 	var lastSelected:Int = 99;
 	override function update(elapsed:Float) {
 		var rownum = 0;
-		var lerpVal:Float = CoolUtil.boundTo(elapsed * 9.6, 0, 1);
+		var lerpVal:Float = CoolUtil.clamp(elapsed * 9.6, 0, 1);
 		for (i in 0...grpNumbers.length) {
 			var item = grpNumbers.members[i];
 			var scaledY = FlxMath.remapToRange(item.ID, 0, 1, 0, 1.3);
@@ -243,11 +230,12 @@ class NotesSubState extends MusicBeatSubstate
 			}
 			var shiftMult:Int = 1;
 
-			if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
-				{
-					changeSelection(-shiftMult * FlxG.mouse.wheel);
-				}
-			if ((controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) && nextAccept <= 0) {
+			if(FlxG.mouse.wheel != 0)
+			{
+				changeSelection(-shiftMult * FlxG.mouse.wheel);
+			}
+
+			if ((controls.ACCEPT) && nextAccept <= 0) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				changingNote = true;
 				holdTime = 0;
@@ -270,7 +258,7 @@ class NotesSubState extends MusicBeatSubstate
 			}
 		}
 
-		if ((controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) || (changingNote && (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)))) {
+		if ((controls.BACK) || (changingNote && (controls.ACCEPT))) {
 			if(!changingNote) {
 				close();
 			} else {
@@ -408,18 +396,31 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 		title = 'General Settings';
 		rpcTitle = 'General Settings Menu'; //for Discord Rich Presence
 
-		#if !html5 //Apparently other framerates isn't correctly supported on Browser? Probably it has some V-Sync shit enabled by default, idk
-		var option:Option = new Option('Framerate',
+		#if !html5
+		//different res cant really be done on browser lol
+		var option:Option = new Option('Resolution:',
+			"What resolution do you want the game in?",
+			'resolution',
+			'string',
+			'1280x720',
+			//72p,     120p,      144p,      270p       360p,      540p,      720p,       1080p (HD),  1440p (FHD), 2160p (UHD)
+			['128x72', '214x120', '256x144', '480x270', '640x360', '960x540', '1280x720', '1920x1080', '2560x1440', '3840x2160']);
+		addOption(option);
+		option.onChange = onChangeResolution;
+
+		//Apparently other framerates isn't correctly supported on Browser? Probably it has some V-Sync shit enabled by default, idk
+		var option:Option = new Option('Framerate:',
 			"Pretty self explanatory, isn't it?",
 			'framerate',
 			'int',
 			60);
 		addOption(option);
 
-		option.minValue = 24;
-		option.maxValue = 999;
+		option.minValue = 1;
+		option.maxValue = 1000;
 		option.displayFormat = '%v FPS';
 		option.onChange = onChangeFramerate;
+		option.scrollSpeed = 120;
 		#end
 
 		var option:Option = new Option('FPS Counter',
@@ -431,30 +432,13 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 		option.onChange = onChangeFPSCounter;
 
 		#if !html
-		var option:Option = new Option('Fullscreen',
-			'Makes the window fullscreen.',
-			'fullscreen',
-			'bool',
-			false);
-		addOption(option);
-		option.onChange = onChangeFullscreen;
-		
 		var option:Option = new Option('Auto Pause',
-			'Turns on/off auto pausing on focus lost.',
+			'Turns on/off auto pausing when you click off the game window.',
 			'autoPause',
 			'bool',
 			true);
 		addOption(option);
 		option.onChange = onChangeAutoPause;
-		#end
-
-		#if !android
-		var option:Option = new Option('Mouse Controls',
-			'Turns on or off UI Mouse Controls',
-			'mouseControls',
-			'bool',
-			true);
-		addOption(option);
 		#end
 
 		var option:Option = new Option('Check For Updates',
@@ -471,69 +455,46 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
-
-		var option:Option = new Option('Pause Screen Song:',
-			"What song do you prefer for the Pause Screen?",
-			'pauseMusic',
-			'string',
-			'OVERDOSE',
-			['None', 'Breakfast', 'Tea Time', 'OVERDOSE']);
-		addOption(option);
-		option.onChange = onChangePauseMusic;
-
 		super();
 	}
 
-	var changedMusic:Bool = false;
-	function onChangePauseMusic()
+	function onChangeResolution()
 	{
-		if(ClientPrefs.pauseMusic == 'None')
-			FlxG.sound.music.volume = 0;
-		else
-			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.pauseMusic)));
-
-		changedMusic = true;
+		var val = cast (ClientPrefs.settings.get("resolution"), String);
+		var split = val.split("x");
+		CoolUtil.resetResolutionScaling(Std.parseInt(split[0]), Std.parseInt(split[1]));
+		FlxG.resizeGame(Std.parseInt(split[0]), Std.parseInt(split[1]));
+		Application.current.window.width = Std.parseInt(split[0]);
+		Application.current.window.height = Std.parseInt(split[1]);
+		//OptionsState.reopen(this);
 	}
 
 	function onChangeFramerate()
 	{
-		if(ClientPrefs.framerate > FlxG.drawFramerate)
-		{
-			FlxG.updateFramerate = ClientPrefs.framerate;
-			FlxG.drawFramerate = ClientPrefs.framerate;
-		}
-		else
-		{
-			FlxG.drawFramerate = ClientPrefs.framerate;
-			FlxG.updateFramerate = ClientPrefs.framerate;
+		if(ClientPrefs.settings.get("framerate") > FlxG.drawFramerate) {
+			FlxG.updateFramerate = ClientPrefs.settings.get("framerate");
+			FlxG.drawFramerate = ClientPrefs.settings.get("framerate");
+		} else {
+			FlxG.drawFramerate = ClientPrefs.settings.get("framerate");
+			FlxG.updateFramerate = ClientPrefs.settings.get("framerate");
 		}
 	}
 
 	#if !mobile
 	function onChangeFPSCounter()
 	{
-		if(Main.fpsCounter != null)
-			Main.toggleFPS(ClientPrefs.showFPS);
-		if(Main.ramCount != null)
-			Main.toggleMEM(ClientPrefs.showFPS);
-	}
-
-	function onChangeFullscreen()
-	{
-		FlxG.fullscreen = ClientPrefs.fullscreen;
+		Main.toggleFPS(ClientPrefs.settings.get("showFPS"));
+		if (Main.ramCount.visible) {
+			Main.toggleMEM(ClientPrefs.settings.get("showFPS"));
+			Main.togglePIE(ClientPrefs.settings.get("showFPS"));
+		}
 	}
 
 	function onChangeAutoPause()
 	{
-		FlxG.autoPause = ClientPrefs.autoPause;
+		FlxG.autoPause = ClientPrefs.settings.get("autoPause");
 	}
 	#end
-
-	override function destroy()
-		{
-			if(changedMusic) FlxG.sound.playMusic(Paths.music('freakyMenu'));
-			super.destroy();
-		}
 }
 
 /**
@@ -541,7 +502,11 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 */
 class GameplaySettingsSubState extends BaseOptionsMenu
 {
-	var hitSound:String = 'hitsound';
+	var windowBar:FlxSprite;
+	final windowDefaultMaxes:Array<Int> = [15, 45, 90, 135, 205];
+	final windowDefaultMins:Array<Int> = [1, 16, 46, 91, 136];
+	var windowOptions:Array<Option> = [];
+	final windowColours = [0xbfffff00, 0xbf00ffff, 0xbf00ff00, 0xbfffaa00, 0xbfff0000, 0xbfff00ff];
 	public function new()
 	{
 		title = 'Gameplay Settings';
@@ -555,20 +520,12 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			['Generous', 'Default', 'Harsh']);
 		addOption(option);
 
-		var option:Option = new Option('Accuracy Mode:',
-			"How accurate do you want the accuracy?",
-			'accuracyMode',
-			'string',
-			'Simple',
-			['Simple', 'Complex']);
-		addOption(option);
-
-		/*var option:Option = new Option('Controller Mode',
-			'Check this if you want to play with\na controller instead of using your Keyboard.',
-			'controllerMode',
+		var option:Option = new Option('Complex Accuracy',
+			"If checked, the complex accuracy calculations will be used, and provide more accurate accuracy.",
+			'complexAccuracy',
 			'bool',
 			false);
-		addOption(option);*/
+		addOption(option);
 
 		var option:Option = new Option('Downscroll',
 			'If checked, notes go Down instead of Up, simple enough.',
@@ -598,7 +555,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
-		var option:Option = new Option('Hitsound Volume',
+		var option:Option = new Option('Hitsound Volume:',
 			'How loud do you want the hit sounds?',
 			'hitsoundVolume',
 			'percent',
@@ -611,30 +568,8 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 
-		var option:Option = new Option('Hitsound\'s Sound:',
-			"What sound do you want to play when hitting a note?",
-			'hitSound',
-			'string',
-			'Hit Sound',
-			['Hit Sound', 'Crit', 'GF', 'Metronome', 'Coin', 'Bubble']);
-		addOption(option);
-		option.onChange = onChangeHitsound;
-
-		var option:Option = new Option('Miss Volume',
-			'How loud do you want the miss sounds?',
-			'missSoundVolume',
-			'percent',
-			0);
-		addOption(option);
-		option.onChange = onChangeMissVol;
-		option.scrollSpeed = 1.6;
-		option.minValue = 0.0;
-		option.maxValue = 1;
-		option.changeValue = 0.1;
-		option.decimals = 1;
-
-		var option:Option = new Option('Rating Offset',
-			'Changes how late/early you have to hit for a "Crit!"\nHigher values mean you have to hit later.',
+		var option:Option = new Option('Rating Offset:',
+			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
 			'ratingOffset',
 			'int',
 			0);
@@ -644,62 +579,62 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.maxValue = 30;
 		addOption(option);
 
-		var option:Option = new Option('Perfect Hit Window',
+		var option:Option = new Option('Perfect Hit Window:',
 			'Changes the amount of time you have\nfor hitting a "Perfect" in milliseconds.',
 			'perfectWindow',
 			'int',
-			10);
+			15);
 		option.displayFormat = '%vms';
-		option.scrollSpeed = 1;
-		option.minValue = 1;
-		option.maxValue = 14;
+		option.scrollSpeed = 90;
+		windowOptions.push(option);
+		option.onChange = onChangeWindow;
 		addOption(option);
 
-		var option:Option = new Option('Sick Hit Window',
+		var option:Option = new Option('Sick Hit Window:',
 			'Changes the amount of time you have\nfor hitting a "Sick" in milliseconds.',
 			'sickWindow',
 			'int',
 			45);
 		option.displayFormat = '%vms';
-		option.scrollSpeed = 15;
-		option.minValue = 15;
-		option.maxValue = 45;
+		option.scrollSpeed = 90;
+		windowOptions.push(option);
+		option.onChange = onChangeWindow;
 		addOption(option);
 
-		var option:Option = new Option('Good Hit Window',
+		var option:Option = new Option('Good Hit Window:',
 			'Changes the amount of time you have\nfor hitting a "Good" in milliseconds.',
 			'goodWindow',
 			'int',
 			90);
 		option.displayFormat = '%vms';
-		option.scrollSpeed = 30;
-		option.minValue = 15;
-		option.maxValue = 90;
+		option.scrollSpeed = 90;
+		windowOptions.push(option);
+		option.onChange = onChangeWindow;
 		addOption(option);
 
-		var option:Option = new Option('Bad Hit Window',
+		var option:Option = new Option('Bad Hit Window:',
 			'Changes the amount of time you have\nfor hitting a "Bad" in milliseconds.',
 			'badWindow',
 			'int',
 			135);
 		option.displayFormat = '%vms';
-		option.scrollSpeed = 60;
-		option.minValue = 15;
-		option.maxValue = 135;
+		option.scrollSpeed = 90;
+		windowOptions.push(option);
+		option.onChange = onChangeWindow;
 		addOption(option);
 
-		var option:Option = new Option('Shit Hit Window',
+		var option:Option = new Option('Shit Hit Window:',
 			'Changes the amount of time you have\nfor hitting a "Shit" in milliseconds.',
 			'shitWindow',
 			'int',
 			205);
 		option.displayFormat = '%vms';
-		option.scrollSpeed = 60;
-		option.minValue = 15;
-		option.maxValue = 205;
+		option.scrollSpeed = 90;
+		windowOptions.push(option);
+		option.onChange = onChangeWindow;
 		addOption(option);
 
-		var option:Option = new Option('Safe Frames',
+		var option:Option = new Option('Safe Frames:',
 			'Changes how many frames you have for\nhitting a note earlier or late.',
 			'safeFrames',
 			'float',
@@ -712,48 +647,53 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 
 		super();
 
-		switch (ClientPrefs.hitSound) {
-			case 'Hit Sound':
-				hitSound = 'hitsound';
-			case 'Crit':
-				hitSound = 'crit';
-			case 'GF':
-				hitSound = 'GF_1';
-			case 'Metronome':
-				hitSound = 'Metronome_Tick';
-			case 'Coin':
-				hitSound = 'smw_coin';
-			case 'Bubble':
-				hitSound = 'smw_bubble_pop';
-		}
-	}
+		windowBar = new FlxSprite((FlxG.width/4) * 3 - 40, FlxG.height/4 - 100).makeGraphic(80, 220, 0x00ffffff);
+		windowBar.visible = false;
+		windowBar.setGraphicSize(80, 440);
+		windowBar.updateHitbox();
+		windowBar.antialiasing = false;
+		insert(members.indexOf(descBox) - 1, windowBar);
 
-	function onChangeMissVol() {
-		if (ClientPrefs.missSoundVolume > 0)
-			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), ClientPrefs.missSoundVolume);
+		onChangeWindow();
 	}
 
 	function onChangeHitsound() {
-		switch (ClientPrefs.hitSound) {
-			case 'Hit Sound':
-				hitSound = 'hitsound';
-			case 'Crit':
-				hitSound = 'crit';
-			case 'GF':
-				hitSound = 'GF_1';
-			case 'Metronome':
-				hitSound = 'Metronome_Tick';
-			case 'Coin':
-				hitSound = 'smw_coin';
-			case 'Bubble':
-				hitSound = 'smw_bubble_pop';
-		}
-		if (ClientPrefs.hitsoundVolume > 0)
-			FlxG.sound.play(Paths.sound(hitSound), ClientPrefs.hitsoundVolume);
+		if (ClientPrefs.settings.get("hitsoundVolume") > 0)
+			FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.settings.get("hitsoundVolume"));
 	}
 
 	override function changeSelection(change:Int = 0) {
 		super.changeSelection(change);
+
+		if (windowBar != null) windowBar.visible = (optionsArray[curSelected].name.contains('Hit Window'));
+	}
+
+	function onChangeWindow() {
+		var prevLine:Float = 0;
+		for (i=>option in windowOptions) {
+			option.minValue = windowDefaultMins[i];
+			option.maxValue = windowDefaultMaxes[i];
+			//clamp the mins/maxes so you cant do weird shit
+			if (windowOptions[i-1] != null) {
+				if (windowOptions[i-1].maxValue > option.minValue) option.minValue = windowOptions[i-1].maxValue;
+				//if (windowOptions[i-1].getValue() < option.minValue) option.minValue = windowOptions[i-1].getValue() + 1;
+			}
+			if (windowOptions[i+1] != null) {
+				if (windowOptions[i+1].minValue < option.maxValue) option.maxValue = windowOptions[i+1].minValue;
+				//if (windowOptions[i+1].getValue() > option.maxValue) option.maxValue = windowOptions[i+1].getValue() - 1;
+			}
+			//setGraphicSize makes me want to die so im gonna...
+			var pixels = windowBar.pixels;
+			for (y in 0...pixels.height) {
+				if (y / pixels.height <= option.getValue() / pixels.height && y / pixels.height > prevLine)
+					for (x in 0...pixels.width)
+						pixels.setPixel32(x, y, windowColours[i]);
+				else if (y / pixels.height > option.getValue() / pixels.height)
+					for (x in 0...pixels.width)
+						pixels.setPixel32(x, y, windowColours[windowColours.length-1]);
+			}
+			prevLine = option.getValue() / pixels.height;
+		}
 	}
 }
 
@@ -767,9 +707,9 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 	var floatyTxt:FlxText;
 	var noteSplash:FlxSprite;
 	var icon:HealthIcon;
-	var iconSwing:String = 'Swing';
-	var healthBar:FlxSprite;
+	var iconAnim:String = 'Swing';
 	var rating:FlxSprite;
+    var skinArr:Array<String> = ['FNF', 'Denpa', 'Kade'];
 
 	public function new()
 	{
@@ -820,25 +760,20 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 
 		var option:Option = new Option('Icon Animation:',
 			"What animation should the healthbar icons do?",
-			'iconSwing',
+			'iconAnim',
 			'string',
 			'Swing',
-			['Swing', 'Snap', 'Squish', 'Stretch', 'Bop', 'Old',/* 'Fluid',*/ 'None']);
+			['Swing', 'Snap', 'Stretch', 'Bop', 'Old', 'None']);
 		addOption(option);
 		option.onChange = onChangeSwing;
 
-		var option:Option = new Option('Health Bar Transparency',
-			'How much transparent should the health bar and icons be.',
-			'healthBarAlpha',
-			'percent',
-			1);
-		option.onChange = onChangeHPTrans;
-		option.scrollSpeed = 1.6;
-		option.minValue = 0.0;
-		option.maxValue = 1;
-		option.changeValue = 0.1;
-		option.decimals = 1;
+		var option:Option = new Option('Animate Mouse',
+		'If unchecked, mouse will not play any animations on clicking or scrolling.',
+		'animateMouse',
+		'bool',
+		true);
 		addOption(option);
+		option.onChange = onChangeMouseAnimated;
 
 		var option:Option = new Option('Hide HUD',
 			'If checked, hides most HUD elements.',
@@ -847,12 +782,40 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 
-		var option:Option = new Option('Combo and Rating Skin:',
+		#if MODS_ALLOWED
+		var path:String = 'modsList.txt';
+		if(FileSystem.exists(path))
+		{
+			var leMods:Array<String> = CoolUtil.coolTextFile(path);
+			for (i in 0...leMods.length)
+			{
+				if(leMods.length > 1 && leMods[0].length > 0) {
+					var modSplit:Array<String> = leMods[i].split('|');
+					if(!Paths.ignoreModFolders.contains(modSplit[0].toLowerCase()) && !modsAdded.contains(modSplit[0]))
+					{
+						if(modSplit[1] == '1')
+							pushModSkinsToList(modSplit[0]);
+						else
+							modsAdded.push(modSplit[0]);
+					}
+				}
+			}
+		}
+
+		var arrayOfFolders:Array<String> = Paths.getModDirectories();
+		arrayOfFolders.push('');
+		for (folder in arrayOfFolders)
+		{
+			pushModSkinsToList(folder);
+		}
+		#end
+
+		var option:Option = new Option('Rating Skin:',
 			"What skin do you want?",
 			'uiSkin',
 			'string',
 			'FNF',
-			['FNF', 'Denpa', 'Kade']);
+			skinArr);
 		addOption(option);
 		option.onChange = onChangeSkin;
 
@@ -862,13 +825,6 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'string',
 			'Psych',
 			['Psych', 'Kade', 'Sarvente', 'FPS+', 'FNF+', 'FNM', 'Vanilla', 'None']);
-		addOption(option);
-
-		var option:Option = new Option('Sarvente Accuracy Display',
-			'If checked, shows the accuracy in Sarvente Score Display.',
-			'sarvAccuracy',
-			'bool',
-			false);
 		addOption(option);
 		
 		var option:Option = new Option('Score Text Zoom on Hit',
@@ -882,7 +838,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			"If checked, a display showing how many Perfects, Sicks, Etc. will be enabled.",
 			'ratingsDisplay',
 			'bool',
-			true);
+			false);
 		addOption(option);
 
 		var option:Option = new Option('Time Bar:',
@@ -890,176 +846,61 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'timeBarType',
 			'string',
 			'Time Left',
-			['Time Left', 'Time Elapsed', 'Song Name', 'Time Left (No Bar)', 'Time Elapsed (No Bar)', 'Disabled']);
+			['Time Left', 'Time Elapsed', 'Elapsed / Left', 'Song Name', 'Time Left (No Bar)', 'Time Elapsed (No Bar)', 'Elapsed / Left (No Bar)', 'Disabled']);
 		addOption(option);
-
-		var option:Option = new Option('Autoswap Time Bar Colour',
-			"If checked, the Time Bar's colour will change to fit the opponent.",
-			'changeTBcolour',
-			'bool',
-			true);
-		addOption(option);
-
-		/*var option:Option = new Option('Time Bar Red:',
-			"The Amount of Red in the Time Bar's Colour.",
-			'timeBarRed',
-			'int',
-			255);
-		addOption(option);
-
-		option.minValue = 0;
-		option.maxValue = 255;
-
-		var option:Option = new Option('Time Bar Green:',
-			"The Amount of Green in the Time Bar's Colour.",
-			'timeBarGreen',
-			'int',
-			255);
-		addOption(option);
-
-		option.minValue = 0;
-		option.maxValue = 255;
-
-		var option:Option = new Option('Time Bar Blue:',
-			"The Amount of Blue in the Time Bar's Colour.",
-			'timeBarBlue',
-			'int',
-			255);
-		addOption(option);*/
-
-		option.minValue = 0;
-		option.maxValue = 255;
 
 		super();
 
-		shouldZoom = ClientPrefs.camZooms;
+		shouldZoom = ClientPrefs.settings.get("camZooms");
 
-		floatyTxt = new FlxText(FlxG.width, FlxG.height/2 - 100, 0, "Denpa Engine v" + MainMenuState.denpaEngineVersion);
+		floatyTxt = new FlxText(FlxG.width, FlxG.height/2 - 100, 0, Main.denpaEngineVersion.formatted);
 		floatyTxt.scrollFactor.set();
 		floatyTxt.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		floatyTxt.visible = false;
-		floatyTxt.x -= floatyTxt.width*1.1;
+		floatyTxt.x = (descBox.x + descBox.width/2) - floatyTxt.width/2;
 		add(floatyTxt);
 
 		noteSplash = new FlxSprite(FlxG.width, FlxG.height/2 - 200);
 		noteSplash.frames = Paths.getSparrowAtlas('splashes/noteSplashes');
-		noteSplash.animation.addByPrefix('splash', 'note splash A 1', 24, false);
-		noteSplash.animation.play('splash');
-		noteSplash.antialiasing = ClientPrefs.globalAntialiasing;
+		noteSplash.animation.addByPrefix('splash1', 'note splash A 1', 24, false);
+		noteSplash.animation.addByPrefix('splash2', 'note splash B 1', 24, false);
+		noteSplash.animation.addByPrefix('splash3', 'note splash C 1', 24, false);
+		noteSplash.animation.addByPrefix('splash4', 'note splash D 1', 24, false);
+		noteSplash.animation.play('splash1');
 		noteSplash.visible = false;
 		noteSplash.x -= noteSplash.width*1.5;
 		add(noteSplash);
 
 		icon = new HealthIcon('bf', true);
-		icon.x = FlxG.width - icon.width*1.5;
+		icon.x = FlxG.width - 300;
 		icon.y = FlxG.height/2 - 75;
-		icon.antialiasing = ClientPrefs.globalAntialiasing;
 		icon.visible = false;
 		add(icon);
 
-		healthBar = new FlxSprite().makeGraphic(601, 19, FlxColor.BLACK);
-		healthBar.antialiasing = ClientPrefs.globalAntialiasing;
-		healthBar.visible = false;
-		var healthBarRed = new AttachedSprite.NGAttachedSprite(Std.int(healthBar.width/2)-3, 13, 0xFFFF0000);
-		healthBarRed.antialiasing = ClientPrefs.globalAntialiasing;
-		healthBarRed.xAdd = 3;
-		healthBarRed.yAdd = 3;
-		healthBarRed.sprTracker = healthBar;
-		healthBarRed.copyVisible = true;
-		healthBarRed.copyAlpha = true;
-		var healthBarGreen = new AttachedSprite.NGAttachedSprite(Std.int(healthBar.width/2)-3, 13, 0xFF54FF00);
-		healthBarGreen.antialiasing = ClientPrefs.globalAntialiasing;
-		healthBarGreen.xAdd = 301;
-		healthBarGreen.yAdd = 3;
-		healthBarGreen.sprTracker = healthBar;
-		healthBarGreen.copyVisible = true;
-		healthBarGreen.copyAlpha = true;
-		healthBar.x = FlxG.width - 620;
-		healthBar.y = FlxG.height/2 + 150;
-		healthBar.alpha = ClientPrefs.healthBarAlpha;
-		add(healthBar);
-		add(healthBarRed);
-		add(healthBarGreen);
-
-		rating = new FlxSprite(FlxG.width, FlxG.height/2 - 60).loadGraphic(Paths.image('ratings/sick-' + ClientPrefs.uiSkin.toLowerCase()));
+		rating = new FlxSprite(FlxG.width - 400, FlxG.height/2 - 60).loadGraphic(Paths.image('ratings/sick-' + ClientPrefs.settings.get("uiSkin").toLowerCase()));
 		rating.visible = false;
-		rating.antialiasing = ClientPrefs.globalAntialiasing;
 		rating.scale.set(0.6,0.6);
 		rating.updateHitbox();
-		rating.x -= rating.width*1.2;
 		add(rating);
 	}
 
+	var exiting = false;
 	override function beatHit() {
 		super.beatHit();
+		if (exiting) return;
 		if (canZoom && shouldZoom) {
-			if (curBeat % 2 == 0) FlxG.camera.zoom += 0.015;
+			if (curBeat % 2 == 0) this.cameras[0].zoom += 0.015;
 		}
 		if (noteSplash != null && noteSplash.visible) {
-			noteSplash.animation.play('splash');
+			noteSplash.animation.play('splash${FlxG.random.int(1,4)}');
 		}
-		if (icon != null && icon.visible) {
-			switch (iconSwing)
-			{
-				case 'Swing':
-				if (curBeat % 1 == 0) {
-					curBeat % (1 * 2) == 0 ? {
-						icon.scale.set(1.1, 0.8);
-		
-						FlxTween.angle(icon, -15, 0, Conductor.crochet / 1300, {ease: FlxEase.quadOut});
-					} : {
-						icon.scale.set(1.1, 1.3);
+		if (icon != null && icon.visible) icon.bop({curBeat: curBeat});
+	}
 
-						FlxTween.angle(icon, 15, 0, Conductor.crochet / 1300, {ease: FlxEase.quadOut});
-					}
-		
-					FlxTween.tween(icon, {'scale.x': 1, 'scale.y': 1}, Conductor.crochet / 1250, {ease: FlxEase.quadOut});
-		
-					icon.updateHitbox();
-				}
-				case 'Squish':
-					if (curBeat % 1 == 0) {
-						curBeat % (1 * 2) == 0 ? {
-							icon.scale.set(1.3, 0.3);
-						} : {
-							icon.scale.set(0.3, 1.3);
-						}
-			
-						FlxTween.tween(icon, {'scale.x': 1, 'scale.y': 1}, Conductor.crochet / 1250, {ease: FlxEase.quadOut});
-			
-						icon.updateHitbox();
-					}
-				case 'Bop':
-					icon.scale.set(1.2, 1.2);
-			
-					icon.updateHitbox();
-				case 'Old':
-					icon.setGraphicSize(Std.int(icon.width + 30));
-			
-					icon.updateHitbox();
-				case 'Snap':
-					if (curBeat % 1 == 0) {
-						curBeat % (1 * 2) == 0 ? {
-							icon.scale.set(1.1, 0.8);
-			
-							icon.angle = -15;
-						} : {
-							icon.scale.set(1.1, 1.3);
-
-							icon.angle = 15;
-						}
-			
-						FlxTween.tween(icon, {'scale.x': 1, 'scale.y': 1}, Conductor.crochet / 1250, {ease: FlxEase.quadOut});
-			
-						icon.updateHitbox();
-					}
-				case 'Stretch':
-					var funny:Float = (100 * 0.01) + 0.01;
-					icon.setGraphicSize(Std.int(icon.width + (50 * funny)),Std.int(150 - (25 * funny)));
-			
-					icon.updateHitbox();
-			}
-		}
+	override function destroy() {
+		FlxG.mouse.visible = false;
+		exiting = true;
+		super.destroy();
 	}
 
 	override function changeSelection(change:Int = 0) {
@@ -1067,14 +908,14 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		if (floatyTxt != null) {
 			floatyTxt.visible = false;
 			if (optionsArray[curSelected].name == 'Watermarks') {
-				floatyTxt.visible = ClientPrefs.watermarks;
+				floatyTxt.visible = ClientPrefs.settings.get("watermarks");
 			}
 		}
 
 		if (noteSplash != null) {
 			noteSplash.visible = false;
 			if (optionsArray[curSelected].name == 'Note Splashes') {
-				noteSplash.visible = ClientPrefs.noteSplashes;
+				noteSplash.visible = ClientPrefs.settings.get("noteSplashes");
 			}
 		}
 
@@ -1085,16 +926,9 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			}
 		}
 
-		if (healthBar != null) {
-			healthBar.visible = false;
-			if (optionsArray[curSelected].name == 'Health Bar Transparency') {
-				healthBar.visible = true;
-			}
-		}
-
 		if (rating != null) {
 			rating.visible = false;
-			if (optionsArray[curSelected].name == 'Combo and Rating Skin:') {
+			if (optionsArray[curSelected].name == 'Rating Skin:') {
 				rating.visible = true;
 			}
 		}
@@ -1103,79 +937,78 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		if (optionsArray[curSelected].name == 'Camera Zooms') {
 			canZoom = true;
 		}
+
+		FlxG.mouse.visible = false;
+		if (optionsArray[curSelected].name == 'Animate Mouse') {
+			FlxG.mouse.visible = true;
+		}
 	}
 
 	var elapsedtime:Float = 0;
 	override function update(elapsed) {
 		super.update(elapsed);
 		elapsedtime += elapsed;
-		FlxG.camera.zoom = FlxMath.lerp(1, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
+		this.cameras[0].zoom = FlxMath.lerp(1, this.cameras[0].zoom, CoolUtil.clamp(1 - (elapsed * 3.125), 0, 1));
 		if (floatyTxt != null) {
 			floatyTxt.y += FlxMath.fastSin(elapsedtime)/4;
 		}
-		if (icon != null) {
-			switch (iconSwing)
-			{
-				case 'Old':
-					icon.angle = 0;
-					icon.setGraphicSize(Std.int(FlxMath.lerp(150, icon.width, 0.50)));
-	
-					icon.updateHitbox();
-				case 'Stretch':
-					icon.angle = 0;
-					icon.setGraphicSize(Std.int(FlxMath.lerp(150, icon.width, 0.8)),Std.int(FlxMath.lerp(150, icon.height, 0.8)));
-			
-					icon.updateHitbox();
-				case 'Swing' | 'Snap':
-					//sex
-				case 'Squish':
-					icon.angle = 0;
-				default:
-					icon.angle = 0;
-					var mult:Float = FlxMath.lerp(1, icon.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
-					icon.scale.set(mult, mult);
-					icon.updateHitbox();
-			}
-		}
 	}
 
-	function onChangeZoom()
+	#if MODS_ALLOWED
+	private var modsAdded:Array<String> = [];
+	function pushModSkinsToList(folder:String)
 	{
-		shouldZoom = ClientPrefs.camZooms;
+		if(modsAdded.contains(folder)) return;
+
+		var skinFile:String = null;
+		if(folder != null && folder.trim().length > 0) skinFile = Paths.mods(folder + '/data/skins.txt');
+		else skinFile = Paths.mods('data/skins.txt');
+
+		if (FileSystem.exists(skinFile))
+		{
+			var firstarray:Array<String> = File.getContent(skinFile).split('::');
+			for (skin in firstarray)
+				skinArr.push(skin);
+		}
+		modsAdded.push(folder);
+	}
+	#end
+
+	inline function onChangeZoom()
+	{
+		shouldZoom = ClientPrefs.settings.get("camZooms");
 	}
 
-	function onChangeWatermarks()
+	inline function onChangeWatermarks()
 	{
 		if (floatyTxt != null)
-			floatyTxt.visible = ClientPrefs.watermarks;
+			floatyTxt.visible = ClientPrefs.settings.get("watermarks");
 	}
 
-	function onChangeSplash()
+	inline function onChangeSplash()
 	{
 		if (noteSplash != null) {
-			noteSplash.visible = ClientPrefs.noteSplashes;
-			noteSplash.animation.play('splash');
+			noteSplash.visible = ClientPrefs.settings.get("noteSplashes");
+			noteSplash.animation.play('splash${FlxG.random.int(1,4)}');
 		}
 	}
 
-	function onChangeSwing()
+	inline function onChangeSwing()
 	{
-		iconSwing = ClientPrefs.iconSwing;
+		iconAnim = ClientPrefs.settings.get("iconAnim");
 	}
 
-	function onChangeHPTrans()
-	{
-		if (healthBar != null) {
-			healthBar.alpha = ClientPrefs.healthBarAlpha;
-		}
-	}
-
-	function onChangeSkin()
+	inline function onChangeSkin()
 	{
 		if (rating != null)
-			rating.loadGraphic(Paths.image('ratings/sick-' + ClientPrefs.uiSkin.toLowerCase()));
+			rating.loadGraphic(Paths.image('ratings/sick-' + ClientPrefs.settings.get("uiSkin").toLowerCase()));
 	}
 
+	inline function onChangeMouseAnimated()
+	{
+		//if it complains about this not being a real value, rest assured its just vsc being vsc
+		flixel.input.mouse.FlxMouse.animated = ClientPrefs.settings.get("animateMouse");
+	}
 
 	function onChangeAntiAliasing()
 	{
@@ -1183,17 +1016,21 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		{
 			var sprite:Dynamic = sprite; //Make it check for FlxSprite instead of FlxBasic
 			var sprite:FlxSprite = sprite; //Don't judge me ok
-			if(sprite != null && (sprite is FlxSprite) && !(sprite is FlxText)) {
-				sprite.antialiasing = ClientPrefs.globalAntialiasing;
+			if(sprite != null && (Std.isOfType(sprite, FlxSprite)) && !(Std.isOfType(sprite, FlxText))) {
+				sprite.antialiasing = ClientPrefs.settings.get("globalAntialiasing");
 			}
+			FlxSprite.defaultAntialiasing = ClientPrefs.settings.get("globalAntialiasing");
+			FlxG.mouse.unload();
+			flixel.input.mouse.FlxMouse.antialiasing = ClientPrefs.settings.get("globalAntialiasing");
+			FlxG.mouse.load();
 		}
 	}
 
-	function onChangeLowQual()
+	inline function onChangeLowQual()
 	{
 		if (bgScroll != null) {
-			bgScroll.visible = !ClientPrefs.lowQuality;
-			bgScroll2.visible = !ClientPrefs.lowQuality;
+			bgScroll.visible = !ClientPrefs.settings.get("lowQuality");
+			bgScroll2.visible = !ClientPrefs.settings.get("lowQuality");
 		}
 	}
 }
@@ -1203,38 +1040,29 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 */
 class MiscSettingsSubState extends BaseOptionsMenu
 {
+	public static var instance:MiscSettingsSubState;
 	public function new()
 	{
 		title = 'Misc Settings';
 		rpcTitle = 'Misc Settings Menu'; //for Discord Rich Presence
 
-		var option:Option = new Option('Opponent CrossFade Limit',
-			"Determines the maximium amount of frames of CrossFade the opponent can have.",
-			'crossFadeLimit',
-			'int',
-			4);
-		addOption(option);
-
-		option.minValue = 1;
-		option.maxValue = 10;
-
-		var option:Option = new Option('BF CrossFade Limit',
-			"Determines the maximium amount of frames of CrossFade the player can have.",
-			'boyfriendCrossFadeLimit',
-			'int',
-			1);
-		addOption(option);
-
-		option.minValue = 1;
-		option.maxValue = 10;
-
-		var option:Option = new Option('CrossFade Mode:',
-			"What mode should CrossFade be in?",
-			'crossFadeMode',
+		var option:Option = new Option('Pause Screen Song:',
+			"What song do you prefer for the Pause Screen?",
+			'pauseMusic',
 			'string',
-			'Mid-Fight Masses',
-			['Mid-Fight Masses', 'Static', 'Eccentric', 'Off']);
+			'OVERDOSE',
+			['None', 'Breakfast', 'Property Surgery', 'OVERDOSE']);
 		addOption(option);
+		option.onChange = onChangePauseMusic;
+
+		//! Unfinished (Still needs colour functionality fixed)
+		var option:Option = new Option('CrossFade Options',
+			"Open CrossFade options submenu.",
+			'crossFadeLink',
+			'link',
+			false);
+		addOption(option);
+		option.onChange = openCrossfadeOptions;
 
 		var option:Option = new Option('Cutscenes:',
 			'When do you want cutscenes to play?',
@@ -1258,45 +1086,30 @@ class MiscSettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
-		var option:Option = new Option('Cam Move Mode:',
-			"How do you want the camera movement to behave?",
-			'camPanMode',
-			'string',
-			'Always',
-			['Always', 'Camera Focus', 'BF Only', 'Oppt Only', 'Player 4 Only']);
-		addOption(option);
-
 		var option:Option = new Option('Ghost Tapping Miss Animation',
 			"If checked, the player will do miss animations when you press the arrows while Ghost Tapping is enabled. If unchecked, the player will do normal sing animations instead.",
-			'gsmiss',
+			'gsMiss',
 			'bool',
 			false);
 		addOption(option);
 
-		var option:Option = new Option('Opponent Always Dance',
-			"If unchecked, the opponent only dances when the camera is on BF.",
-			'opponentAlwaysDance',
-			'bool',
-			true);
-		addOption(option);
-
-		var option:Option = new Option('Opponent Note Animations',
-			"If unchecked, the opponent's strums will not light up.",
-			'opponentNoteAnimations',
-			'bool',
-			true);
-		addOption(option);
-
 		var option:Option = new Option('Icon Flinching',
 			"If checked, Missing will cause the player's icon to show the dying animation temporarily.",
-			'flinchy',
+			'flinching',
 			'bool',
 			true);
+		addOption(option);
+
+		var option:Option = new Option('Disable Botplay Icon',
+			"If checked, The botplay icon will be disabled and not replace the normal icon on botplay.",
+			'disableBotIcon',
+			'bool',
+			false);
 		addOption(option);
 
 		var option:Option = new Option('OG Healthbar',
 			"If checked, the healthbar's colours will be set to Red/Green globally.",
-			'greenhp',
+			'ogHp',
 			'bool',
 			false);
 		addOption(option);
@@ -1308,20 +1121,6 @@ class MiscSettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 
-		var option:Option = new Option('Combo Pop Up',
-			'If checked, the unused Combo Sprite will appear after getting a combo of 10 or more.',
-			'comboPopup',
-			'bool',
-			false);
-		addOption(option);
-
-		var option:Option = new Option('Combo Stacking',
-			"If unchecked, Ratings and Combo won't stack, saving on System Memory and making them easier to read",
-			'comboStacking',
-			'bool',
-			false);
-		addOption(option);
-
 		var option:Option = new Option('MS Timing Text',
 			'If checked, text displaying your MS timing will appear when hitting a note.',
 			'msPopup',
@@ -1329,17 +1128,537 @@ class MiscSettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
-		var option:Option = new Option('MS Display Precision:',
-			"How precise the MS Timing display is. Lower numbers = less precise. 0 is only Integers.",
-			'msPrecision',
-			'int',
-			2);
-		addOption(option);
-
-		option.minValue = 0;
-		option.maxValue = 9;
-
 		super();
+
+		instance = this;
+	}
+	
+	var changedMusic:Bool = false;
+	function onChangePauseMusic()
+	{
+		if(ClientPrefs.settings.get("pauseMusic") == 'None')
+			FlxG.sound.music.volume = 0;
+		else
+			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.settings.get("pauseMusic"))));
+
+		changedMusic = true;
+	}
+
+	function openCrossfadeOptions() {
+		for (option in grpOptions) {
+			if (option.text != 'CrossFade Options') {
+				option.align = 'none';
+				FlxTween.tween(option, {x: option.x - 1280}, 0.48, {ease: FlxEase.expoIn});
+			} else {
+				option.align = 'center';
+				FlxTween.tween(option, {y: option.y - 720}, 0.66, {
+					startDelay: 0.15,
+					ease: FlxEase.expoIn,
+					onComplete: _ -> {
+						persistentUpdate = false;
+						openSubState(new CrossFadeSettingsSubState());
+					}
+				});
+			}
+		}
+	}
+
+	override function destroy()
+	{
+		if(changedMusic) FlxG.sound.playMusic(Paths.music('msm'));
+		instance = null;
+		super.destroy();
+	}
+}
+
+/**
+* State used to adjust misc settings, which do not fit in the other classifications.
+*/
+class CrossFadeSettingsSubState extends MusicBeatSubstate
+{
+	var boyfriend:Boyfriend;
+	var crossfade:Boyfriend;
+	var selectedOption:Int = 0;
+	var selectedVertical:Int = 0;
+	var lastOption:Int = 0; //we use this one so you can scroll inside the suboptions without scrolling the entire thing
+	var crossfadeTween:FlxTween = null;
+	var split:Bool = false;
+	var grpOptions:FlxTypedGroup<Alphabet>;
+	var grpAttached:FlxTypedGroup<AttachedText>;
+	final optionsShit:Map<String, Array<String>> = [
+		'Mode' => ['Default', 'Static', 'Subtle', 'Eccentric', 'Off'],
+		'Color' => ['Healthbar', 'RGB', 'HSB']
+	];
+	public function new()
+	{
+		super();
+
+		var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bg.color = 0xFF98f0f8;
+		bg.screenCenter();
+		add(bg);
+
+		var bgScroll:FlxBackdrop = null;
+		var bgScroll2:FlxBackdrop = null;
+		if (!ClientPrefs.settings.get("lowQuality")) {
+			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll.velocity.set(29, 30);
+			add(bgScroll);
+	
+			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll2.velocity.set(-29, -30);
+			add(bgScroll2);
+		}
+
+		var gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
+		gradient.scrollFactor.set(0, 0);
+		add(gradient);
+
+		bg.color = SoundTestState.getDaColor();
+		if (!ClientPrefs.settings.get("lowQuality")) {
+			bgScroll.color = SoundTestState.getDaColor();
+			bgScroll2.color = SoundTestState.getDaColor();
+		}
+		gradient.color = SoundTestState.getDaColor();
+
+		boyfriend = new Boyfriend(0, 0);
+		add(boyfriend);
+		resetBoyfriend();
+
+		crossfade = new Boyfriend(boyfriend.x, boyfriend.y);
+		insert(members.indexOf(boyfriend) - 1, crossfade);
+		resetCrossfade();
+
+		grpOptions = new FlxTypedGroup<Alphabet>();
+		add(grpOptions);
+		grpAttached = new FlxTypedGroup<AttachedText>();
+		add(grpAttached);
+		for (i=>name in ['Mode', /*'Color',*/ 'Alpha', 'Fade Time'])
+		{
+			var alphabet = new Alphabet(0, 500, name, true, false, 0.05, 1);
+			alphabet.x = FlxG.width/2 - alphabet.width/2;
+			alphabet.ID = i;
+			alphabet.align = 'none';
+			alphabet.targetY = 1.15;
+			grpOptions.add(alphabet);
+			switch (name) {
+				case 'Mode':
+					var attached = new AttachedText(ClientPrefs.settings.get('crossFadeData')[0], 0, 30, false, 0.9);
+					attached.copyAlpha = false;
+					attached.sprTracker = alphabet;
+					attached.targetY = 1;
+					attached.ID = 0;
+					attached.yMult = i;
+					grpAttached.add(attached);
+				/*case 'Color':
+					var attached = new AttachedText(ClientPrefs.settings.get('crossFadeData')[1], 0, 20, false, 0.9);
+					attached.copyAlpha = false;
+					attached.sprTracker = alphabet;
+					attached.targetY = 1;
+					attached.ID = 0;
+					attached.yMult = i;
+					grpAttached.add(attached);
+
+					var attached = new AttachedText('Red: ' + ClientPrefs.settings.get('crossFadeData')[2][0], 0, 70, false, 0.7);
+					attached.copyAlpha = false;
+					attached.sprTracker = alphabet;
+					attached.alignAdd = -350;
+					attached.targetY = 2;
+					attached.ID = 0;
+					attached.yMult = i;
+					grpAttached.add(attached);
+
+					var attached = new AttachedText('Green: ' + ClientPrefs.settings.get('crossFadeData')[2][1], 0, 70, false, 0.7);
+					attached.copyAlpha = false;
+					attached.sprTracker = alphabet;
+					attached.targetY = 2;
+					attached.ID = 1;
+					attached.yMult = i;
+					grpAttached.add(attached);
+
+					var attached = new AttachedText('Blue: ' + ClientPrefs.settings.get('crossFadeData')[2][2], 0, 70, false, 0.7);
+					attached.copyAlpha = false;
+					attached.sprTracker = alphabet;
+					attached.alignAdd = 350;
+					attached.targetY = 2;
+					attached.ID = 2;
+					attached.yMult = i;
+					grpAttached.add(attached);*/
+				case 'Alpha':
+					var attached = new AttachedText(ClientPrefs.settings.get('crossFadeData')[3], 0, 30, false, 0.9);
+					attached.copyAlpha = false;
+					attached.sprTracker = alphabet;
+					attached.targetY = 1;
+					attached.ID = 0;
+					attached.yMult = i;
+					grpAttached.add(attached);
+				case 'Fade Time':
+					var attached = new AttachedText(ClientPrefs.settings.get('crossFadeData')[4], 0, 30, false, 0.9);
+					attached.copyAlpha = false;
+					attached.sprTracker = alphabet;
+					attached.targetY = 1;
+					attached.ID = 0;
+					attached.yMult = i;
+					grpAttached.add(attached);
+			}
+		}
+		updateRGBTexts();
+
+		var titleText:FlxText = new FlxText(0, 20, 0, "Crossfade", 24);
+		titleText.setFormat(Paths.font("calibri-regular.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xff59136d);
+		titleText.x += 14;
+		titleText.y -= 3;
+
+		var titleBG:FlxSprite = new FlxSprite(0,30).loadGraphic(Paths.image('oscillators/optionsbg'));
+		titleBG.setGraphicSize(Std.int(titleText.width*1.225), Std.int(titleText.height/1.26));
+		titleBG.updateHitbox();
+		add(titleBG);
+		add(titleText);
+
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDown);
+
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]];
+	}
+
+	override function update(elapsed:Float) {
+		Conductor.songPosition = FlxG.sound.music.time;
+		final lerpVal:Float = CoolUtil.clamp(elapsed * 9.6, 0, 1);
+		grpOptions.forEach(alphabet -> {
+			alphabet.x = FlxMath.lerp(alphabet.x, (FlxG.width/2 * ((alphabet.ID - lastOption)+1)) - alphabet.width/2, lerpVal);
+			alphabet.alpha = (lastOption == alphabet.ID ? 1 : 0.6);
+		});
+		grpAttached.forEach(attached -> {
+			attached.offsetX = FlxMath.lerp(attached.offsetX, attached.alignAdd + (attached.sprTracker.width/2 - attached.width/2), lerpVal);
+			attached.alpha = ((selectedVertical == attached.targetY && selectedOption == attached.ID && attached.yMult == lastOption) ? 1 : 0.6);
+		});
+		super.update(elapsed);
+		//if (ClientPrefs.controllerEnabled) checkInputs();
+	}
+
+	override function beatHit() {
+		super.beatHit();
+		if (boyfriend == null || boyfriend.animation == null || boyfriend.animation.curAnim.name.startsWith('sing')) return;
+		boyfriend.dance();
+	}
+
+	function keyDown(event:KeyboardEvent) {
+		var eventKey:FlxKey = event.keyCode;
+		if (eventKey == NONE) return;
+		switch (eventKey) {
+			case SPACE:
+				split = !split;
+				resetBoyfriend();
+				resetCrossfade();
+				return;
+			default:
+				//kys
+		}
+		checkInputs();
+	}
+
+	function checkInputs() {
+		if (control('back')) close();
+		if (control('ui_left_p')) changeOption(-1);
+		if (control('ui_right_p')) changeOption(1);
+		if (control('ui_up_p')) changeVertical(-1);
+		if (control('ui_down_p')) changeVertical(1);
+		if (control('reset') && selectedVertical > 0) reset();
+		/*if (control('accept') && selectedVertical == 2) {
+			changingRGB = !changingRGB;
+			FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+		}*/
+		final pressedArrows:Array<Bool> = [control('note_41_p'), control('note_42_p'), control('note_43_p'), control('note_44_p')];
+		final dirs:Array<String> = ['LEFT', 'DOWN', 'UP', 'RIGHT'];
+		for (i=>pressed in pressedArrows) if (pressed) playCrossfade('sing${dirs[i]}');
+	}
+
+	var changingRGB:Bool = false;
+	function changeOption(change:Int = 0) {
+		if (selectedVertical != 1 && !changingRGB) {
+			selectedOption += change;
+			final max = (selectedVertical == 0 ? /*3*/2 : (selectedVertical == 1 ? 0 : 2));
+			if (selectedOption > max) selectedOption = 0;
+			if (selectedOption < 0) selectedOption = max;
+			if (selectedVertical < 1) lastOption = selectedOption;
+			FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+		} else {
+			changeData(change);
+		}
+	}
+
+	function changeData(change:Int) {
+		//! THIS IS A MESS
+		switch (lastOption) {
+			case 0:
+				grpAttached.forEach(attached -> {
+					if (attached.yMult == 0) {
+						var arr = optionsShit.get('Mode');
+						var index = arr.indexOf(attached.text);
+						index += change;
+						if (index > arr.length-1) index = 0;
+						if (index < 0) index = arr.length-1;
+						attached.changeText(arr[index]);
+						var curDat = ClientPrefs.settings.get('crossFadeData');
+						curDat[0] = arr[index];
+						ClientPrefs.settings.set('crossFadeData', curDat);
+					}
+				});
+			/*case 1:
+				if (selectedVertical == 1) {
+					grpAttached.forEach(attached -> {
+						if (attached.yMult == 1 && attached.targetY == 1) {
+							var arr = optionsShit.get('Color');
+							var index = arr.indexOf(attached.text);
+							index += change;
+							if (index > arr.length-1) index = 0;
+							if (index < 0) index = arr.length-1;
+							attached.changeText(arr[index]);
+							var curDat = ClientPrefs.settings.get('crossFadeData');
+							curDat[1] = arr[index];
+							ClientPrefs.settings.set('crossFadeData', curDat);
+						}
+					});
+					updateRGBMax();
+					updateRGBTexts();
+				} else {
+					var curDat = ClientPrefs.settings.get('crossFadeData');
+					curDat[2][selectedOption] += change;
+					ClientPrefs.settings.set('crossFadeData', curDat);
+					updateRGBMax();
+					updateRGBTexts();
+				}*/
+			case /*2*/1:
+				grpAttached.forEach(attached -> {
+					if (attached.yMult == /*2*/1) {
+						var curDat = ClientPrefs.settings.get('crossFadeData');
+						curDat[3] += 0.05 * change;
+						curDat[3] = FlxMath.bound(curDat[3], 0.05, 1);
+						ClientPrefs.settings.set('crossFadeData', curDat);
+						attached.changeText(Std.string(curDat[3]));
+					}
+				});
+			case /*3*/2:
+				grpAttached.forEach(attached -> {
+					if (attached.yMult == /*3*/2) {
+						var curDat = ClientPrefs.settings.get('crossFadeData');
+						curDat[4] += 0.05 * change;
+						curDat[4] = FlxMath.bound(curDat[4], 0.05, 2);
+						ClientPrefs.settings.set('crossFadeData', curDat);
+						attached.changeText(Std.string(curDat[4]));
+					}
+				});
+		}
+		resetCrossfade();
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.3);
+	}
+
+	function reset() {
+		switch (lastOption) {
+			case 0:
+				grpAttached.forEach(attached -> {
+					if (attached.yMult == 0) {
+						var curDat = ClientPrefs.settings.get('crossFadeData');
+						curDat[0] = 'Default';
+						attached.changeText(curDat[0]);
+						ClientPrefs.settings.set('crossFadeData', curDat);
+					}
+				});
+			/*case 1:
+				if (selectedVertical == 1) {
+					grpAttached.forEach(attached -> {
+						if (attached.yMult == 1 && attached.targetY == 1) {
+							var curDat = ClientPrefs.settings.get('crossFadeData');
+							curDat[1] = 'Healthbar';
+							attached.changeText(curDat[1]);
+							ClientPrefs.settings.set('crossFadeData', curDat);
+						}
+					});
+					updateRGBMax();
+					updateRGBTexts();
+				} else {
+					var curDat = ClientPrefs.settings.get('crossFadeData');
+					curDat[2][selectedOption] = 255;
+					ClientPrefs.settings.set('crossFadeData', curDat);
+					updateRGBMax();
+					updateRGBTexts();
+				}*/
+			case /*2*/1:
+				grpAttached.forEach(attached -> {
+					if (attached.yMult == /*2*/1) {
+						var curDat = ClientPrefs.settings.get('crossFadeData');
+						curDat[3] = 0.3;
+						ClientPrefs.settings.set('crossFadeData', curDat);
+						attached.changeText(Std.string(curDat[3]));
+					}
+				});
+			case /*3*/2:
+				grpAttached.forEach(attached -> {
+					if (attached.yMult == /*3*/2) {
+						var curDat = ClientPrefs.settings.get('crossFadeData');
+						curDat[4] = 0.35;
+						ClientPrefs.settings.set('crossFadeData', curDat);
+						attached.changeText(Std.string(curDat[4]));
+					}
+				});
+		}
+		resetCrossfade();
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.3);
+	}
+
+	function updateRGBMax() {
+		/*var curDat = ClientPrefs.settings.get('crossFadeData');
+		final max = (curDat[1] == 'HSB' ? 360 : 255);
+		if (curDat[2][0] > max) curDat[2][0] = 0;
+		if (curDat[2][0] < 0) curDat[2][0] = max;
+		final max = (curDat[1] == 'HSB' ? 100 : 255);
+		if (curDat[2][1] > max) curDat[2][1] = 0;
+		if (curDat[2][1] < 0) curDat[2][1] = max;
+		final max = (curDat[1] == 'HSB' ? 100 : 255);
+		if (curDat[2][2] > max) curDat[2][2] = 0;
+		if (curDat[2][2] < 0) curDat[2][2] = max;
+		ClientPrefs.settings.set('crossFadeData', curDat);*/
+	}
+
+	function updateRGBTexts() {
+		/*grpAttached.forEach(attached -> {
+			if (attached.targetY == 2) {
+				switch (attached.ID) {
+					case 0:
+						switch (ClientPrefs.settings.get('crossFadeData')[1]) {
+							case 'Healthbar':
+								attached.changeText('N/A');
+							case 'RGB':
+								attached.changeText('Red: ${ClientPrefs.settings.get('crossFadeData')[2][0]}');
+							case 'HSB':
+								attached.changeText('Hue: ${ClientPrefs.settings.get('crossFadeData')[2][0]}');
+						}
+					case 1:
+						switch (ClientPrefs.settings.get('crossFadeData')[1]) {
+							case 'Healthbar':
+								attached.changeText('N/A');
+							case 'RGB':
+								attached.changeText('Green: ${ClientPrefs.settings.get('crossFadeData')[2][1]}');
+							case 'HSB':
+								attached.changeText('Saturation: ${ClientPrefs.settings.get('crossFadeData')[2][1]}');
+						}
+					case 2:
+						switch (ClientPrefs.settings.get('crossFadeData')[1]) {
+							case 'Healthbar':
+								attached.changeText('N/A');
+							case 'RGB':
+								attached.changeText('Blue: ${ClientPrefs.settings.get('crossFadeData')[2][2]}');
+							case 'HSB':
+								attached.changeText('Brightness: ${ClientPrefs.settings.get('crossFadeData')[2][2]}');
+						}
+				}
+			}
+		});*/
+	}
+
+	function changeVertical(change:Int = 0) {
+		selectedVertical += change;
+		var max = (lastOption == 1 ? 2 : 1);
+		if (selectedVertical < 0) selectedVertical = 0;
+		if (selectedVertical > max) selectedVertical = max;
+		if (selectedVertical > 0) selectedOption = 0;
+		else selectedOption = lastOption;
+		changingRGB = false;
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+	}
+
+	function playCrossfade(anim:String = 'singRIGHT') {
+		resetCrossfade();
+		if (boyfriend == null || boyfriend.animation == null || crossfade == null || crossfade.animation == null) return;
+
+		boyfriend.playAnim(anim, true);
+		crossfade.playAnim(anim, true);
+		switch (ClientPrefs.settings.get('crossFadeData')[0])
+		{
+			case 'Static':
+				crossfade.x = boyfriend.x + -60;
+				crossfade.y = boyfriend.y - 48;
+			case 'Subtle':
+				crossfade.x = boyfriend.x;
+				crossfade.y = boyfriend.y;
+			case 'Eccentric':
+				crossfade.x = boyfriend.x + FlxG.random.float(-20,90);
+				crossfade.y = boyfriend.y + FlxG.random.float(-80, 80);
+			default:
+				crossfade.x = boyfriend.x + FlxG.random.float(0,60);
+				crossfade.y = boyfriend.y + FlxG.random.float(-50, 50);
+		}
+		if (split) crossfade.x += FlxG.width * 0.6;
+
+		final fuck = FlxG.random.bool(70);
+		final velo = 12 * (ClientPrefs.settings.get('crossFadeData')[0] == 'Eccentric' ? 8 : 5);
+		switch (ClientPrefs.settings.get('crossFadeData')[0])
+		{
+			case 'Static' | 'Subtle':
+				crossfade.velocity.x = 0;
+			case 'Eccentric':
+				crossfade.velocity.x = (fuck ? velo : -velo);
+				crossfade.acceleration.x = (crossfade.velocity.x > 0 ? FlxG.random.int(25,75) : FlxG.random.int(-25,-75));
+			default:
+				crossfade.velocity.x = (fuck ? velo : -velo);
+				crossfade.acceleration.x = (crossfade.velocity.x > 0 ? FlxG.random.int(4,12) : FlxG.random.int(-4,-12));
+		}
+		crossfadeTween = FlxTween.tween(crossfade, {alpha: 0}, ClientPrefs.settings.get('crossFadeData')[4], {
+			onComplete: _ -> {
+				resetBoyfriend();
+				resetCrossfade();
+			}
+		});
+	}
+
+	function resetCrossfade() {
+		if (crossfadeTween != null) {
+			crossfadeTween.cancel();
+			crossfadeTween = null;
+		}
+		if (crossfade == null || crossfade.animation == null) return;
+		crossfade.velocity.set(0, 0);
+		crossfade.acceleration.set(0, 0);
+		crossfade.setPosition((split ? boyfriend.x + FlxG.width * 0.6 : boyfriend.x), boyfriend.y);
+		crossfade.alpha = ClientPrefs.settings.get('crossFadeData')[3];
+		crossfade.visible = !(ClientPrefs.settings.get('crossFadeData')[0] == 'Off');
+		crossfade.color = 0xFF1b008c;
+		//?? does not work ??
+		var curDat:Array<Dynamic> = cast ClientPrefs.settings.get('crossFadeData');
+		if (curDat[1] == 'RGB')
+			crossfade.color = FlxColor.fromRGB(curDat[1][0], curDat[1][1], curDat[1][2]);
+		if (curDat[1] == 'HSB')
+			crossfade.color = FlxColor.fromHSB(curDat[1][0], curDat[1][1]/100, curDat[1][2]/100);
+		/*crossfade.color = (ClientPrefs.settings.get('crossFadeData')[1] == 'Healthbar' ?0xFF1b008c : 
+		ClientPrefs.settings.get('crossFadeData')[1] == 'RGB' ? 
+			FlxColor.fromRGB(ClientPrefs.settings.get('crossFadeData')[1][0], ClientPrefs.settings.get('crossFadeData')[1][1], ClientPrefs.settings.get('crossFadeData')[1][2]) : 
+			FlxColor.fromHSB(ClientPrefs.settings.get('crossFadeData')[1][0], ClientPrefs.settings.get('crossFadeData')[1][1]/100, ClientPrefs.settings.get('crossFadeData')[1][2]/100));*/
+		crossfade.dance();
+	}
+
+	function resetBoyfriend() {
+		if (boyfriend == null || boyfriend.animation == null) return;
+		boyfriend.screenCenter(X);
+		boyfriend.y = FlxG.height * 0.13;
+		boyfriend.dance();
+		if (split) boyfriend.x -= FlxG.width * 0.3;
+	}
+
+	override function close() {
+		if (crossfadeTween != null) {
+			crossfadeTween.cancel();
+			crossfadeTween = null;
+		}
+		crossfade.destroy();
+		boyfriend.destroy();
+		FlxG.sound.play(Paths.sound('cancelMenu'));
+		ClientPrefs.saveSettings();
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDown);
+		super.close();
+		if (MiscSettingsSubState.instance == null) return;
+		MiscSettingsSubState.instance.persistentUpdate = true;
+		for (option in MiscSettingsSubState.instance.grpOptions) {
+			option.align = 'left';
+		}
 	}
 }
 
@@ -1352,10 +1671,10 @@ class ControlsSubState extends MusicBeatSubstate {
 
 	var optionShit:Array<Dynamic> = [
 		['NOTES'],
-		['Left', 'note_four1'],
-		['Down', 'note_four2'],
-		['Up', 'note_four3'],
-		['Right', 'note_four4'],
+		['Left', 'note_41'],
+		['Down', 'note_42'],
+		['Up', 'note_43'],
+		['Right', 'note_44'],
 		[''],
 		['UI'],
 		['Left', 'ui_left'],
@@ -1367,6 +1686,7 @@ class ControlsSubState extends MusicBeatSubstate {
 		['Accept', 'accept'],
 		['Back', 'back'],
 		['Pause', 'pause'],
+		['Manual', 'manual'],
 		[''],
 		['VOLUME'],
 		['Mute', 'volume_mute'],
@@ -1374,67 +1694,69 @@ class ControlsSubState extends MusicBeatSubstate {
 		['Down', 'volume_down'],
 		[''],
 		['DEBUG'],
-		['Key 1', 'debug_1'],
-		['Key 2', 'debug_2'],
+		['Editor 1', 'debug_1'],
+		['Editor 2', 'debug_2'],
+		['Display', 'debug_3'],
+		['RAM Pie', 'debug_4'],
 		[''],
 		['MULTIKEY'],
 		[''],
 		['1K'],
-		['Center', 'note_one1'],
+		['Center', 'note_11'],
 		[''],
 		['2K'],
-		['Left', 'note_two1'],
-		['Right', 'note_two2'],
+		['Left', 'note_21'],
+		['Right', 'note_22'],
 		[''],
 		['3K'],
-		['Left', 'note_three1'],
-		['Center', 'note_three2'],
-		['Right', 'note_three3'],
+		['Left', 'note_31'],
+		['Center', 'note_32'],
+		['Right', 'note_33'],
 		[''],
 		['5K'],
-		['Left', 'note_five1'],
-		['Down', 'note_five2'],
-		['Center', 'note_five3'],
-		['Up', 'note_five4'],
-		['Right', 'note_five5'],
+		['Left', 'note_51'],
+		['Down', 'note_52'],
+		['Center', 'note_53'],
+		['Up', 'note_54'],
+		['Right', 'note_55'],
 		[''],
 		['6K'],
-		['Left 1', 'note_six1'],
-		['Up', 'note_six2'],
-		['Right 1', 'note_six3'],
-		['Left 2', 'note_six4'],
-		['Down', 'note_six5'],
-		['Right 2', 'note_six6'],
+		['Left 1', 'note_61'],
+		['Up', 'note_62'],
+		['Right 1', 'note_63'],
+		['Left 2', 'note_64'],
+		['Down', 'note_65'],
+		['Right 2', 'note_66'],
 		[''],
 		['7K'],
-		['Left 1', 'note_seven1'],
-		['Up', 'note_seven2'],
-		['Right 1', 'note_seven3'],
-		['Center', 'note_seven4'],
-		['Left 2', 'note_seven5'],
-		['Down', 'note_seven6'],
-		['Right 2', 'note_seven7'],
+		['Left 1', 'note_71'],
+		['Up', 'note_72'],
+		['Right 1', 'note_73'],
+		['Center', 'note_74'],
+		['Left 2', 'note_75'],
+		['Down', 'note_76'],
+		['Right 2', 'note_77'],
 		[''],
 		['8K'],
-		['Left 1', 'note_eight1'],
-		['Down 1', 'note_eight2'],
-		['Up 1', 'note_eight3'],
-		['Right 1', 'note_eight4'],
-		['Left 2', 'note_eight5'],
-		['Down 2', 'note_eight6'],
-		['Up 2', 'note_eight7'],
-		['Right 2', 'note_eight8'],
+		['Left 1', 'note_81'],
+		['Down 1', 'note_82'],
+		['Up 1', 'note_83'],
+		['Right 1', 'note_84'],
+		['Left 2', 'note_85'],
+		['Down 2', 'note_86'],
+		['Up 2', 'note_87'],
+		['Right 2', 'note_88'],
 		[''],
 		['9K'],
-		['Left 1', 'note_nine1'],
-		['Down 1', 'note_nine2'],
-		['Up 1', 'note_nine3'],
-		['Right 1', 'note_nine4'],
-		['Center', 'note_nine5'],
-		['Left 2', 'note_nine6'],
-		['Down 2', 'note_nine7'],
-		['Up 2', 'note_nine8'],
-		['Right 2', 'note_nine9']
+		['Left 1', 'note_91'],
+		['Down 1', 'note_92'],
+		['Up 1', 'note_93'],
+		['Right 1', 'note_94'],
+		['Center', 'note_95'],
+		['Left 2', 'note_96'],
+		['Down 2', 'note_97'],
+		['Up 2', 'note_98'],
+		['Right 2', 'note_99']
 	];
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
@@ -1447,6 +1769,9 @@ class ControlsSubState extends MusicBeatSubstate {
 	var gradient:FlxSprite;
 	var bgScroll:FlxBackdrop;
 	var bgScroll2:FlxBackdrop;
+	var tipBox:AttachedSprite.NGAttachedSprite;
+	var tipTxt:FlxText;
+	var tipTxtTween:FlxTween = null;
 
 	public function new() {
 		super();
@@ -1454,28 +1779,24 @@ class ControlsSubState extends MusicBeatSubstate {
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFF98f0f8;
 		bg.screenCenter();
-		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 
-		if (!ClientPrefs.lowQuality) {
-			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
+		if (!ClientPrefs.settings.get("lowQuality")) {
+			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll.velocity.set(29, 30);
 			add(bgScroll);
 	
-			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-			bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
-			bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
+			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll2.velocity.set(-29, -30);
 			add(bgScroll2);
 		}
 
 		gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
-		gradient.antialiasing = ClientPrefs.globalAntialiasing;
 		gradient.scrollFactor.set(0, 0);
 		add(gradient);
 
 		bg.color = SoundTestState.getDaColor();
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
 			bgScroll.color = SoundTestState.getDaColor();
 			bgScroll2.color = SoundTestState.getDaColor();
 		}
@@ -1525,6 +1846,20 @@ class ControlsSubState extends MusicBeatSubstate {
 			}
 		}
 		changeSelection();
+
+		tipTxt = new FlxText(FlxG.width + 10, 0, 0, 'Press any key to rebind...', 32).setFormat("VCR OSD Mono", 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.NONE, FlxColor.BLACK);
+		tipTxt.screenCenter(Y);
+		tipTxt.scrollFactor.set();
+		tipTxt.active = false;
+
+		tipBox = new NGAttachedSprite(Std.int(tipTxt.width + 10), Std.int(tipTxt.height + 10), 0xff000000);
+		tipBox.alpha = 0.6;
+		tipBox.xAdd = tipBox.yAdd = -5;
+		tipBox.sprTracker = tipTxt;
+		add(tipBox);
+		add(tipTxt);
+
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
 	var leaving:Bool = false;
@@ -1545,12 +1880,12 @@ class ControlsSubState extends MusicBeatSubstate {
 				changeAlt();
 			}
 
-			if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
-				{
-					changeSelection(-shiftMult * FlxG.mouse.wheel);
-				}
+			if(FlxG.mouse.wheel != 0)
+			{
+				changeSelection(-shiftMult * FlxG.mouse.wheel);
+			}
 
-			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls)) {
+			if (controls.BACK) {
 				ClientPrefs.reloadControls();
 				close();
 				FlxG.sound.play(Paths.sound('cancelMenu'));
@@ -1566,10 +1901,15 @@ class ControlsSubState extends MusicBeatSubstate {
 					bindingTime = 0;
 					rebindingKey = true;
 					if (curAlt) {
-						grpInputsAlt[getInputTextNum()].alpha = 0;
+						grpInputsAlt[getInputTextNum()].alpha = 0.06;
 					} else {
-						grpInputs[getInputTextNum()].alpha = 0;
+						grpInputs[getInputTextNum()].alpha = 0.06;
 					}
+					tipTxt.screenCenter(Y);
+					tipTxt.y -= 220;
+					tipTxt.x = FlxG.width + 10;
+					if (tipTxtTween != null) tipTxtTween.cancel();
+					tipTxtTween = FlxTween.tween(tipTxt, {x: tipTxt.x - (tipTxt.width + 20)}, 0.4, {ease: FlxEase.sineInOut});
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 				}
 			}
@@ -1583,10 +1923,15 @@ class ControlsSubState extends MusicBeatSubstate {
 				if(keysArray[opposite] == keysArray[1 - opposite]) {
 					keysArray[opposite] = NONE;
 				}
+				keysArray.remove(NONE); //lazy yes but i dont know how to do this without doing = null which is dumb
 				ClientPrefs.keyBinds.set(optionShit[curSelected][1], keysArray);
 
 				reloadKeys();
 				FlxG.sound.play(Paths.sound('confirmMenu'));
+				tipTxt.screenCenter(Y);
+				tipTxt.y -= 220;
+				if (tipTxtTween != null) tipTxtTween.cancel();
+				tipTxt.x = FlxG.width + 10;
 				rebindingKey = false;
 			}
 
@@ -1698,13 +2043,17 @@ class ControlsSubState extends MusicBeatSubstate {
 
 	private function addBindTexts(optionText:Alphabet, num:Int) {
 		var keys:Array<Dynamic> = ClientPrefs.keyBinds.get(optionShit[num][1]);
-		var text1 = new AttachedText(InputFormatter.getKeyName(keys[0]), 400, -55);
+		var name1 = InputFormatter.getKeyName(keys[0]);
+		if (name1 == null || name1.length < 1) name1 = '---';
+		var text1 = new AttachedText(name1, 400, -55);
 		text1.setPosition(optionText.x + 400, optionText.y - 55);
 		text1.sprTracker = optionText;
 		grpInputs.push(text1);
 		add(text1);
 
-		var text2 = new AttachedText(InputFormatter.getKeyName(keys[1]), 650, -55);
+		var name2 = InputFormatter.getKeyName(keys[1]);
+		if (name2 == null || name2.length < 1) name2 = '---';
+		var text2 = new AttachedText(name2, 650, -55);
 		text2.setPosition(optionText.x + 650, optionText.y - 55);
 		text2.sprTracker = optionText;
 		grpInputsAlt.push(text2);

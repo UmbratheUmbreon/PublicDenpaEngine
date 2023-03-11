@@ -1,47 +1,79 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <TextureAtlas imagePath="gfPixel.png">
-	<!-- Created with Adobe Animate version 20.0.0.17400 -->
-	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="GF IDLE0000" x="0" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0001" x="0" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0002" x="130" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0003" x="130" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0004" x="130" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0005" x="260" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0006" x="260" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0007" x="260" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0008" x="260" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0009" x="390" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0010" x="390" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0011" x="390" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0012" x="390" y="0" width="120" height="106"/>
-	<SubTexture name="GF IDLE0013" x="0" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0014" x="0" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0015" x="130" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0016" x="130" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0017" x="260" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0018" x="260" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0019" x="260" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0020" x="390" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0021" x="390" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0022" x="390" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0023" x="390" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0024" x="390" y="116" width="120" height="106"/>
-	<SubTexture name="GF IDLE0025" x="0" y="232" width="120" height="106"/>
-	<SubTexture name="GF IDLE0026" x="0" y="232" width="120" height="106"/>
-	<SubTexture name="GF IDLE0027" x="0" y="232" width="120" height="106"/>
-	<SubTexture name="GF IDLE0028" x="0" y="232" width="120" height="106"/>
-	<SubTexture name="GF IDLE0029" x="0" y="232" width="120" height="106"/>
-	<SubTexture name="GF TELEPORT0000" x="0" y="353" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0001" x="108" y="353" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0002" x="216" y="353" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0003" x="324" y="353" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0004" x="0" y="461" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0005" x="108" y="461" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0006" x="216" y="461" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0007" x="324" y="461" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0008" x="0" y="569" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0009" x="108" y="569" width="107" height="109"/>
-	<SubTexture name="GF TELEPORT0010" x="216" y="569" width="107" height="109"/>
-	<SubTexture name="GF TP LOOP0000" x="216" y="569" width="107" height="109"/>
+<SubTexture name="GF IDLE0000" x="0" y="0" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0001" x="0" y="0" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0002" x="106" y="0" width="105" height="95" frameX="-8" frameY="-11" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0003" x="106" y="0" width="105" height="95" frameX="-8" frameY="-11" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0004" x="106" y="0" width="105" height="95" frameX="-8" frameY="-11" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0005" x="211" y="0" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0006" x="211" y="0" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0007" x="211" y="0" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0008" x="211" y="0" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0009" x="0" y="98" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0010" x="0" y="98" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0011" x="0" y="98" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0012" x="0" y="98" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0013" x="100" y="98" width="100" height="95" frameX="-11" frameY="-11" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0014" x="100" y="98" width="100" height="95" frameX="-11" frameY="-11" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0015" x="200" y="98" width="106" height="93" frameX="-8" frameY="-13" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0016" x="200" y="98" width="106" height="93" frameX="-8" frameY="-13" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0017" x="0" y="196" width="104" height="94" frameX="-9" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0018" x="0" y="196" width="104" height="94" frameX="-9" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0019" x="0" y="196" width="104" height="94" frameX="-9" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0020" x="104" y="196" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0021" x="104" y="196" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0022" x="104" y="196" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0023" x="104" y="196" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0024" x="104" y="196" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0025" x="204" y="196" width="100" height="97" frameX="-11" frameY="-9" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0026" x="204" y="196" width="100" height="97" frameX="-11" frameY="-9" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0027" x="204" y="196" width="100" height="97" frameX="-11" frameY="-9" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0028" x="204" y="196" width="100" height="97" frameX="-11" frameY="-9" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF IDLE0029" x="204" y="196" width="100" height="97" frameX="-11" frameY="-9" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0000" x="0" y="294" width="108" height="92" frameX="-7" frameY="-14" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0001" x="0" y="294" width="108" height="92" frameX="-7" frameY="-14" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0002" x="0" y="294" width="108" height="92" frameX="-7" frameY="-14" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0003" x="0" y="294" width="108" height="92" frameX="-7" frameY="-14" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0004" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0005" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0006" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0007" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0008" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0009" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0010" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0011" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0012" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0013" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0014" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0015" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0016" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0017" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0018" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0019" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0020" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0021" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0022" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0023" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0024" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0025" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0026" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0027" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0028" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0029" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0030" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0031" x="108" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0032" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0033" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0034" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CRY0035" x="214" y="294" width="106" height="94" frameX="-8" frameY="-12" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0000" x="0" y="388" width="99" height="100" frameX="-11" frameY="-6" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0001" x="0" y="388" width="99" height="100" frameX="-11" frameY="-6" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0002" x="99" y="388" width="100" height="95" frameX="-11" frameY="-11" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0003" x="99" y="388" width="100" height="95" frameX="-11" frameY="-11" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0004" x="199" y="388" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0005" x="199" y="388" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0006" x="199" y="388" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0007" x="199" y="388" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0008" x="199" y="388" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
+<SubTexture name="GF CHEER0009" x="199" y="388" width="100" height="98" frameX="-11" frameY="-8" frameWidth="120" frameHeight="106" />
 </TextureAtlas>

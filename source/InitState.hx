@@ -1,97 +1,123 @@
 package;
 
-#if desktop
-import Discord.DiscordClient;
-#end
-import flixel.input.keyboard.FlxKey;
+import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
-import lime.app.Application;
+import flixel.input.keyboard.FlxKey;
+import lime.utils.Assets;
+#if HSCRIPT_ALLOWED
+import haxescript.HClassComps;
+import haxescript.Hscript;
+import haxescript.HscriptClass;
+import sys.FileTools;
 
-using StringTools;
+@:structInit class StaticVarContents {
+	public var name:String;
+	public var path:String; //full class-path
+	public var isPublic:Bool;
+	public var content:Dynamic;
+
+	public function toString():String {
+		return 'StaticVarContents(name: $name, path: $path, public: $isPublic, content: $content)';
+	}
+}
+#end
 
 /**
 * State used on boot to initialize the game.
 */
-class InitState extends MusicBeatState
+class InitState extends FlxState
 {
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
 	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
 	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
-	
-	public static var updateVersion:String = '';
+
+	#if HSCRIPT_ALLOWED
+	public static var scriptClassPool:Map<String, HscriptClass> = [];
+	public static var scriptStaticVars:Map<String, StaticVarContents> = [];
+	#end
 
 	override public function create():Void
 	{
+		//DO NOT THREAD THIS.
 		localInit();
+		swapState();
 	}
 
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-	}
+	function localInit() {
+		Paths.clearStoredCache(true);
 
-	private inline function localInit(?transfer:Bool = null) {
-		Paths.clearStoredMemory();
-		Paths.clearUnusedMemory();
-		
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.sound.muteKeys = muteKeys;
 		FlxG.sound.volumeDownKeys = volumeDownKeys;
 		FlxG.sound.volumeUpKeys = volumeUpKeys;
 		FlxG.keys.preventDefaultKeys = [TAB];
 
+		ClientPrefs.loadDefaultKeys();
+
 		PlayerSettings.init();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkin');
 		
 		ClientPrefs.loadPrefs();
 
 		Highscore.load();
 
-		#if !html5
-		if (FlxG.save.data.fullscreen != null) {
-			FlxG.fullscreen = FlxG.save.data.fullscreen;
-		} else {
-			FlxG.fullscreen = false;
-		}
-
-		if (FlxG.save.data.autoPause != null) {
-			FlxG.autoPause = FlxG.save.data.autoPause;
-		} else {
-			FlxG.autoPause = true;
-		}
-		#end
-
 		if (FlxG.save.data.weekCompleted != null)
-		{
 			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
-		}
 
 		FlxG.mouse.visible = false;
 
-		#if desktop
-		Application.current.window.borderless = true;
-		#end
-
-		#if desktop
-		if (!DiscordClient.isInitialized)
-		{
-			DiscordClient.initialize();
-			Application.current.onExit.add (function (exitCode) {
-				DiscordClient.shutdown();
-			});
-			//trace('initialized discord client');
-		}
-		#end
-
 		//Prevent crash on charter -AT
-		CoolUtil.difficulties = ["Normal"];
-		PlayState.storyDifficulty = 0;
+		CoolUtil.difficulties = CoolUtil.defaultDifficulties;
+		PlayState.storyDifficulty = 0; //aka "Normal"
+		
+		FlxG.fixedTimestep = false;
 
-		if(transfer == null) {
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxTransitionableState.skipNextTransOut = true;
-			MusicBeatState.switchState(new DenpaState());
+		//why does the fps shit fail to work
+		Main.toggleFPS(ClientPrefs.settings.get("showFPS"));
+
+		Paths.refreshModsMaps();
+
+		#if HSCRIPT_ALLOWED
+		final foldersToCheck:Array<String> = ["classes", "states", "substates"];
+		final folderType:Array<HscriptType> = [H_CLASS, H_STATE, H_SUBSTATE];
+		function parseClasses(foldersToCheck:Array<String>, folderType:Array<HscriptType>) {
+			for(i => folder in foldersToCheck) {
+				final presentFilesRaw = sys.FileTools.readDirectoryFull('assets/scripts/$folder', true);
+				for(file in presentFilesRaw) 
+				{
+					if(FileSystem.isDirectory('assets/scripts/$folder/$file') || !file.endsWith('.hscript')) continue; //Not a Valid file
+					if(folderType[i] == H_CLASS) {
+						var loader:HscriptClass = new HscriptClass(file);
+						scriptClassPool.set(file, loader);
+						continue;
+					} 
+					var varLoader:Hscript = new Hscript('assets/scripts/$folder/$file', true, folderType[i], true);
+					@:privateAccess {
+						for(var_ in varLoader.interpreter.trackedVars) {
+							if(!var_.access.contains(AStatic)) continue; //We can ignore
+							
+						}
+					}
+				}
+			}
 		}
+		parseClasses(["classes", "states", "substates"], [H_CLASS, H_STATE, H_SUBSTATE]);
+
+		//For now we dont need to init twice to get our desired results
+		/*hInit = true;
+		parseClasses(["classes"], [H_CLASS]);*/ //Reparse classes with hInit on to do any stuff that needs to be done after all classes have been parsed once!!
+		#end
+
+		#if HSCRIPT_ALLOWED
+		trace(InitState.scriptStaticVars);
+		#end
+	}
+	public static var hInit:Bool = false;
+
+	inline function swapState() {
+		FlxTransitionableState.skipNextTransIn = true;
+		FlxTransitionableState.skipNextTransOut = true;
+		MusicBeatState.switchState(new DenpaState());
 	}
 }

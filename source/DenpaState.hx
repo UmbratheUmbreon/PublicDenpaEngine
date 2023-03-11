@@ -1,26 +1,20 @@
 package;
 
+import flash.system.System;
 import flixel.FlxSprite;
+import flixel.addons.text.FlxTypeText;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.input.keyboard.FlxKey;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
-import flixel.input.keyboard.FlxKey;
 import openfl.events.KeyboardEvent;
-//import FlxTransWindow;
-
 #if desktop
-import editors.MasterEditorMenu;
-import editors.CharacterEditorState;
-import editors.ChartingState;
+import editors.*;
 #end
-
-import flash.system.System;
-
-using StringTools;
 
 /**
 * Class used to create the splash screen on startup.
@@ -31,17 +25,12 @@ class DenpaState extends MusicBeatState
 
 	var logo:FlxSprite;
 	var jonScare:FlxSprite;
+	var skipTxt:FlxText;
 
 	var chooseYerIntroMate:Int = FlxG.random.int(0,9);
 
 	override public function create():Void
 	{
-		Paths.clearUnusedMemory();
-		//var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(1, 1, 1));
-		//bg.scrollFactor.set();
-		//add(bg);
-		//FlxTransWindow.getWindowsTransparent();
-		Application.current.window.title = "FNFSPLASH";
 		#if desktop
 		Application.current.window.focus();
 		#end
@@ -52,7 +41,6 @@ class DenpaState extends MusicBeatState
 		if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
 
 		Paths.setCurrentLevel(directory);
-		trace('Setting asset folder to ' + directory);
 		CoolUtil.precacheSound('denpa');
 		if (chooseYerIntroMate == 9) {
 			CoolUtil.precacheSound('dennad');
@@ -64,7 +52,7 @@ class DenpaState extends MusicBeatState
 		} 
 
 		#if desktop
-		if (FlxG.random.bool(0.01)) { //0.01
+		if (FlxG.random.bool(0.01)) {
 			chooseYerIntroMate = 666;
 			CoolUtil.precacheSound('JON_JUIMPSCARE');
 			CoolUtil.precacheSound('undertale-game-over');
@@ -74,14 +62,27 @@ class DenpaState extends MusicBeatState
 		} 
 		#end
 
-		logo = new FlxSprite().loadGraphic(Paths.image('logo'));
+		logo = new FlxSprite().loadGraphic(Paths.image('logo', null, false));
 		logo.scrollFactor.set();
 		logo.screenCenter();
-		logo.antialiasing = ClientPrefs.globalAntialiasing;
 		logo.alpha = 0;
+		logo.active = false;
 		add(logo);
 
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
+		skipTxt = new FlxText(12, FlxG.height - 24, 0, 'Press ENTER to Skip');
+		skipTxt.scrollFactor.set();
+		skipTxt.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.NONE, FlxColor.BLACK);
+		skipTxt.active = false;
+		skipTxt.alpha = 0.33;
+		FlxTween.tween(skipTxt, {alpha: 0}, 0.5, {
+			startDelay: 0.2,
+			ease: FlxEase.quadInOut,
+			onComplete: function(twn:FlxTween) {
+				remove(skipTxt, true);
+				skipTxt.destroy();
+			}
+		});
+		add(skipTxt);
 
 		new FlxTimer().start(0.01, function(tmr:FlxTimer)
 			{
@@ -158,16 +159,14 @@ class DenpaState extends MusicBeatState
 							}
 						});
 					case 2:
-						//logo.kill();
-						//logo.destroy();
 						for (i in 0...80) {
-							var logoPiece:FlxSprite = new FlxSprite().loadGraphic(Paths.image('loader/' + 'row-' + (i+1) + '-column-1'));
+							var logoPiece:FlxSprite = new FlxSprite().loadGraphic(Paths.image('loader/' + 'row-' + (i+1) + '-column-1', null, false));
 							logoPiece.scrollFactor.set();
 							logoPiece.screenCenter();
-							logoPiece.antialiasing = ClientPrefs.globalAntialiasing;
 							logoPiece.alpha = 0;
 							logoPiece.y = logo.y + 6*i;
 							logoPiece.x = logo.x + 1*i + FlxG.random.int(-100,100);
+							logoPiece.active = false;
 							add(logoPiece);
 							FlxTween.tween(logoPiece, {alpha: 1, x: logo.x}, 0.01 + i/34, {
 								ease: FlxEase.quadInOut
@@ -214,23 +213,19 @@ class DenpaState extends MusicBeatState
 							onComplete: function(twn:FlxTween) {
 								FlxG.sound.pause();
 								FlxG.sound.play(Paths.sound('JON_JUIMPSCARE'));
-								jonScare = new FlxSprite().loadGraphic(Paths.image('JONJUMPSCARE'));
+								jonScare = new FlxSprite().loadGraphic(Paths.image('JONJUMPSCARE', null, false));
 								jonScare.scrollFactor.set();
 								jonScare.screenCenter();
-								jonScare.antialiasing = ClientPrefs.globalAntialiasing;
 								add(jonScare);
-								FlxG.fullscreen = true;
 								logo.kill();
 								logo.destroy();
 								new FlxTimer().start(2.66, function(tmr:FlxTimer)
 									{
-										FlxG.fullscreen = false;
-										var random:Bool = FlxG.random.bool(10); //10
+										var random:Bool = FlxG.random.bool(10);
 										if (!random) {
-											var gameOver:FlxSprite = new FlxSprite().loadGraphic(Paths.image('fnaf1dead'));
+											var gameOver:FlxSprite = new FlxSprite().loadGraphic(Paths.image('fnaf1dead', null, false));
 											gameOver.scrollFactor.set();
 											gameOver.screenCenter();
-											gameOver.antialiasing = ClientPrefs.globalAntialiasing;
 											add(gameOver);
 											jonScare.kill();
 											jonScare.destroy();
@@ -244,11 +239,9 @@ class DenpaState extends MusicBeatState
 											switch (randomInt) {
 												case 0:
 													FlxG.sound.pause();
-													//logo.kill();
-													//logo.destroy();
 													jonScare.kill();
 													jonScare.destroy();
-													var soul:FlxSprite = new FlxSprite().loadGraphic(Paths.image('soul'));
+													var soul:FlxSprite = new FlxSprite().loadGraphic(Paths.image('soul', null, false));
 													soul.scrollFactor.set();
 													soul.scale.set(3,3);
 													soul.updateHitbox();
@@ -260,7 +253,7 @@ class DenpaState extends MusicBeatState
 														FlxG.sound.play(Paths.sound('soulbreak'));
 														soul.kill();
 														soul.destroy();
-														var brokenSoul:FlxSprite = new FlxSprite().loadGraphic(Paths.image('brokensoul'));
+														var brokenSoul:FlxSprite = new FlxSprite().loadGraphic(Paths.image('brokensoul', null, false));
 														brokenSoul.scrollFactor.set();
 														brokenSoul.scale.set(3,3);
 														brokenSoul.updateHitbox();
@@ -273,7 +266,7 @@ class DenpaState extends MusicBeatState
 																brokenSoul.kill();
 																brokenSoul.destroy();
 																for (i in 0...3) {
-																	var soulShard:FlxSprite = new FlxSprite().loadGraphic(Paths.image('shard' + (i+1)));
+																	var soulShard:FlxSprite = new FlxSprite().loadGraphic(Paths.image('shard' + (i+1), null, false));
 																	soulShard.scrollFactor.set();
 																	soulShard.scale.set(3,3);
 																	soulShard.updateHitbox();
@@ -288,7 +281,7 @@ class DenpaState extends MusicBeatState
 																	add(soulShard);
 																}
 																for (i in 0...3) {
-																	var soulShard:FlxSprite = new FlxSprite().loadGraphic(Paths.image('shard' + (i+1)));
+																	var soulShard:FlxSprite = new FlxSprite().loadGraphic(Paths.image('shard' + (i+1), null, false));
 																	soulShard.scrollFactor.set();
 																	soulShard.scale.set(3,3);
 																	soulShard.updateHitbox();
@@ -305,7 +298,7 @@ class DenpaState extends MusicBeatState
 																new FlxTimer().start(1.6, function(tmr:FlxTimer)
 																	{
 																		FlxG.sound.play(Paths.sound('undertale-game-over'));
-																		var gameOver:FlxSprite = new FlxSprite().loadGraphic(Paths.image('undertaledead'));
+																		var gameOver:FlxSprite = new FlxSprite().loadGraphic(Paths.image('undertaledead', null, false));
 																		gameOver.scrollFactor.set();
 																		gameOver.screenCenter();
 																		gameOver.antialiasing = false;
@@ -317,20 +310,28 @@ class DenpaState extends MusicBeatState
 																		});
 																		new FlxTimer().start(2.76, function(tmr:FlxTimer)
 																			{
-																				var text:FlxText = new FlxText(0, 0, 0, "DONT GIVE UP");
+																				var text = new FlxTypeText(0, 0, 0, "DONT GIVE UP");
 																				text.scrollFactor.set();
-																				text.setFormat(Paths.font("determination.otf"), 36, FlxColor.WHITE, LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK);
+																				text.setFormat(Paths.font("determination.otf"), 36, FlxColor.WHITE, CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK);
 																				text.screenCenter();
 																				text.y = gameOver.y + 350;
+																				text.cursorBlinkSpeed = 0;
+																				text.antialiasing = false;
+																				text.x -= 220/2;
 																				add(text);
+																				text.start(0.06);
 																				new FlxTimer().start(1, function(tmr:FlxTimer)
 																					{
-																						var text:FlxText = new FlxText(0, 0, 0, "STAY DETERMINED");
+																						var text = new FlxTypeText(0, 0, 0, "STAY DETERMINED");
 																						text.scrollFactor.set();
-																						text.setFormat(Paths.font("determination.otf"), 36, FlxColor.WHITE, LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK);
+																						text.setFormat(Paths.font("determination.otf"), 36, FlxColor.WHITE, CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK);
 																						text.screenCenter();
 																						text.y = gameOver.y + 400;
+																						text.cursorBlinkSpeed = 0;
+																						text.antialiasing = false;
+																						text.x -= 274/2;
 																						add(text);
+																						text.start(0.06);
 																					});
 																			});
 																		new FlxTimer().start(8.4, function(tmr:FlxTimer)
@@ -343,10 +344,9 @@ class DenpaState extends MusicBeatState
 												case 1:
 													FlxG.sound.pause();
 													FlxG.sound.play(Paths.sound('wasted'));
-													var wasted:FlxSprite = new FlxSprite().loadGraphic(Paths.image('wasted'));
+													var wasted:FlxSprite = new FlxSprite().loadGraphic(Paths.image('wasted', null, false));
 													wasted.scrollFactor.set();
 													wasted.screenCenter();
-													wasted.antialiasing = ClientPrefs.globalAntialiasing;
 													wasted.alpha = 0;
 													add(wasted);
 													jonScare.kill();
@@ -367,7 +367,6 @@ class DenpaState extends MusicBeatState
 														ourple.animation.addByPrefix('dance', 'dance', 24, true);
 														ourple.animation.play('dance');
 														ourple.scrollFactor.set();
-														ourple.antialiasing = ClientPrefs.globalAntialiasing;
 														ourple.screenCenter();
 														ourple.x = -250 + (450*i);
 														ourple.y = -200;
@@ -379,7 +378,6 @@ class DenpaState extends MusicBeatState
 														ourple.animation.addByPrefix('dance', 'dance', 24, true);
 														ourple.animation.play('dance');
 														ourple.scrollFactor.set();
-														ourple.antialiasing = ClientPrefs.globalAntialiasing;
 														ourple.screenCenter();
 														ourple.x = -250 + (450*i);
 														ourple.y = 200;
@@ -391,7 +389,6 @@ class DenpaState extends MusicBeatState
 														ourple.animation.addByPrefix('dance', 'dance', 24, true);
 														ourple.animation.play('dance');
 														ourple.scrollFactor.set();
-														ourple.antialiasing = ClientPrefs.globalAntialiasing;
 														ourple.screenCenter();
 														ourple.x = -250 + (450*i);
 														ourple.y = 600;
@@ -473,13 +470,12 @@ class DenpaState extends MusicBeatState
 						FlxTween.tween(logo, {alpha: 1}, 0.95, {
 							ease: FlxEase.quadInOut,
 							onComplete: function(twn:FlxTween) {
-								var circle:FlxSprite = new FlxSprite().loadGraphic(Paths.image('bigCircle'));
+								var circle:FlxSprite = new FlxSprite().loadGraphic(Paths.image('bigCircle', null, false));
 								circle.blend = openfl.display.BlendMode.INVERT;
 								circle.scrollFactor.set();
 								circle.scale.set(0.001,0.001);
 								circle.updateHitbox();
 								circle.screenCenter();
-								circle.antialiasing = ClientPrefs.globalAntialiasing;
 								circle.alpha = 0;
 								add(circle);
 								FlxTween.tween(circle, {alpha: 1, "scale.x": 1.3, "scale.y": 1.3}, 0.95, {
@@ -518,35 +514,24 @@ class DenpaState extends MusicBeatState
 		super.update(elapsed);
 	}
 
-	override function destroy() {
-		//FlxTransWindow.getWindowsBackward();
-		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
-		super.destroy();
-	}
-
 	function goToTitle() {
-		resetWindow();
-		MusicBeatState.switchState(new TitleState());
+		//negates the need for stupid lib swapping
+		LoadingState.silentLoading = true;
+		LoadingState.globeTrans = false;
+		LoadingState.loadAndSwitchState(new TitleState());
 	}
 
-	function resetWindow() {
-		#if desktop
-		Application.current.window.borderless = false;
-		#end
-		Application.current.window.title = "Friday Night Funkin': Denpa Engine";
-	}
-
-	public function onKeyPress(event:KeyboardEvent):Void
+	public override function keyPress(event:KeyboardEvent):Void
 	{
+		super.keyPress(event);
 		var eventKey:FlxKey = event.keyCode;
 
 		#if !debug
 		if (eventKey == FlxKey.ENTER)
 		#end
-		resetWindow();
 		switch (eventKey) {
 			case FlxKey.ENTER:
-				MusicBeatState.switchState(new TitleState());
+				goToTitle();
 			#if debug
 			case FlxKey.SHIFT:
 				if(FlxG.sound.music == null) {

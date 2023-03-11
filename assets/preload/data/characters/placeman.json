@@ -1,0 +1,116 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "idle"
+		},
+		{
+			"offsets": [
+				-65,
+				-1
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "left"
+		},
+		{
+			"offsets": [
+				-79,
+				-28
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "down"
+		},
+		{
+			"offsets": [
+				-40,
+				29
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "up"
+		},
+		{
+			"offsets": [
+				-87,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "right"
+		}
+	],
+	"sarvente_floating": false,
+	"no_antialiasing": false,
+	"death_props": {
+		"endSfx": "gameOverEnd",
+		"bpm": 100,
+		"loopSfx": "gameOver",
+		"character": "bf-dead",
+		"startSfx": "fnf_loss_sfx"
+	},
+	"image": "characters/placeman",
+	"trail_length": 4,
+	"trail_delay": 24,
+	"position": [
+		90,
+		235
+	],
+	"icon_props": {
+		"name": "face",
+		"offsets": [0, 0],
+		"antialiasing": true
+	},
+	"trail_diff": 0,
+	"float_speed": null,
+	"trail_alpha": 1,
+	"health_drain": false,
+	"shake_screen": false,
+	"orbit": false,
+	"drain_floor": 0.1,
+	"healthbar_count": 3,
+	"flip_x": false,
+	"healthbar_colors": [
+		{
+			"blue": 153,
+			"green": 153,
+			"red": 153
+		},
+		{
+			"blue": 133,
+			"green": 133,
+			"red": 133
+		},
+		{
+			"blue": 113,
+			"green": 113,
+			"red": 113
+		}
+	],
+	"camera_position": [
+		20,
+		30
+	],
+	"float_magnitude": 0,
+	"sing_duration": 4.8,
+	"scare_bf": false,
+	"scare_gf": false,
+	"scale": 1,
+	"flixel_trail": false
+}

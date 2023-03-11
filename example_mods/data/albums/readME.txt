@@ -1,0 +1,1 @@
+This folder is where you should put your .json files for your albums.

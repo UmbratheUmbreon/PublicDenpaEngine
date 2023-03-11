@@ -1,52 +1,42 @@
 package;
 
-import flixel.graphics.frames.FlxFrame;
-#if desktop
-import Discord.DiscordClient;
-import sys.thread.Thread;
-#end
+import Shaders.ColorSwap;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.input.keyboard.FlxKey;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.addons.transition.TransitionData;
-import haxe.Json;
-import openfl.display.Bitmap;
-import openfl.display.BitmapData;
-import options.OptionsSubState.GraphicsSettingsSubState;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.graphics.frames.FlxFrame;
 import flixel.group.FlxGroup;
-import flixel.input.gamepad.FlxGamepad;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import flixel.system.FlxSound;
-import flixel.system.ui.FlxSoundTray;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import lime.app.Application;
+import haxe.Json;
+import haxe.xml.Access;
 import openfl.Assets;
-import Shaders.ColorSwap;
+import openfl.display.BitmapData;
+#if desktop
+import Discord.DiscordClient;
+#end
 
-using StringTools;
-
+//this typedef shit is a mess LMAO
 typedef TitleData =
 {
-	titlex:Float,
-	titley:Float,
-	startx:Float,
-	starty:Float,
-	gfx:Float,
-	gfy:Float,
-	gfscalex:Float,
-	gfscaley:Float,
-	gfantialiasing:Bool,
-	backgroundSprite:String,
-	bpm:Int
+	titleOffsets:Array<Float>,
+	titleAntialiasing:Bool,
+	startOffsets:Array<Float>,
+	startAntialiasing:Bool,
+	gfOffsets:Array<Float>,
+	gfScale:Array<Float>,
+	gfAntialiasing:Bool,
+	background:String,
+	backgroundAntialiasing:Bool,
+	bpm:Float
+}
+
+typedef NGSprJson =
+{
+	data:Array<NGSprData>,
 }
 typedef NGSprData =
 {
@@ -54,6 +44,19 @@ typedef NGSprData =
 	textArray:Array<String>,
 	height:Float
 }
+
+typedef IntroData = {
+	beats:Array<BeatSet>
+}
+typedef BeatSet = {
+	beat:Int,
+	actions:Array<ActionSet>
+}
+typedef ActionSet = {
+	name:String,
+	values:Array<Dynamic>
+}
+
 class TitleState extends MusicBeatState
 {
 	public static var initialized:Bool = false;
@@ -75,35 +78,25 @@ class TitleState extends MusicBeatState
 	var mustUpdate:Bool = false;
 	
 	var titleJSON:TitleData;
-	var ngSprJSON:NGSprData;
+	var ngSprJSON:NGSprJson;
+	var introJSON:IntroData;
 	
 	public static var updateVersion:String = '';
 
 	override public function create():Void
 	{
-		Paths.clearUnusedMemory();
-		var directory:String = 'shared';
-		var weekDir:String = StageData.forceNextDirectory;
-		StageData.forceNextDirectory = null;
-
-		if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
-
-		Paths.setCurrentLevel(directory);
-		trace('Setting asset folder to ' + directory);
 		// Just to load a mod on start up if ya got one. For mods that change the menu music and bg
 		WeekData.loadTheFirstEnabledMod();
 		
-		//trace(path, FileSystem.exists(path));
-		
-		if (ClientPrefs.checkForUpdates) {
+		if (ClientPrefs.settings.get("checkForUpdates")) {
 			if(!closedState) {
 				trace('checking for update');
-				var http = new haxe.Http("https://raw.githubusercontent.com/UmbratheUmbreon/PublicDenpaEngine/main/gitVersion.txt");
+				var http = new haxe.Http("https://raw.githubusercontent.com/UmbratheUmbreon/PublicDenpaEngine/main/assets/preload/update/tracking/GitVer.txt");
 				
 				http.onData = function (data:String)
 				{
 					updateVersion = data.split('\n')[0].trim();
-					var curVersion:String = MainMenuState.denpaEngineVersion.trim();
+					var curVersion:String = Main.denpaEngineVersion.version;
 					trace('version online: ' + updateVersion + ', your version: ' + curVersion);
 					if(updateVersion != curVersion) {
 						trace('versions arent matching!');
@@ -130,41 +123,24 @@ class TitleState extends MusicBeatState
 		DiscordClient.changePresence("On the Title Screen", null);
 		#end
 
-		// DEBUG BULLSHIT
-
 		super.create();
 
-		// IGNORE THIS!!!
-		titleJSON = Json.parse(Paths.getTextFromFile('images/title/gfDanceTitle.json'));
-		//lmao
-		ngSprJSON = Json.parse(Paths.getTextFromFile('images/title/newgroundsSprite.json'));
+		titleJSON = Json.parse(Paths.getTextFromFile('data/title/offsets.json'));
+		ngSprJSON = Json.parse(Paths.getTextFromFile('data/title/shoutouts.json'));
+		introJSON = Json.parse(Paths.getTextFromFile('data/title/intro.json'));
 
-		#if FREEPLAY
-		MusicBeatState.switchState(new FreeplayState());
-		#elseif CHARTING
-		MusicBeatState.switchState(new ChartingState());
-		#else
-		if(FlxG.save.data.flashing == null && !FlashingState.leftState) {
+		if(FlxG.save.data.epilepsyCheck == null && !FlashingState.leftState) {
 			FlxTransitionableState.skipNextTransIn = true;
 			FlxTransitionableState.skipNextTransOut = true;
+			FlxG.save.data.epilepsyCheck = true;
+			FlxG.save.flush();
 			MusicBeatState.switchState(new FlashingState());
 		} else {
-			#if desktop
-			if (!DiscordClient.isInitialized)
-			{
-				DiscordClient.initialize();
-				Application.current.onExit.add (function (exitCode) {
-					DiscordClient.shutdown();
-				});
-			}
-			#end
-
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 				startIntro();
 			});
 		}
-		#end
 	}
 
 	var logoBl:FlxSprite;
@@ -172,8 +148,9 @@ class TitleState extends MusicBeatState
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 	var titleTextColors:Array<FlxColor> = [0xFF33FFFF, 0xFF3333CC];
-	var titleTextAlphas:Array<Float> = [1, .64];
 	var swagShader:ColorSwap = null;
+	var animatedBg:Bool = false;
+	var bg:FlxSprite;
 
 	function startIntro()
 	{
@@ -188,60 +165,70 @@ class TitleState extends MusicBeatState
 			}
 		}
 
-		Conductor.changeBPM(100);
+		Conductor.changeBPM(titleJSON.bpm);
 		persistentUpdate = true;
 
-		var bg:FlxSprite = new FlxSprite();
+		bg = new FlxSprite();
 		
-		if (titleJSON.backgroundSprite != null && titleJSON.backgroundSprite.length > 0 && titleJSON.backgroundSprite != "none"){
-			bg.loadGraphic(Paths.image(titleJSON.backgroundSprite));
-		}else{
+		if (titleJSON.background != null && titleJSON.background.length > 0 && titleJSON.background.toLowerCase() != "none")
+			if (FileSystem.exists(Paths.getXmlPath('title/${titleJSON.background}'))) {
+				bg.frames = Paths.getSparrowAtlas('title/${titleJSON.background}');
+				var arr:Array<String> = [];
+				//get the first xml animation
+				var data:Access = new Access(Xml.parse(Paths.getTextFromFile('images/title/${titleJSON.background}.xml')).firstElement());
+				for (texture in data.nodes.SubTexture) arr.push(texture.att.name.substr(0, texture.att.name.length - 3));
+				arr = CoolUtil.removeDuplicates(arr);
+				bg.animation.addByPrefix('idle', arr[0], 24, false);
+				bg.animation.play('idle', true);
+				animatedBg = true;
+				//! for some reason, the animation does not actually play.
+			} else {
+				bg.loadGraphic(Paths.image(titleJSON.background));
+			}
+		else
 			bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		}
+		bg.active = false;
+		bg.antialiasing = titleJSON.backgroundAntialiasing ? ClientPrefs.settings.get("globalAntialiasing") : false;
 		add(bg);
 
-		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
+		logoBl = new FlxSprite(titleJSON.titleOffsets[0], titleJSON.titleOffsets[1]);
 		logoBl.frames = Paths.getSparrowAtlas('title/logoBumpin');
-		
-		logoBl.antialiasing = ClientPrefs.globalAntialiasing;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
+		logoBl.antialiasing = titleJSON.titleAntialiasing ? ClientPrefs.settings.get("globalAntialiasing") : false;
 
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
 			swagShader = new ColorSwap();
 		}
-		gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
+
+		gfDance = new FlxSprite(titleJSON.gfOffsets[0], titleJSON.gfOffsets[1]);
 
 		gfDance.frames = Paths.getSparrowAtlas('title/gfDanceTitle');
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-		gfDance.scale.set(titleJSON.gfscalex, titleJSON.gfscaley);
+		gfDance.scale.set(titleJSON.gfScale[0], titleJSON.gfScale[1]);
 		gfDance.updateHitbox();
-		gfDance.antialiasing = titleJSON.gfantialiasing ? ClientPrefs.globalAntialiasing : false;
+		gfDance.antialiasing = titleJSON.gfAntialiasing ? ClientPrefs.settings.get("globalAntialiasing") : false;
 		
 		add(gfDance);
 		add(logoBl);
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
 			gfDance.shader = swagShader.shader;
 			logoBl.shader = swagShader.shader;
 		}
 		
-		titleText = new FlxSprite(titleJSON.startx, titleJSON.starty);
+		titleText = new FlxSprite(titleJSON.startOffsets[0], titleJSON.startOffsets[1]);
 		#if (desktop && MODS_ALLOWED)
 		var path = "mods/" + Paths.currentModDirectory + "/images/title/titleEnter.png";
-		//trace(path, FileSystem.exists(path));
 		if (!FileSystem.exists(path)){
 			path = "mods/images/title/titleEnter.png";
 		}
-		//trace(path, FileSystem.exists(path));
 		if (!FileSystem.exists(path)){
 			path = "assets/images/title/titleEnter.png";
 		}
-		//trace(path, FileSystem.exists(path));
 		titleText.frames = FlxAtlasFrames.fromSparrow(BitmapData.fromFile(path),File.getContent(StringTools.replace(path,".png",".xml")));
 		#else
-		
 		titleText.frames = Paths.getSparrowAtlas('title/titleEnter');
 		#end
 		var animFrames:Array<FlxFrame> = [];
@@ -254,7 +241,7 @@ class TitleState extends MusicBeatState
 			newTitle = true;
 			
 			titleText.animation.addByPrefix('idle', "ENTER IDLE", 24);
-			titleText.animation.addByPrefix('press', ClientPrefs.flashing ? "ENTER PRESSED" : "ENTER FREEZE", 24);
+			titleText.animation.addByPrefix('press', ClientPrefs.settings.get("flashing") ? "ENTER PRESSED" : "ENTER FREEZE", 24);
 		}
 		else {
 			newTitle = false;
@@ -263,10 +250,9 @@ class TitleState extends MusicBeatState
 			titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
 		}
 		
-		titleText.antialiasing = ClientPrefs.globalAntialiasing;
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
-		// titleText.screenCenter(X);
+		titleText.antialiasing = titleJSON.startAntialiasing ? ClientPrefs.settings.get("globalAntialiasing") : false;
 		add(titleText);
 
 		credGroup = new FlxGroup();
@@ -278,31 +264,22 @@ class TitleState extends MusicBeatState
 
 		credTextShit = new Alphabet(0, 0, "", true);
 		credTextShit.screenCenter();
-
-		// credTextShit.alignment = CENTER;
-
 		credTextShit.visible = false;
 
 		var height:Float = 0.52;
 		var sprite:String = 'newgrounds_logo';
 		ngSpr = new FlxSprite();
 		#if DENPA_WATERMARKS
-		switch (FlxG.random.int(0,3))
+		final r = FlxG.random.int(0, ngSprJSON.data.length-1);
+		switch (r)
 		{
 			case 0:
 				sex[0] = 'Not associated';
-			case 1:
-				sprite = 'bambail';
-				height = 0.43;
-				sex = ['The good mod', 'with stridents', 'Bambail Insurgency'];
-			case 2:
-				sprite = 'denpa';
-				height = 0.42;
-				sex = ['No way', 'its the', 'Denpa Mod'];
+			//allow for infinite shit lol
 			default:
-				sprite = ngSprJSON.sprite;
-				height = ngSprJSON.height;
-				sex = ngSprJSON.textArray;
+				sprite = ngSprJSON.data[r].sprite;
+				height = ngSprJSON.data[r].height;
+				sex = ngSprJSON.data[r].textArray;
 		}
 		#end
 		ngSpr.loadGraphic(Paths.image('title/$sprite'));
@@ -312,30 +289,31 @@ class TitleState extends MusicBeatState
 		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
 		ngSpr.updateHitbox();
 		ngSpr.screenCenter(X);
-		ngSpr.antialiasing = ClientPrefs.globalAntialiasing;
+		ngSpr.active = false;
 
 		#if DENPA_WATERMARKS
 		credIcon1 = new FlxSprite(150,150).loadGraphic(Paths.image('credits/at'));
 		add(credIcon1);
-		credIcon1.antialiasing = ClientPrefs.globalAntialiasing;
 		credIcon1.visible = false;
 
 		credIcon2 = new FlxSprite(FlxG.width-300,150).loadGraphic(Paths.image('credits/toadette'));
 		add(credIcon2);
-		credIcon2.antialiasing = ClientPrefs.globalAntialiasing;
 		credIcon2.visible = false;
 		credIcon2.flipX = true;
 
-		credIcon3 = new FlxSprite(150,FlxG.height-300).loadGraphic(Paths.image('credits/discord'));
+		credIcon3 = new FlxSprite(150,FlxG.height-300).loadGraphic(Paths.image('credits/yanniz06'));
 		add(credIcon3);
-		credIcon3.antialiasing = ClientPrefs.globalAntialiasing;
 		credIcon3.visible = false;
 
 		credIcon4 = new FlxSprite(FlxG.width-300,FlxG.height-300).loadGraphic(Paths.image('credits/thrift'));
 		add(credIcon4);
-		credIcon4.antialiasing = ClientPrefs.globalAntialiasing;
 		credIcon4.visible = false;
-		credIcon4.flipX = false;
+		credIcon4.flipX = true;
+		
+		credIcon1.active = false;
+		credIcon2.active = false;
+		credIcon3.active = false;
+		credIcon4.active = false;
 		#end
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
@@ -344,21 +322,17 @@ class TitleState extends MusicBeatState
 			skipIntro();
 		else
 			initialized = true;
-
-		// credGroup.add(credTextShit);
 	}
 
 	function getIntroTextShit():Array<Array<String>>
 	{
-		var fullText:String = Assets.getText(Paths.txt('introText'));
+		var fullText:String = Paths.getTextFromFile('data/introText.txt'); //allows mod intro sex
 
 		var firstArray:Array<String> = fullText.split('\n');
 		var swagGoodArray:Array<Array<String>> = [];
 
 		for (i in firstArray)
-		{
 			swagGoodArray.push(i.split('--'));
-		}
 
 		return swagGoodArray;
 	}
@@ -375,22 +349,11 @@ class TitleState extends MusicBeatState
 	{
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
-		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
 
-		if (FlxG.mouse.justPressed && ClientPrefs.mouseControls) pressedEnter = true;
-
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		if (gamepad != null)
-		{
-			if (gamepad.justPressed.START)
-				pressedEnter = true;
-		}
-
 		if (newTitle) {
-			titleTimer += CoolUtil.boundTo(elapsed, 0, 1);
+			titleTimer += CoolUtil.clamp(elapsed, 0, 1);
 			if (titleTimer > 2) titleTimer -= 2;
 		}
 
@@ -405,25 +368,25 @@ class TitleState extends MusicBeatState
 				timer = FlxEase.quadInOut(timer);
 					
 				titleText.color = FlxColor.interpolate(titleTextColors[0], titleTextColors[1], timer);
-				titleText.alpha = FlxMath.lerp(titleTextAlphas[0], titleTextAlphas[1], timer);
+				titleText.alpha = FlxMath.lerp(1, .64, timer);
 			}
 
 			if(pressedEnter)
 			{
-				titleText.color = FlxColor.WHITE;
-				titleText.alpha = 1;
-				
-				if(titleText != null) titleText.animation.play('press');
+				if(titleText != null) {
+					titleText.color = FlxColor.WHITE;
+					titleText.alpha = 1;
+					titleText.animation.play('press');
+				}
 
-				if (!ClientPrefs.lowQuality) {
+				if (!ClientPrefs.settings.get("lowQuality")) {
 					swagShader.hue = 0;
 					swagShader.brightness = 0;
 				}
-				FlxG.camera.flash(ClientPrefs.flashing ? FlxColor.WHITE : 0x4CFFFFFF, 1);
+				FlxG.camera.flash(ClientPrefs.settings.get("flashing") ? FlxColor.WHITE : 0x4CFFFFFF, 1);
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 
 				transitioning = true;
-				// FlxG.sound.music.stop();
 
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
@@ -435,7 +398,6 @@ class TitleState extends MusicBeatState
 					}
 					closedState = true;
 				});
-				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 			}
 		}
 
@@ -458,7 +420,7 @@ class TitleState extends MusicBeatState
 			idling = false;
 		}
 
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
 			if(swagShader != null)
 			{
 				if(controls.UI_LEFT){
@@ -519,6 +481,7 @@ class TitleState extends MusicBeatState
 	var zoomies:Float = 1.025;
 	private var sickBeats:Int = 0; //Basically curBeat but won't be skipped if you hold the tab or resize the screen
 	public static var closedState:Bool = false;
+	var incrementor:Int = 0;
 	override function beatHit()
 	{
 		super.beatHit();
@@ -540,117 +503,86 @@ class TitleState extends MusicBeatState
 				gfDance.animation.play('danceLeft');
 		}
 
+		if (bg != null && animatedBg) {
+			bg.animation.play('idle', true);
+		}
+
 		if(!closedState) {
 			sickBeats++;
 			if (!skippedIntro) {
 				switch (sickBeats)
 				{
-					case 1:
-						zoomies = 1.1;
-						#if DENPA_WATERMARKS
-						createCoolText(['Denpa Engine by'], -115);
-						#else
-						createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
-						#end
-					case 3:
-						#if DENPA_WATERMARKS
-						credIcon1.visible = true;
-						credIcon2.visible = true;
-						credIcon3.visible = true;
-						credIcon4.visible = true;
-						addMoreText('BlueVapor1234', -55);
-						addMoreText('Bethany Clone', -55);
-						addMoreText('Box', -55);
-						addMoreText('Thrifty', -55);
-						addMoreText('Toadette8394', -55);
-						addMoreText('Ziad', -55);
-						addMoreText('_Jorge', -55);
-						#else
-						addMoreText('present');
-						#end
-					case 4:
-						#if DENPA_WATERMARKS
-						credIcon1.destroy();
-						credIcon2.destroy();
-						credIcon3.destroy();
-						credIcon4.destroy();
-						#end
-						deleteCoolText();
-					case 5:
-						createCoolText([sex[0], sex[1]], -115);
-						zoomies = 1.2;
-					case 7:
-						addMoreText(sex[2], -115);
-						ngSpr.visible = true;
-					case 8:
-						zoomies = 1.05;
-						deleteCoolText();
-						ngSpr.visible = false;
-					case 9:
-						Conductor.changeBPM(150);
-						createCoolText([curWacky[0]]);
-					case 10:
-						addMoreText(curWacky[1]);
-					case 11:
-						deleteCoolText();
-						curWacky = FlxG.random.getObject(getIntroTextShit());
-					case 12:
-						createCoolText([curWacky[0]]);
-					case 13:
-						addMoreText(curWacky[1]);
-					case 14:
-						zoomies = 1.13;
-						deleteCoolText();
-						Conductor.changeBPM(300);
-					case 17:
-						addMoreText('Drop');
-					case 18:
-						addMoreText('The');
-					case 19:
-						addMoreText('Beat');
-					case 20:
-						addMoreText('Drop');
-					case 21:
-						addMoreText('The');
-					case 22:
-						deleteCoolText();
-					case 23:
-						addMoreText('Drop');
-					case 24:
-						addMoreText('The');
-					case 25:
-						addMoreText('Beat');
-					case 26:
-						addMoreText('Drop');
-					case 27:
-						addMoreText('The');
-					case 28:
-						Conductor.changeBPM(100);
-						zoomies = 1.025;
-						deleteCoolText();
-						skipIntro();
+					//so soft coded
+					default:
+						runBeatHandler(introJSON.beats[incrementor]);
 				}
 			}
 		}
 	}
 
+	function runBeatHandler(beatSet:BeatSet) {
+		if (beatSet == null || (beatSet.beat != sickBeats || beatSet.actions == null)) return;
+		incrementor++;
+		for (actionSet in beatSet.actions) {
+			if (actionSet.name == null) return;
+			switch (actionSet.name.toLowerCase()) {
+				case "setzoom": zoomies = cast (actionSet.values[0], Float);
+				case "createstarttext": createCoolText(cast actionSet.values[0], cast (actionSet.values[1], Float));
+				case "addmoretext": addMoreText(cast (actionSet.values[0], String), (actionSet.values[1] == null ? 0 : cast (actionSet.values[1], Float)));
+				case "deletetext": deleteCoolText();
+				case "skipintro": skipIntro();
+				case "changebpm": Conductor.changeBPM(cast (actionSet.values[0], Float));
+				case "setrandomtext": curWacky = FlxG.random.getObject(getIntroTextShit());
+				case "addrandomtext":
+					switch (cast (actionSet.values[0], Int)) {
+						case 0:
+							createCoolText([curWacky[0]]);
+						default:
+							addMoreText(curWacky[cast (actionSet.values[0], Int)]);
+					}
+				case "newgrounds":
+					switch (cast (actionSet.values[0], Int)) {
+						case 0:
+							createCoolText([sex[0], sex[1]], -115);
+						case 1:
+							addMoreText(sex[2], -115);
+							ngSpr.visible = true;
+						case 2:
+							deleteCoolText();
+							ngSpr.visible = false;
+					}
+				#if DENPA_WATERMARKS
+				case "icons":
+					switch (cast (actionSet.values[0], Int)) {
+						case 0:
+							for (i in [credIcon1, credIcon2, credIcon3, credIcon4])
+								i.visible = true;
+						case 1:
+							for (i in [credIcon1, credIcon2, credIcon3, credIcon4])
+								i.destroy();
+					}
+				#end
+			}
+		}
+	}
+
 	var skippedIntro:Bool = false;
-	var increaseVolume:Bool = false;
+	var updateStuffText:FlxText;
 	function skipIntro():Void
 	{
 		if (!skippedIntro)
 		{
 			zoomies = 1.025;
-			if (!SoundTestState.isPlaying) Conductor.changeBPM(100);
+			if (!SoundTestState.isPlaying) Conductor.changeBPM(titleJSON.bpm);
 			remove(ngSpr);
 			remove(credGroup);
 			#if DENPA_WATERMARKS
-			credIcon1.destroy();
-			credIcon2.destroy();
-			credIcon3.destroy();
-			credIcon4.destroy();
+			for (i in [credIcon1, credIcon2, credIcon3, credIcon4])
+				if (i != null)
+					i.destroy();
 			#end
 			FlxG.camera.flash(FlxColor.WHITE, 3);
+			
 			skippedIntro = true;
 		}
 	}

@@ -1,0 +1,174 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "Tankman Idle Dance"
+		},
+		{
+			"offsets": [
+				45,
+				54
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "Tankman UP note 1"
+		},
+		{
+			"offsets": [
+				76,
+				-103
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "Tankman DOWN note 1"
+		},
+		{
+			"offsets": [
+				83,
+				-12
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "Tankman Right Note 1"
+		},
+		{
+			"offsets": [
+				-12,
+				-26
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "Tankman Note Left 1"
+		},
+		{
+			"offsets": [
+				-17,
+				-8
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP-alt",
+			"indices": [],
+			"name": "TANKMAN UGH"
+		},
+		{
+			"offsets": [
+				1,
+				16
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN-alt",
+			"indices": [],
+			"name": "PRETTY GOOD tankman"
+		},
+		{
+			"offsets": [
+				40,
+				53
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUPmiss",
+			"indices": [],
+			"name": "Tankman UP note MISS"
+		},
+		{
+			"offsets": [
+				82,
+				-109
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWNmiss",
+			"indices": [],
+			"name": "Tankman DOWN note MISS"
+		},
+		{
+			"offsets": [
+				81,
+				-13
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFTmiss",
+			"indices": [],
+			"name": "Tankman Right Note MISS"
+		},
+		{
+			"offsets": [
+				-11,
+				-28
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHTmiss",
+			"indices": [],
+			"name": "Tankman Note Left MISS"
+		}
+	],
+	"sarvente_floating": false,
+	"no_antialiasing": false,
+	"image": "characters/Week7/tankmanCaptain",
+	"trail_length": 4,
+	"trail_delay": 24,
+	"position": [
+		0,
+		240
+	],
+	"trail_diff": 0,
+	"trail_alpha": 1,
+	"health_drain": false,
+	"shake_screen": false,
+	"orbit": false,
+	"drain_floor": 0.1,
+	"healthbar_count": 3,
+	"flip_x": true,
+	"icon_props": {
+		"name": "tankman",
+		"offsets": [0,0],
+		"antialiasing": true
+	},
+	"healthbar_colors": [
+		{
+			"red": 225,
+			"green": 225,
+			"blue": 225
+		},
+		{
+			"red": 205,
+			"green": 205,
+			"blue": 205
+		},
+		{
+			"red": 185,
+			"green": 185,
+			"blue": 185
+		}
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"float_magnitude": 0,
+	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
+	"scale": 1,
+	"flixel_trail": false
+}

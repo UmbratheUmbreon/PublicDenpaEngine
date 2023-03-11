@@ -1,0 +1,73 @@
+var FlxG = require("flixel.FlxG");
+var PlayState = require ("PlayState");
+var BGSprite = require("BGSprite");
+var Paths = require("Paths");
+var ClientPrefs = require("ClientPrefs");
+var FlxTween = require("flixel.tweens.FlxTween");
+var Std = require("Std");
+var Math = require("Math");
+var CoolUtil = require("CoolUtil");
+var Character = require("Character");
+var Boyfriend = require("Characrer.Boyfriend"); //Characrer, really???
+var FlxCamera = require("flixel.FlxCamera");
+
+var halloweenWhite:BGSprite;
+var boyfriend:Boyfriend;
+var gf:Character;
+var camHUD:FlxCamera;
+var camZooming:Bool;
+var defaultCamZoom:Float;
+
+function onCreatePost() {
+	halloweenWhite = new BGSprite(null, 0, 0, 0, 0);
+	halloweenWhite.makeGraphic(Std.int(FlxG.width*2), Std.int(FlxG.height*2), 0xffffffff);
+	halloweenWhite.alpha = 0.001;
+	halloweenWhite.blend = CoolUtil.blendFromString("add");
+	halloweenWhite.screenCenter();
+	halloweenWhite.visible = false;
+    PlayState.instance.add(halloweenWhite);
+    Paths.sound('vanilla/week2/thunder_1');
+    Paths.sound('vanilla/week2/thunder_2');
+	boyfriend = PlayState.instance.boyfriend;
+	gf = PlayState.instance.gf;
+	camHUD = PlayState.instance.camHUD;
+	camZooming = PlayState.instance.camZooming;
+	defaultCamZoom = PlayState.instance.defaultCamZoom;
+    camHUD = PlayState.instance.camHUD;
+}
+
+function onEvent(name, value1, value2) {
+    if (name == "Lightning Strike") {
+		intensity = Std.parseFloat(value2);
+		if(Math.isNaN(intensity) || intensity < 0) intensity = 1;
+    	if (value1.toLowerCase() == 'true' || value1.length < 3) FlxG.sound.play(Paths.soundRandom('vanilla/week2/thunder_', 1, 2), 0.5);
+
+		if(boyfriend != null && boyfriend.animOffsets.exists('scared')) {
+			boyfriend.playAnim('scared', true);
+		}
+
+		if(gf != null && gf.animOffsets.exists('scared')) {
+			gf.playAnim('scared', true);
+		}
+
+		if(ClientPrefs.settings.get("camZooms")) {
+			FlxG.camera.zoom += 0.015 * intensity;
+			camHUD.zoom += 0.03 * intensity;
+
+			if(!camZooming) { //Just a way for preventing it to be permanently zoomed until Skid & Pump hits a note
+				FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 0.5);
+				FlxTween.tween(camHUD, {zoom: 1}, 0.5);
+			}
+		}
+
+    	if (!ClientPrefs.settings.get("flashing")) return;
+
+		halloweenWhite.visible = true;
+		halloweenWhite.alpha = 0.4 * intensity;
+		FlxTween.tween(halloweenWhite, {alpha: 0.5 * intensity}, 0.075);
+		FlxTween.tween(halloweenWhite, {alpha: 0.001}, 0.25, {startDelay: 0.15, onComplete: function(twn:FlxTween) {
+			halloweenWhite.visible = false;
+		}});
+		PlayState.instance.callOnHscripts("resetLightningOffsets", [PlayState.instance.curBeat]);
+    }
+}

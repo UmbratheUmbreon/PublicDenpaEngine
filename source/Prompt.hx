@@ -1,36 +1,32 @@
 package;
 
-import flixel.*;
-import flixel.FlxSubState;
-import flixel.addons.ui.FlxUIButton;
-import flixel.addons.ui.FlxUIPopup;
+import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
-import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
 
 /**
- * ...
- * @author 
+ * @author bbpanzu
  */
 class Prompt extends MusicBeatSubstate
 {
 	var selected = 0;
 	public var okc:Void->Void;
 	public var cancelc:Void->Void;
-	var buttons:FlxSprite = new FlxSprite(473.3, 450);
 	var theText:String = '';
 	var goAnyway:Bool = false;
-	var UI_box:FlxUIPopup;
 	var panel:FlxSprite;
 	var panelbg:FlxSprite;
 	var buttonAccept:FlxButton;
 	var buttonNo:FlxButton;
 	var cornerSize:Int = 10;
+
+	public static var open:Bool = false;
+
 	public function new(promptText:String='', defaultSelected:Int = 0, okCallback:Void->Void, cancelCallback:Void->Void,acceptOnDefault:Bool=false,option1:String=null,option2:String=null) 
 	{
+		open = true;
 		selected = defaultSelected;
 		okc = okCallback;
 		cancelc = cancelCallback;
@@ -53,36 +49,33 @@ class Prompt extends MusicBeatSubstate
 	{
 		super.create();
 		if (goAnyway){
+			if(okc != null) okc();
+				close();
+		} else {
+			panel = new FlxSprite(0, 0);
+			panelbg = new FlxSprite(0, 0);
+			makeSelectorGraphic(panel,300,150,0xff999999);
+			makeSelectorGraphic(panelbg,302,165,0xff000000);
+			panel.scrollFactor.set();
+			panel.screenCenter();
+			panelbg.scrollFactor.set();
+			panelbg.screenCenter();
 			
-			
-				if(okc != null)okc();
-			close();
-			
-		}else{
-		panel = new FlxSprite(0, 0);
-		panelbg = new FlxSprite(0, 0);
-		makeSelectorGraphic(panel,300,150,0xff999999);
-		makeSelectorGraphic(panelbg,302,165,0xff000000);
-		panel.scrollFactor.set();
-		panel.screenCenter();
-		panelbg.scrollFactor.set();
-		panelbg.screenCenter();
-		
-		add(panelbg);
-		add(panel);
-		add(buttonAccept);
-		add(buttonNo);
-		var textshit:FlxText = new FlxText(buttonNo.width*2, panel.y, 300, theText, 16);
-		textshit.alignment = 'center';
-		add(textshit);
-		textshit.screenCenter();
-		buttonAccept.screenCenter();
-		buttonNo.screenCenter();
-		buttonAccept.x -= buttonNo.width/1.5;
-		buttonAccept.y = panel.y + panel.height-30;
-		buttonNo.x += buttonNo.width/1.5;
-		buttonNo.y = panel.y + panel.height-30;
-		textshit.scrollFactor.set();
+			add(panelbg);
+			add(panel);
+			add(buttonAccept);
+			add(buttonNo);
+			var textshit:FlxText = new FlxText(buttonNo.width*2, panel.y, 300, theText, 16);
+			textshit.alignment = 'center';
+			add(textshit);
+			textshit.screenCenter();
+			buttonAccept.screenCenter();
+			buttonNo.screenCenter();
+			buttonAccept.x -= buttonNo.width/1.5;
+			buttonAccept.y = panel.y + panel.height-30;
+			buttonNo.x += buttonNo.width/1.5;
+			buttonNo.y = panel.y + panel.height-30;
+			textshit.scrollFactor.set();
 		}
 	}
 	
@@ -91,13 +84,11 @@ class Prompt extends MusicBeatSubstate
 		panel.makeGraphic(w, h, color);
 		panel.pixels.fillRect(new Rectangle(0, 190, panel.width, 5), 0x0);
 		
-		// Why did i do this? Because i'm a lmao stupid, of course
-		// also i wanted to understand better how fillRect works so i did this shit lol???
-		panel.pixels.fillRect(new Rectangle(0, 0, cornerSize, cornerSize), 0x0);														 //top left
+		panel.pixels.fillRect(new Rectangle(0, 0, cornerSize, cornerSize), 0x0);												//top left
 		drawCircleCornerOnSelector(panel,false, false,color);
-		panel.pixels.fillRect(new Rectangle(panel.width - cornerSize, 0, cornerSize, cornerSize), 0x0);							 //top right
+		panel.pixels.fillRect(new Rectangle(panel.width - cornerSize, 0, cornerSize, cornerSize), 0x0);							//top right
 		drawCircleCornerOnSelector(panel,true, false,color);
-		panel.pixels.fillRect(new Rectangle(0, panel.height - cornerSize, cornerSize, cornerSize), 0x0);							 //bottom left
+		panel.pixels.fillRect(new Rectangle(0, panel.height - cornerSize, cornerSize, cornerSize), 0x0);						//bottom left
 		drawCircleCornerOnSelector(panel,false, true,color);
 		panel.pixels.fillRect(new Rectangle(panel.width - cornerSize, panel.height - cornerSize, cornerSize, cornerSize), 0x0); //bottom right
 		drawCircleCornerOnSelector(panel,true, true,color);
@@ -119,4 +110,8 @@ class Prompt extends MusicBeatSubstate
 		panel.pixels.fillRect(new Rectangle((flipX ? antiX : 8), Std.int(Math.abs(antiY - 1)),  3, 1), color);
 	}
 	
+	override function destroy() {
+		open = false;
+		super.destroy();
+	}
 }

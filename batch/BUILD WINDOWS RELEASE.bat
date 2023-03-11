@@ -2,7 +2,7 @@
 color 0a
 cd ..
 echo Building Release.
-haxelib run lime build windows -release
+haxelib run lime build windows
 echo.
 echo done.
 pause

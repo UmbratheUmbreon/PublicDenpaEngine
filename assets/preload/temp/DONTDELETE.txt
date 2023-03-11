@@ -1,0 +1,2 @@
+Temporary Files used by the engine go here specifically!
+(For now used for storing zips to be uncompressed)

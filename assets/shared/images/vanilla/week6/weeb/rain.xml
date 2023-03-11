@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="rain.png"><SubTexture name="rain0000" x="0" y="0" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+<SubTexture name="rain0001" x="1364" y="0" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+<SubTexture name="rain0002" x="2728" y="0" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+<SubTexture name="rain0003" x="4092" y="0" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+<SubTexture name="rain0004" x="0" y="724" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+<SubTexture name="rain0005" x="1364" y="724" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+<SubTexture name="rain0006" x="2728" y="724" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+<SubTexture name="rain0007" x="4092" y="724" width="1364" height="724" frameX="0" frameY="0" frameWidth="1364" frameHeight="724" />
+</TextureAtlas>

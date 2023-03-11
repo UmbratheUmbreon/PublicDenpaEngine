@@ -1,15 +1,10 @@
 package;
 
-#if MODS_ALLOWED
-//already imported so ermmmm
-#else
+import Song;
+import haxe.Json;
+#if !MODS_ALLOWED
 import openfl.utils.Assets;
 #end
-import haxe.Json;
-import haxe.format.JsonParser;
-import Song;
-
-using StringTools;
 
 /**
 * Typedef defining the contents of a `Stage` file.
@@ -19,17 +14,17 @@ typedef StageFile = {
 	var defaultZoom:Float;
 	var isPixelStage:Bool;
 
-	var boyfriend:Array<Dynamic>;
-	var girlfriend:Array<Dynamic>;
-	var opponent:Array<Dynamic>;
-	var p4:Array<Dynamic>;
+	var boyfriend:Array<Single>; //who made these dynamic lmao
+	var girlfriend:Array<Single>;
+	var opponent:Array<Single>;
+	var p4:Array<Single>;
 	var hide_girlfriend:Bool;
 
-	var camera_boyfriend:Array<Float>;
-	var camera_opponent:Array<Float>;
-	var camera_girlfriend:Array<Float>;
-	var camera_p4:Array<Float>;
-	var camera_speed:Null<Float>;
+	var camera_boyfriend:Array<Single>;
+	var camera_opponent:Array<Single>;
+	var camera_girlfriend:Array<Single>;
+	var camera_p4:Array<Single>;
+	var camera_speed:Null<Single>;
 
 	var sprites:Array<StageSprite>;
 	var animations:Array<Array<StageAnimation>>;
@@ -69,6 +64,7 @@ typedef StageSprite = {
 	var gf_front:Bool;
 
 	var origin:Array<Null<Int>>;
+	var hide_lq:Null<Bool>;
 }
 
 /**
@@ -119,19 +115,15 @@ class StageData {
 		}
 
 		var stageFile:StageFile = getStageFile(stage);
-		if(stageFile == null) { //preventing crashes
-			forceNextDirectory = '';
-		} else {
-			forceNextDirectory = stageFile.directory;
-		}
+		forceNextDirectory = (stageFile == null ? '' : stageFile.directory);
 	}
 
 	public static function getStageFile(stage:String):StageFile {
 		var rawJson:String = null;
-		var path:String = Paths.getPreloadPath('stages/' + stage + '.json');
+		var path:String = Paths.getPreloadPath('data/stages/' + stage + '.json');
 
 		#if MODS_ALLOWED
-		var modPath:String = Paths.modFolders('stages/' + stage + '.json');
+		var modPath:String = Paths.modFolders('data/stages/' + stage + '.json');
 		if(FileSystem.exists(modPath)) {
 			rawJson = File.getContent(modPath);
 		} else if(FileSystem.exists(path)) {

@@ -1,0 +1,11 @@
+var PlayState = require ("PlayState");
+var Std = require ("Std");
+var Math = require ("Math");
+
+function onEvent(name, value1, value2) {
+    if (name == "Set GF Speed") {
+		var value:Int = Std.parseInt(value1);
+		if(Math.isNaN(value) || value < 1) value = 1;
+		PlayState.instance.gfSpeed = value;
+    }
+}

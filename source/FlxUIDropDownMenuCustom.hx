@@ -1,23 +1,22 @@
 package;
 
 import flash.geom.Rectangle;
+import flixel.FlxSprite;
+import flixel.addons.ui.FlxUI9SliceSprite;
+import flixel.addons.ui.FlxUI;
+import flixel.addons.ui.FlxUIAssets;
+import flixel.addons.ui.FlxUIButton;
+import flixel.addons.ui.FlxUIGroup;
+import flixel.addons.ui.FlxUISpriteButton;
+import flixel.addons.ui.FlxUIText;
+import flixel.addons.ui.StrNameLabel;
 import flixel.addons.ui.interfaces.IFlxUIClickable;
 import flixel.addons.ui.interfaces.IFlxUIWidget;
 import flixel.addons.ui.interfaces.IHasParams;
-import flixel.FlxSprite;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxStringUtil;
-import flixel.addons.ui.FlxUIGroup;
-import flixel.addons.ui.FlxUIText;
-import flixel.addons.ui.FlxUIButton;
-import flixel.addons.ui.FlxUISpriteButton;
-import flixel.addons.ui.FlxUI9SliceSprite;
-import flixel.addons.ui.FlxUIAssets;
-import flixel.addons.ui.StrNameLabel;
-import flixel.addons.ui.FlxUI;
-
 
 /*
 
@@ -29,8 +28,6 @@ The differences are the following:
 * THe default drop direction is "Down" instead of "Automatic"
 
 */
-
-
 
 /**
  * @author larsiusprime
@@ -187,16 +184,19 @@ class FlxUIDropDownMenuCustom extends FlxUIGroup implements IFlxUIWidget impleme
 			{
 				var data = DataList[i];
 				list.push(makeListButton(i, data.label, data.name));
+				indexList.set(data.label, i);
 			}
 			selectSomething(DataList[0].name, DataList[0].label);
 		}
 		else if (ButtonList != null)
 		{
-			for (btn in ButtonList)
+			for (i in 0...ButtonList.length)
 			{
+				var btn:FlxUIButton = ButtonList[i];
 				list.push(btn);
 				btn.resize(header.background.width, header.background.height);
 				btn.x = 1;
+				indexList.set(btn.label.text, i);
 			}
 		}
 		updateButtonPositions();
@@ -283,6 +283,20 @@ class FlxUIDropDownMenuCustom extends FlxUIGroup implements IFlxUIWidget impleme
 	{
 		return list.length * header.background.height;
 	}
+	
+	/**
+	 * Returns the index of the current button in the `list` array.
+	 * @param name The name of the button which's index you want to grab.
+	 */
+	public function getIndexByName(name:String):Int {
+		if(indexList.exists(name)) return indexList[name];
+		return -1;
+	}
+
+	/**
+	 * Internal use only
+	 */
+	private var indexList:Map<String, Int> = ["" => -100];
 
 	/**
 	 * Change the contents with a new data list
@@ -290,6 +304,7 @@ class FlxUIDropDownMenuCustom extends FlxUIGroup implements IFlxUIWidget impleme
 	 */
 	public function setData(DataList:Array<StrNameLabel>):Void
 	{
+		indexList = ["" => -100]; //reset
 		var i:Int = 0;
 
 		if (DataList != null)
@@ -321,6 +336,7 @@ class FlxUIDropDownMenuCustom extends FlxUIGroup implements IFlxUIWidget impleme
 					add(t);
 					t.visible = false;
 				}
+				indexList.set(data.label, i);
 				i++;
 			}
 
@@ -414,13 +430,7 @@ class FlxUIDropDownMenuCustom extends FlxUIGroup implements IFlxUIWidget impleme
 
 	public function getBtnById(name:String):FlxUIButton
 	{
-		for (btn in list)
-		{
-			if (btn.name == name)
-			{
-				return btn;
-			}
-		}
+		if(getIndexByName(name) != -1) return list[getIndexByName(name)];
 		return null;
 	}
 
@@ -502,18 +512,26 @@ class FlxUIDropDownMenuCustom extends FlxUIGroup implements IFlxUIWidget impleme
 	private function onClickItem(i:Int):Void
 	{
 		var item:FlxUIButton = list[i];
-		selectSomething(item.name, item.label.text);
+		changeSelection(item.label.text);
 		showList(false);
+	}
 
-		if (callback != null)
-		{
-			callback(item.name);
-		}
+	/**
+	 * Updates the currently select item of the Menu.
+	 * @param newSelection The name of the Item you want to select.
+	 * @param executeCallback Set this to false if you want to skip the callback.
+	 * @return If the selection could be changed to.
+	 */
+	public function changeSelection(newSelection:String, executeCallback:Bool = true):Bool {
+		var btn = getBtnById(newSelection);
+		if(btn == null) return false;
 
-		if (broadcastToFlxUI)
-		{
-			FlxUI.event(CLICK_EVENT, this, item.name, params);
-		}
+		selectSomething(btn.name, newSelection);
+
+		if (callback != null && executeCallback) callback(btn.name);
+		if (broadcastToFlxUI) FlxUI.event(CLICK_EVENT, this, btn.name, params);
+
+		return true;
 	}
 
 	/**

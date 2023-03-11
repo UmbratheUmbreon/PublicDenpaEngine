@@ -1,0 +1,116 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [
+				-216,
+				-282
+			],
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "idle spirit_"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-198,
+				-288
+			],
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "left_"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				174,
+				102
+			],
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "spirit down_"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-222,
+				-282
+			],
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "right_"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-216,
+				-240
+			],
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "up_"
+		}
+	],
+	"sarvente_floating": false,
+	"no_antialiasing": true,
+	"death_props": {
+		"endSfx": "gameOverEnd",
+		"bpm": 100,
+		"loopSfx": "gameOver",
+		"character": "bf-dead",
+		"startSfx": "fnf_loss_sfx"
+	},
+	"image": "characters/Week6/spirit",
+	"trail_length": 4,
+	"trail_delay": 24,
+	"position": [
+		-150,
+		102
+	],
+	"trail_diff": 0.069,
+	"float_speed": null,
+	"trail_alpha": 0.3,
+	"health_drain": false,
+	"shake_screen": false,
+	"orbit": false,
+	"drain_floor": 0.1,
+	"healthbar_count": 3,
+	"flip_x": false,
+	"icon_props": {
+		"name": "spirit-pixel",
+		"offsets": [0,0],
+		"antialiasing": false
+	},
+	"healthbar_colors": [
+		{
+			"blue": 110,
+			"green": 60,
+			"red": 255
+		},
+		{
+			"blue": 90,
+			"green": 40,
+			"red": 235
+		},
+		{
+			"blue": 70,
+			"green": 20,
+			"red": 215
+		}
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"float_magnitude": null,
+	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
+	"scale": 6,
+	"flixel_trail": true
+}

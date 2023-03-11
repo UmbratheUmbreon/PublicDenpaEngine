@@ -1,0 +1,30 @@
+var PlayState = require("PlayState");
+var FlxTypedGroup = require("flixel.group.FlxGroup.FlxTypedGroup");
+var StrumNote = require("Note.StrumNote");
+var FlxG = require("flixel.FlxG");
+var Math = require("Math");
+
+var strum:FlxTypedGroup<StrumNote>;
+var strumNum:Int = 0;
+
+function onStartModchart(str) {
+    switch (str) {
+        case 0:
+            strum = PlayState.instance.playerStrums;
+        case 1:
+            strum = PlayState.instance.opponentStrums;
+        case 2:
+            strum = PlayState.instance.thirdStrums;
+    }
+    strumNum = str;
+}
+
+function onUpdatePost(elapsed) {
+    var elapsedtime = PlayState.instance.elapsedtime;
+    var add = (strumNum == 2 ? [PlayState.instance.player4.x, PlayState.instance.player4.y] : [0,0]);
+    strum.forEach(function(spr:StrumNote)
+	{
+		spr.x += (strumNum == 0 ? Math.sin(elapsedtime) * ((spr.ID % 2) == 0 ? 1 : -1) : -(Math.sin(elapsedtime) * ((spr.ID % 2) == 0 ? 1 : -1))) + add[0];
+		spr.x -= (strumNum == 0 ? Math.sin(elapsedtime) * 1.5 : -(Math.sin(elapsedtime) * 1.5)) + add[1];
+	});
+}

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="dialogueBox-senpaiMad.png">
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0000" x="0" y="0" width="219" height="67" frameX="-22" frameY="-60" frameWidth="249" frameHeight="144" />
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0001" x="0" y="67" width="206" height="60" frameX="-26" frameY="-69" frameWidth="249" frameHeight="144" />
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0002" x="0" y="127" width="209" height="62" frameX="-20" frameY="-64" frameWidth="249" frameHeight="144" />
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0003" x="0" y="189" width="208" height="62" frameX="-24" frameY="-66" frameWidth="249" frameHeight="144" />
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0004" x="0" y="251" width="210" height="63" frameX="-20" frameY="-66" frameWidth="249" frameHeight="144" />
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0005" x="0" y="251" width="210" height="63" frameX="-20" frameY="-66" frameWidth="249" frameHeight="144" />
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0006" x="0" y="127" width="209" height="62" frameX="-22" frameY="-66" frameWidth="249" frameHeight="144" />
+<SubTexture name="SENPAI ANGRY IMPACT SPEECH instance 0007" x="0" y="127" width="209" height="62" frameX="-22" frameY="-66" frameWidth="249" frameHeight="144" />
+</TextureAtlas>

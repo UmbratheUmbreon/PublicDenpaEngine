@@ -1,25 +1,5 @@
 package options;
 
-import flash.text.TextField;
-import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flash.text.TextField;
-import flixel.FlxSprite;
-import flixel.util.FlxSave;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import Controls;
-
-using StringTools;
-
 /**
 * Class defining an `Option` in an option sub state.
 */
@@ -27,7 +7,7 @@ class Option
 {
 	private var child:Alphabet;
 	public var text(get, set):String;
-	public var onChange:Void->Void = null; //Pressed enter (on Bool type options) or pressed/held left/right (on other types)
+	public var onChange:Void->Void = null; //Pressed enter (on Bool/Link type options) or pressed/held left/right (on other types)
 
 	public var type(get, default):String = 'bool'; //bool, int (or integer), float (or fl), percent, string (or str)
 	// Bool will use checkboxes
@@ -74,6 +54,8 @@ class Option
 					if(options.length > 0) {
 						defaultValue = options[0];
 					}
+				case 'link':
+					defaultValue = '';
 			}
 		}
 
@@ -109,17 +91,11 @@ class Option
 
 	public function getValue():Dynamic
 	{
-		/*switch (variable.toLowerCase()) {
-			default:*/
-				return Reflect.getProperty(ClientPrefs, variable);
-		//}
+		return (ClientPrefs.settings.exists(variable) ? ClientPrefs.settings.get(variable) : null);
 	}
 	public function setValue(value:Dynamic)
 	{
-		/*switch (variable.toLowerCase()) {
-			default:*/
-				Reflect.setProperty(ClientPrefs, variable, value);
-		//}
+		ClientPrefs.settings.set(variable, value);
 	}
 
 	public function setChild(child:Alphabet)
@@ -147,7 +123,7 @@ class Option
 		var newValue:String = 'bool';
 		switch(type.toLowerCase().trim())
 		{
-			case 'int' | 'float' | 'percent' | 'string': newValue = type;
+			case 'int' | 'float' | 'percent' | 'string' | 'link': newValue = type;
 			case 'integer': newValue = 'int';
 			case 'str': newValue = 'string';
 			case 'fl': newValue = 'float';

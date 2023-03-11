@@ -1,0 +1,36 @@
+{
+    "name": "Denpa Engine",
+    "image": "engine",
+    "tracks": [
+        {
+            "file": "freakyMenu",
+            "name": "Menu Song",
+            "rgb": [255, 131, 0],
+            "bpm": 100
+        },
+        {
+            "file": "overdose",
+            "name": "OVERDOSE",
+            "rgb": [28, 30, 32],
+            "bpm": 104
+        },
+        {
+            "file": "program_blood",
+            "name": "Program Blood",
+            "rgb": [128, 0, 0],
+            "bpm": 112
+        },
+        {
+            "file": "elevator",
+            "name": "Discouragement Elevator",
+            "rgb": [234, 234, 234],
+            "bpm": 128
+        },
+        {
+            "file": "property-surgery",
+            "name": "Property Surgery",
+            "rgb": [182, 12, 255],
+            "bpm": 140
+        }
+    ]
+}

@@ -1,0 +1,127 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"anim": "idle",
+			"fps": 24,
+			"name": "Senpai Idle",
+			"indices": []
+		},
+		{
+			"offsets": [
+				6,
+				36
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "SENPAI UP NOTE"
+		},
+		{
+			"offsets": [
+				6,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "SENPAI RIGHT NOTE"
+		},
+		{
+			"offsets": [
+				30,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "SENPAI LEFT NOTE"
+		},
+		{
+			"offsets": [
+				12,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "SENPAI DOWN NOTE"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"anim": "pose",
+			"fps": 24,
+			"name": "Senpai Pose Thing",
+			"indices": []
+		}
+	],
+	"sarvente_floating": false,
+	"no_antialiasing": true,
+	"death_props": {
+		"endSfx": "gameOverEnd",
+		"bpm": 100,
+		"loopSfx": "gameOver",
+		"character": "bf-dead",
+		"startSfx": "fnf_loss_sfx"
+	},
+	"image": "characters/Week6/senpai",
+	"trail_length": null,
+	"trail_delay": null,
+	"position": [
+		150,
+		360
+	],
+	"trail_diff": null,
+	"float_speed": null,
+	"trail_alpha": null,
+	"health_drain": false,
+	"shake_screen": false,
+	"orbit": false,
+	"drain_floor": 0.1,
+	"healthbar_count": 3,
+	"flip_x": false,
+	"icon_props": {
+		"name": "senpai-pixel",
+		"offsets": [0,0],
+		"antialiasing": false
+	},
+	"healthbar_colors": [
+		{
+			"blue": 110,
+			"green": 170,
+			"red": 255
+		},
+		{
+			"blue": 90,
+			"green": 150,
+			"red": 235
+		},
+		{
+			"blue": 70,
+			"green": 130,
+			"red": 215
+		}
+	],
+	"camera_position": [
+		-240,
+		-330
+	],
+	"float_magnitude": null,
+	"sing_duration": 4,
+	"scare_bf": false,
+	"scare_gf": false,
+	"scale": 6,
+	"flixel_trail": false
+}

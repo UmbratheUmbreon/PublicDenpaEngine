@@ -1,0 +1,34 @@
+var PlayState = require("PlayState");
+var Paths = require("Paths");
+var FlxTween = require("flixel.tweens.FlxTween");
+var FlxEase = require("flixel.tweens.FlxEase");
+var Conductor = require("Conductor");
+
+function onCreate() {
+    PlayState.instance.camGame.zoom = 1;
+    PlayState.instance.defaultCamZoom = 1;
+}
+
+var cameraTwn:FlxTween = null;
+function onMoveCamera(character) {
+    if (character == 'p4') return;
+    if (character == 'gf' || character == 'dad') {
+        if (cameraTwn == null && PlayState.instance.camGame.zoom != 1.3) {
+            cameraTwn = FlxTween.tween(PlayState.instance.camGame, {zoom: 1.3}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut, onComplete:
+                function (twn:FlxTween) {
+                    cameraTwn = null;
+                }
+            });
+        }
+    } else {
+        if (cameraTwn == null && PlayState.instance.camGame.zoom != 1)
+		{
+			cameraTwn = FlxTween.tween(PlayState.instance.camGame, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut, onComplete:
+				function (twn:FlxTween)
+				{
+					cameraTwn = null;
+				}
+			});
+		}
+    }
+}

@@ -1,84 +1,73 @@
 package;
 
-import flixel.util.FlxSave;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
 import Controls;
+import flixel.input.gamepad.FlxGamepadInputID;
+import flixel.input.keyboard.FlxKey;
+import flixel.util.FlxSave;
+import lime.app.Application;
 
 /**
 * Class containing all settings.
 * Automatically saves and loads.
 */
 class ClientPrefs {
-	public static var downScroll:Bool = false;
-	public static var middleScroll:Bool = false;
-	public static var showFPS:Bool = #if debug true #else false #end;
-	public static var fullscreen:Bool = false;
-	public static var autoPause:Bool = true;
-	public static var flashing:Bool = true;
-	public static var globalAntialiasing:Bool = true;
-	public static var noteSplashes:Bool = true;
-	public static var lowQuality:Bool = false;
-	public static var framerate:Int = 60;
-	public static var crossFadeLimit:Null<Int> = 4;
-	public static var boyfriendCrossFadeLimit:Null<Int> = 2;
-	public static var opponentNoteAnimations:Bool = true;
-	public static var opponentAlwaysDance:Bool = true;
-	public static var cursing:Bool = true;
-	public static var violence:Bool = true;
-	public static var camZooms:Bool = true;
-	public static var camPans:Bool = true;
-	public static var hideHud:Bool = false;
-	public static var noteOffset:Int = 0;
-	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
-	public static var timeBarRGB:Array<Int> = [255, 255, 255];
-	public static var uiSkin:String = 'FNF';
-	public static var iconSwing:String = 'Swing';
-	public static var scoreDisplay:String = 'Psych';
-	public static var crossFadeMode:String = 'Mid-Fight Masses';
-	public static var ghostTapping:Bool = true;
-	public static var timeBarType:String = 'Time Left';
-	public static var scoreZoom:Bool = true;
-	public static var noReset:Bool = true;
-	public static var healthBarAlpha:Float = 1;
-	public static var controllerMode:Bool = false;
-	public static var hitsoundVolume:Float = 0;
-	public static var pauseMusic:String = 'OVERDOSE';
-	public static var ratingIntensity:String = 'Default';
-	public static var watermarks:Bool = true;
-	public static var ratingsDisplay:Bool = true;
-	public static var gsmiss:Bool = false;
-	public static var changeTBcolour:Bool = true;
-	public static var greenhp:Bool = false;
-	public static var newHP:Bool = true;
-	public static var sarvAccuracy:Bool = false;
-	public static var comboPopup:Bool = false;
-	public static var wrongCamera:Bool = false;
-	public static var msPopup:Bool = true;
-	public static var msPrecision:Int = 2;
-	public static var flinchy:Bool = true;
-	public static var cutscenes:String = 'Story Mode Only';
-	public static var camPanMode:String = 'Camera Focus';
-	public static var mouseControls:Bool = true;
-	public static var checkForUpdates:Null<Bool> = true;
-	public static var comboStacking:Bool = false;
-	public static var accuracyMode:String = 'Simple';
-	public static var subtitles:Bool = true;
-	public static var missSoundVolume:Float = 0.2;
-	public static var hitSound:String = 'Hit Sound';
-	public static var osuManiaSustains:Bool = false;
+	public static var settings:Map<String, Dynamic> = [
+        //Name, Value
+        //Bools
+        "downScroll" => false,
+        "middleScroll" => false,
+        "showFPS" => #if debug true, #else false, #end
+        "autoPause" => true,
+        "flashing" => true,
+        "globalAntialiasing" => true,
+        "noteSplashes" => true,
+        "lowQuality" => false,
+		"animateMouse" => true,
+        "camZooms" => true,
+        "camPans" => true,
+        "hideHud" => false,
+        "ghostTapping" => true,
+        "scoreZoom" => true,
+        "noReset" => true,
+        "watermarks" => true,
+        "ratingsDisplay" => false,
+        "gsMiss" => false,
+        "ogHp" => false,
+        "wrongCamera" => false,
+        "msPopup" => true,
+        "flinching" => true,
+		"disableBotIcon" => false,
+        "checkForUpdates" => true,
+        "subtitles" => true,
+		"complexAccuracy" => false,
+        //Ints
+        "framerate" => 60,
+        "noteOffset" => 0,
+        "ratingOffset" => 0,
+        "perfectWindow" => 15,
+        "sickWindow" => 45,
+        "goodWindow" => 90,
+        "badWindow" => 135,
+        "shitWindow" => 180,
+        //Floats
+        "hitsoundVolume" => 0,
+        "safeFrames" => 10,
+        //Strings
+		"resolution" => "1280x720",
+        "uiSkin" => "FNF",
+        "iconAnim" => "Swing",
+        "scoreDisplay" => "Psych",
+        "timeBarType" => "Time Left",
+        "pauseMusic" => "OVERDOSE",
+        "ratingIntensity" => "Default",
+        "cutscenes" => "Story Mode Only",
+		//Arrays
+		"crossFadeData" => ['Default', 'Healthbar', [255, 255, 255], 0.3, 0.35]
+	];
+
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 
-		// anyone reading this, amod is multiplicative speed mod, cmod is constant speed mod, and xmod is bpm based speed mod.
-		// an amod example would be chartSpeed * multiplier
-		// cmod would just be constantSpeed = chartSpeed
-		// and xmod basically works by basing the speed on the bpm.
-		// iirc (beatsPerSecond * (conductorToNoteDifference / 1000)) * noteSize (110 or something like that depending on it, prolly just use note.height)
-		// bps is calculated by bpm / 60
-		// oh yeah and you'd have to actually convert the difference to seconds which I already do, because this is based on beats and stuff. but it should work
-		// just fine. but I wont implement it because I don't know how you handle sustains and other stuff like that.
-		// oh yeah when you calculate the bps divide it by the songSpeed or rate because it wont scroll correctly when speeds exist.
 		'songspeed' => 1.0,
 		'healthgain' => 1.0,
 		'healthloss' => 1.0,
@@ -92,539 +81,326 @@ class ClientPrefs {
 		'quartiz' => false,
 		'ghostmode' => false,
 		'randommode' => false,
+		'flip' => false,
 		'opponentplay' => false
 	];
 
+	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0, 0, 0];
-	public static var ratingOffset:Int = 0;
-	public static var perfectWindow:Int = 10;
-	public static var sickWindow:Int = 45;
-	public static var goodWindow:Int = 90;
-	public static var badWindow:Int = 135;
-	public static var shitWindow:Int = 205;
-	public static var safeFrames:Float = 10;
 
-	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+	//Every key has two binds, default, and alt.
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
 		//Key Bind, Name for ControlsSubState
-		'note_one1'		=> [SPACE, UP],
-
-		'note_two1'		=> [D, LEFT],
-		'note_two2'		=> [K, RIGHT],
-
-		'note_three1'	=> [D, LEFT],
-		'note_three2'	=> [SPACE, UP],
-		'note_three3'	=> [K, RIGHT],
-
-		'note_four1'	=> [A, LEFT],
-		'note_four2'	=> [S, DOWN],
-		'note_four3'	=> [W, UP],
-		'note_four4'	=> [D, RIGHT],
-
-		'note_five1'	=> [D, LEFT],
-		'note_five2'	=> [F, DOWN],
-		'note_five3'	=> [SPACE, NUMPADZERO],
-		'note_five4'	=> [J, UP],
-		'note_five5'	=> [K, RIGHT],
-
-		'note_six1'		=> [S, LEFT],
-		'note_six2'		=> [D, DOWN],
-		'note_six3'		=> [F, NUMPADFOUR],
-		'note_six4'		=> [J, NUMPADSIX],
-		'note_six5'		=> [K, UP],
-		'note_six6'		=> [L, RIGHT],
-
-		'note_seven1'	=> [S, LEFT],
-		'note_seven2'	=> [D, DOWN],
-		'note_seven3'	=> [F, NUMPADFOUR],
-		'note_seven4'	=> [SPACE, NUMPADZERO],
-		'note_seven5'	=> [J, NUMPADSIX],
-		'note_seven6'	=> [K, UP],
-		'note_seven7'	=> [L, RIGHT],
-
-		'note_eight1'	=> [A, LEFT],
-		'note_eight2'	=> [S, DOWN],
-		'note_eight3'	=> [D, UP],
-		'note_eight4'	=> [F, RIGHT],
-		'note_eight5'	=> [H, NUMPADFOUR],
-		'note_eight6'	=> [J, NUMPADEIGHT],
-		'note_eight7'	=> [K, NUMPADSIX],
-		'note_eight8'	=> [L, NUMPADTWO],
-
-		'note_nine1'	=> [A, LEFT],
-		'note_nine2'	=> [S, DOWN],
-		'note_nine3'	=> [D, UP],
-		'note_nine4'	=> [F, RIGHT],
-		'note_nine5'	=> [SPACE, NUMPADZERO],
-		'note_nine6'	=> [H, NUMPADFOUR],
-		'note_nine7'	=> [J, NUMPADEIGHT],
-		'note_nine8'	=> [K, NUMPADSIX],
-		'note_nine9'	=> [L, NUMPADTWO],
+		'note_41'	=> [D],
+		'note_42'	=> [F],
+		'note_43'	=> [J],
+		'note_44'	=> [K], //who actually used WASD by choice
 		
-		'ui_left'		=> [A, LEFT],
-		'ui_down'		=> [S, DOWN],
-		'ui_up'			=> [W, UP],
-		'ui_right'		=> [D, RIGHT],
+		'ui_left'	=> [LEFT],
+		'ui_down'	=> [DOWN],
+		'ui_up'		=> [UP],
+		'ui_right'	=> [RIGHT],
 		
-		'accept'		=> [SPACE, ENTER],
-		'back'			=> [BACKSPACE, ESCAPE],
-		'pause'			=> [ENTER, ESCAPE],
-		'reset'			=> [R, NONE],
+		'accept'	=> [SPACE, ENTER],
+		'back'		=> [BACKSPACE, ESCAPE],
+		'pause'		=> [ENTER, ESCAPE],
+		'reset'		=> [R],
 		
-		'volume_mute'	=> [ZERO, NONE],
+		'volume_mute'	=> [ZERO],
 		'volume_up'		=> [NUMPADPLUS, PLUS],
 		'volume_down'	=> [NUMPADMINUS, MINUS],
 		
-		'debug_1'		=> [SEVEN, NONE],
-		'debug_2'		=> [EIGHT, NONE]
+		'debug_1'	=> [SEVEN],
+		'debug_2'	=> [EIGHT],
+		'debug_3'	=> [F3],
+		'debug_4'	=> [F4],
+
+		'manual'	=> [F12],
+
+		'note_11'	=> [SPACE, UP],
+
+		'note_21'	=> [D, LEFT],
+		'note_22'	=> [K, RIGHT],
+
+		'note_31'	=> [D, LEFT],
+		'note_32'	=> [SPACE, UP],
+		'note_33'	=> [K, RIGHT],
+
+		'note_51'	=> [D, LEFT],
+		'note_52'	=> [F, DOWN],
+		'note_53'	=> [SPACE, NUMPADZERO],
+		'note_54'	=> [J, UP],
+		'note_55'	=> [K, RIGHT],
+
+		'note_61'	=> [S, LEFT],
+		'note_62'	=> [D, DOWN],
+		'note_63'	=> [F, NUMPADFOUR],
+		'note_64'	=> [J, NUMPADSIX],
+		'note_65'	=> [K, UP],
+		'note_66'	=> [L, RIGHT],
+
+		'note_71'	=> [S, LEFT],
+		'note_72'	=> [D, DOWN],
+		'note_73'	=> [F, NUMPADFOUR],
+		'note_74'	=> [SPACE, NUMPADZERO],
+		'note_75'	=> [J, NUMPADSIX],
+		'note_76'	=> [K, UP],
+		'note_77'	=> [L, RIGHT],
+
+		'note_81'	=> [A, LEFT],
+		'note_82'	=> [S, DOWN],
+		'note_83'	=> [D, UP],
+		'note_84'	=> [F, RIGHT],
+		'note_85'	=> [H, NUMPADFOUR],
+		'note_86'	=> [J, NUMPADEIGHT],
+		'note_87'	=> [K, NUMPADSIX],
+		'note_88'	=> [L, NUMPADTWO],
+
+		'note_91'	=> [A, LEFT],
+		'note_92'	=> [S, DOWN],
+		'note_93'	=> [D, UP],
+		'note_94'	=> [F, RIGHT],
+		'note_95'	=> [SPACE, NUMPADZERO],
+		'note_96'	=> [H, NUMPADFOUR],
+		'note_97'	=> [J, NUMPADEIGHT],
+		'note_98'	=> [K, NUMPADSIX],
+		'note_99'	=> [L, NUMPADTWO]
+	];
+
+	//gamepad keybinds yeye
+	//TODO: though, they arent programmed into the actual playstate yet
+	public static var gamepadBinds:Map<String, Array<FlxGamepadInputID>> = [
+		'note_41'	=> [X, DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT, RIGHT_STICK_DIGITAL_LEFT],
+		'note_42'	=> [A, DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN, RIGHT_STICK_DIGITAL_DOWN],
+		'note_43'	=> [Y, DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
+		'note_44'	=> [B, DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT, RIGHT_STICK_DIGITAL_RIGHT],
+		
+		'ui_left'	=> [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+		'ui_down'	=> [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
+		'ui_up'		=> [DPAD_UP, LEFT_STICK_DIGITAL_UP],
+		'ui_right'	=> [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+		
+		'accept'	=> [A, START],
+		'back'		=> [B, BACK],
+		'pause'		=> [START],
+		'reset'		=> [LEFT_STICK_CLICK],
+
+		'note_11'	=> [Y, DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
+
+		'note_21'	=> [X, DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT, RIGHT_STICK_DIGITAL_LEFT],
+		'note_22'	=> [B, DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT, RIGHT_STICK_DIGITAL_RIGHT],
+
+		'note_31'	=> [X, DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT, RIGHT_STICK_DIGITAL_LEFT],
+		'note_32'	=> [Y, DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
+		'note_33'	=> [B, DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT, RIGHT_STICK_DIGITAL_RIGHT],
+
+		'note_51'	=> [X, DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT, RIGHT_STICK_DIGITAL_LEFT],
+		'note_52'	=> [A, DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN, RIGHT_STICK_DIGITAL_DOWN],
+		'note_53'	=> [LEFT_STICK_CLICK, RIGHT_STICK_CLICK], //Kinda hard to figure out??
+		'note_54'	=> [Y, DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
+		'note_55'	=> [B, DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT, RIGHT_STICK_DIGITAL_RIGHT],
+
+		'note_61'	=> [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+		'note_62'	=> [A, DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN, RIGHT_STICK_DIGITAL_DOWN],
+		'note_63'	=> [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+		'note_64'	=> [X, RIGHT_STICK_DIGITAL_LEFT],
+		'note_65'	=> [Y, DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
+		'note_66'	=> [B, RIGHT_STICK_DIGITAL_RIGHT],
+
+		'note_71'	=> [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+		'note_72'	=> [A, DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN, RIGHT_STICK_DIGITAL_DOWN],
+		'note_73'	=> [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+		'note_74'	=> [LEFT_STICK_CLICK, RIGHT_STICK_CLICK],
+		'note_75'	=> [X, RIGHT_STICK_DIGITAL_LEFT],
+		'note_76'	=> [Y, DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],
+		'note_77'	=> [B, RIGHT_STICK_DIGITAL_RIGHT],
+
+		'note_81'	=> [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+		'note_82'	=> [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
+		'note_83'	=> [DPAD_UP, LEFT_STICK_DIGITAL_UP],
+		'note_84'	=> [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+		'note_85'	=> [X, RIGHT_STICK_DIGITAL_LEFT],
+		'note_86'	=> [A, RIGHT_STICK_DIGITAL_DOWN],
+		'note_87'	=> [Y, RIGHT_STICK_DIGITAL_UP],
+		'note_88'	=> [B, RIGHT_STICK_DIGITAL_RIGHT],
+
+		'note_91'	=> [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+		'note_92'	=> [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
+		'note_93'	=> [DPAD_UP, LEFT_STICK_DIGITAL_UP],
+		'note_94'	=> [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+		'note_95'	=> [LEFT_STICK_CLICK, RIGHT_STICK_CLICK],
+		'note_96'	=> [X, RIGHT_STICK_DIGITAL_LEFT],
+		'note_97'	=> [A, RIGHT_STICK_DIGITAL_DOWN],
+		'note_98'	=> [Y, RIGHT_STICK_DIGITAL_UP],
+		'note_99'	=> [B, RIGHT_STICK_DIGITAL_RIGHT]
 	];
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 
-	public static function getKeyThing(array:Array<FlxKey>, ?which:Int = 0):String {
-		return array[which];
+	public static var controllerEnabled:Bool = false; //we use this shit to make sure not to check for controller inputs unless needed
+	private static var controlsPostfix:String = '_';
+	private static var FORCE_CASE_SENSITIVITY:Bool = false;
+	/**
+	* Returns a `Bool` dictating whether a specific keybind is pressed/released.
+	* 
+	* @param keyToCheck `String` dictating the key that will be checked. Adding `_p` to the end of the key name checks for just pressed, and adding `_r` checks for just released. Otherwise, pressed will be checked
+	*/
+	public static function control(keyToCheck:String):Bool {
+		final individualKey:Array<String> = FORCE_CASE_SENSITIVITY ? keyToCheck.split(controlsPostfix) : keyToCheck.toLowerCase().split(controlsPostfix);
+		final pureBindName:String = individualKey.join(controlsPostfix).replace(controlsPostfix + individualKey[individualKey.length-1], '');
+		final keyArray:Array<FlxKey> = keyBinds.get(pureBindName);
+		final gamepadArray:Array<FlxGamepadInputID> = (gamepadBinds.exists(pureBindName) ? gamepadBinds.get(pureBindName) : [NONE]);
+
+		final check = individualKey[individualKey.length-1].toLowerCase();
+		switch(check) {
+			case 'p': return (FlxG.keys.anyJustPressed(keyArray) ? true : getGamepad(gamepadArray, check));
+			case 'r': return (FlxG.keys.anyJustReleased(keyArray) ? true : getGamepad(gamepadArray, check));
+			default:  return (FlxG.keys.anyPressed(keyArray) ? true : getGamepad(gamepadArray, check));
+		}
+		return false;
 	}
 
-	public static function loadDefaultKeys() {
+	private static function getGamepad(keys:Array<FlxGamepadInputID>, check:String):Bool
+	{
+		if (keys == null || keys.contains(NONE)) return false;
+		for (key in keys)
+		{
+			//may look strange but this is bcs you cant do anyJustPressed and shit on gamepads
+			//it doesnt return false because that would break the loop and return early
+			switch(check) {
+				case 'p':
+					if (FlxG.gamepads.anyJustPressed(key)) {
+						return true;
+					}
+				case 'r':
+					if (FlxG.gamepads.anyJustReleased(key)) {
+						return true;
+					}
+				default: 
+					if (FlxG.gamepads.anyPressed(key)) {
+						return true;
+					}
+			}
+		}
+		return false;
+	}
+
+	//for why?
+	inline public static function loadDefaultKeys() {
 		defaultKeys = keyBinds.copy();
-		//trace(defaultKeys);
 	}
 
 	public static function saveSettings() {
-		FlxG.save.data.downScroll = downScroll;
-		FlxG.save.data.middleScroll = middleScroll;
-		FlxG.save.data.showFPS = showFPS;
-		FlxG.save.data.fullscreen = fullscreen;
-		FlxG.save.data.autoPause = autoPause;
-		FlxG.save.data.flashing = flashing;
-		FlxG.save.data.globalAntialiasing = globalAntialiasing;
-		FlxG.save.data.noteSplashes = noteSplashes;
-		FlxG.save.data.lowQuality = lowQuality;
-		FlxG.save.data.framerate = framerate;
-		FlxG.save.data.crossFadeLimit = crossFadeLimit;
-		FlxG.save.data.boyfriendCrossFadeLimit = boyfriendCrossFadeLimit;
-		FlxG.save.data.opponentNoteAnimations = opponentNoteAnimations;
-		FlxG.save.data.opponentAlwaysDance = opponentAlwaysDance;
-		//FlxG.save.data.cursing = cursing;
-		//FlxG.save.data.violence = violence;
-		FlxG.save.data.camZooms = camZooms;
-		FlxG.save.data.camPans = camPans;
-		FlxG.save.data.noteOffset = noteOffset;
-		FlxG.save.data.hideHud = hideHud;
-		FlxG.save.data.arrowHSV = arrowHSV;
-		FlxG.save.data.timeBarRGB = timeBarRGB;
-		FlxG.save.data.uiSkin = uiSkin;
-		FlxG.save.data.iconSwing = iconSwing;
-		FlxG.save.data.scoreDisplay = scoreDisplay;
-		FlxG.save.data.crossFadeMode = crossFadeMode;
-		FlxG.save.data.ghostTapping = ghostTapping;
-		FlxG.save.data.timeBarType = timeBarType;
-		FlxG.save.data.scoreZoom = scoreZoom;
-		FlxG.save.data.noReset = noReset;
-		FlxG.save.data.healthBarAlpha = healthBarAlpha;
-		FlxG.save.data.comboOffset = comboOffset;
-		FlxG.save.data.watermarks = watermarks;
-		FlxG.save.data.ratingsDisplay = ratingsDisplay;
-		FlxG.save.data.gsmiss = gsmiss;
-		FlxG.save.data.greenhp = greenhp;
-		FlxG.save.data.newHP = newHP;
-		FlxG.save.data.sarvAccuracy = sarvAccuracy;
-		FlxG.save.data.comboPopup = comboPopup;
-		FlxG.save.data.wrongCamera = wrongCamera;
-		FlxG.save.data.msPopup = msPopup;
-		FlxG.save.data.msPrecision = msPrecision;
-		FlxG.save.data.changeTBcolour = changeTBcolour;
-		FlxG.save.data.ratingOffset = ratingOffset;
-		FlxG.save.data.perfectWindow = perfectWindow;
-		FlxG.save.data.sickWindow = sickWindow;
-		FlxG.save.data.goodWindow = goodWindow;
-		FlxG.save.data.badWindow = badWindow;
-		FlxG.save.data.shitWindow = shitWindow;
-		FlxG.save.data.safeFrames = safeFrames;
-		FlxG.save.data.gameplaySettings = gameplaySettings;
-		FlxG.save.data.controllerMode = controllerMode;
-		FlxG.save.data.hitsoundVolume = hitsoundVolume;
-		FlxG.save.data.pauseMusic = pauseMusic;
-		FlxG.save.data.ratingIntensity = ratingIntensity;
-		FlxG.save.data.cutscenes = cutscenes;
-		FlxG.save.data.camPanMode = camPanMode;
-		FlxG.save.data.flinchy = flinchy;
-		FlxG.save.data.mouseControls = mouseControls;
-		FlxG.save.data.checkForUpdates = checkForUpdates;
-		FlxG.save.data.comboStacking = comboStacking;
-		FlxG.save.data.accuracyMode = accuracyMode;
-		FlxG.save.data.subtitles = subtitles;
-		FlxG.save.data.missSoundVolume = missSoundVolume;
-		FlxG.save.data.hitSound = hitSound;
-		FlxG.save.data.osuManiaSustains = osuManiaSustains;
-	
-		FlxG.save.flush();
+		var settingsSave:FlxSave = new FlxSave();
+		settingsSave.bind('settings');
+		settingsSave.data.arrowHSV = arrowHSV;
+		settingsSave.data.comboOffset = comboOffset;
+		settingsSave.data.settings = settings;
+		settingsSave.data.gameplaySettings = gameplaySettings;
+		settingsSave.flush();
 
-		var save:FlxSave = new FlxSave();
-		save.bind('controls_v2', 'ninjamuffin99'); //Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
-		save.data.customControls = keyBinds;
-		save.flush();
+		var controlsSave:FlxSave = new FlxSave();
+		controlsSave.bind('controls_v3'); //Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
+		controlsSave.data.customControls = keyBinds;
+		controlsSave.flush();
+
 		FlxG.log.add("Settings saved!");
 	}
 
 	public static function loadPrefs() {
-		if(FlxG.save.data.downScroll != null) {
-			downScroll = FlxG.save.data.downScroll;
-		}
-		if(FlxG.save.data.middleScroll != null) {
-			middleScroll = FlxG.save.data.middleScroll;
-		}
-		if(FlxG.save.data.showFPS != null) {
-			showFPS = FlxG.save.data.showFPS;
-			if(Main.fpsVar != null) {
-				Main.fpsVar.visible = showFPS;
-			}
-		}
-		if(FlxG.save.data.fullscreen != null) {
-			fullscreen = FlxG.save.data.fullscreen;
-		}
-		if(FlxG.save.data.autoPause != null) {
-			autoPause = FlxG.save.data.autoPause;
-		}
-		if(FlxG.save.data.flashing != null) {
-			flashing = FlxG.save.data.flashing;
-		}
-		if(FlxG.save.data.globalAntialiasing != null) {
-			globalAntialiasing = FlxG.save.data.globalAntialiasing;
-		}
-		if(FlxG.save.data.noteSplashes != null) {
-			noteSplashes = FlxG.save.data.noteSplashes;
-		}
-		if(FlxG.save.data.lowQuality != null) {
-			lowQuality = FlxG.save.data.lowQuality;
-		}
-		if(FlxG.save.data.crossFadeLimit != null) {
-			crossFadeLimit = FlxG.save.data.crossFadeLimit;
-		}
-		if(FlxG.save.data.boyfriendCrossFadeLimit != null) {
-			boyfriendCrossFadeLimit = FlxG.save.data.boyfriendCrossFadeLimit;
-		}
-		if(FlxG.save.data.framerate != null) {
-			framerate = FlxG.save.data.framerate;
-			if(framerate > FlxG.drawFramerate) {
-				FlxG.updateFramerate = framerate;
-				FlxG.drawFramerate = framerate;
-			} else {
-				FlxG.drawFramerate = framerate;
-				FlxG.updateFramerate = framerate;
-			}
-		}
-		if(FlxG.save.data.opponentNoteAnimations != null) {
-			opponentNoteAnimations = FlxG.save.data.opponentNoteAnimations;
-		}
-		if(FlxG.save.data.opponentAlwaysDance != null) {
-			opponentAlwaysDance = FlxG.save.data.opponentAlwaysDance;
-		}
-		/*if(FlxG.save.data.cursing != null) {
-			cursing = FlxG.save.data.cursing;
-		}
-		if(FlxG.save.data.violence != null) {
-			violence = FlxG.save.data.violence;
-		}*/
-		if(FlxG.save.data.camZooms != null) {
-			camZooms = FlxG.save.data.camZooms;
-		}
-		if(FlxG.save.data.camPans != null) {
-			camPans = FlxG.save.data.camPans;
-		}
-		if(FlxG.save.data.hideHud != null) {
-			hideHud = FlxG.save.data.hideHud;
-		}
-		if(FlxG.save.data.noteOffset != null) {
-			noteOffset = FlxG.save.data.noteOffset;
-		}
-		if(FlxG.save.data.arrowHSV != null) {
-			arrowHSV = FlxG.save.data.arrowHSV;
-		}
-		if(FlxG.save.data.timeBarRGB != null) {
-			timeBarRGB = FlxG.save.data.timeBarRGB;
-		}
-		if(FlxG.save.data.uiSkin != null) {
-			uiSkin = FlxG.save.data.uiSkin;
-		}
-		if(FlxG.save.data.iconSwing != null) {
-			iconSwing = FlxG.save.data.iconSwing;
-		}
-		if(FlxG.save.data.scoreDisplay != null) {
-			scoreDisplay = FlxG.save.data.scoreDisplay;
-		}
-		if(FlxG.save.data.crossFadeMode != null) {
-			crossFadeMode = FlxG.save.data.crossFadeMode;
-		}
-		if(FlxG.save.data.ghostTapping != null) {
-			ghostTapping = FlxG.save.data.ghostTapping;
-		}
-		if(FlxG.save.data.timeBarType != null) {
-			timeBarType = FlxG.save.data.timeBarType;
-		}
-		if(FlxG.save.data.scoreZoom != null) {
-			scoreZoom = FlxG.save.data.scoreZoom;
-		}
-		if(FlxG.save.data.noReset != null) {
-			noReset = FlxG.save.data.noReset;
-		}
-		if(FlxG.save.data.healthBarAlpha != null) {
-			healthBarAlpha = FlxG.save.data.healthBarAlpha;
-		}
-		if(FlxG.save.data.comboOffset != null) {
-			comboOffset = FlxG.save.data.comboOffset;
-		}
-		
-		if(FlxG.save.data.ratingOffset != null) {
-			ratingOffset = FlxG.save.data.ratingOffset;
-		}
-		if(FlxG.save.data.perfectWindow != null) {
-			perfectWindow = FlxG.save.data.perfectWindow;
-		}
-		if(FlxG.save.data.sickWindow != null) {
-			sickWindow = FlxG.save.data.sickWindow;
-		}
-		if(FlxG.save.data.goodWindow != null) {
-			goodWindow = FlxG.save.data.goodWindow;
-		}
-		if(FlxG.save.data.badWindow != null) {
-			badWindow = FlxG.save.data.badWindow;
-		}
-		if(FlxG.save.data.shitWindow != null) {
-			shitWindow = FlxG.save.data.shitWindow;
-		}
-		if(FlxG.save.data.safeFrames != null) {
-			safeFrames = FlxG.save.data.safeFrames;
-		}
-		if(FlxG.save.data.controllerMode != null) {
-			controllerMode = FlxG.save.data.controllerMode;
-		}
-		if(FlxG.save.data.hitsoundVolume != null) {
-			hitsoundVolume = FlxG.save.data.hitsoundVolume;
-		}
-		if(FlxG.save.data.pauseMusic != null) {
-			pauseMusic = FlxG.save.data.pauseMusic;
-		}
-		if(FlxG.save.data.ratingIntensity != null) {
-			ratingIntensity = FlxG.save.data.ratingIntensity;
-		}
-		if(FlxG.save.data.gameplaySettings != null)
-		{
-			var savedMap:Map<String, Dynamic> = FlxG.save.data.gameplaySettings;
-			for (name => value in savedMap)
-			{
-				gameplaySettings.set(name, value);
-			}
-		}
-		
-		// flixel automatically saves your volume!
-		if(FlxG.save.data.volume != null)
-		{
-			FlxG.sound.volume = FlxG.save.data.volume;
-		}
-		if (FlxG.save.data.mute != null)
-		{
-			FlxG.sound.muted = FlxG.save.data.mute;
-		}
+		var settingsSave:FlxSave = new FlxSave();
+		settingsSave.bind('settings');
 
-		if (FlxG.save.data.watermarks != null)
+		if (settingsSave != null) {
+			//something about settings.set
+			if(settingsSave.data.settings != null)
 			{
-				watermarks = FlxG.save.data.watermarks;
-			}
-		if (FlxG.save.data.ratingsDisplay != null)
-			{
-				ratingsDisplay = FlxG.save.data.ratingsDisplay;
-			}
-		if (FlxG.save.data.gsmiss != null)
-			{
-				gsmiss = FlxG.save.data.gsmiss;
-			}
-		if (FlxG.save.data.greenhp != null)
-			{
-				greenhp = FlxG.save.data.greenhp;
-			}
-		if (FlxG.save.data.newHP != null)
-			{
-				newHP = FlxG.save.data.newHP;
-			}
-		if (FlxG.save.data.sarvAccuracy != null)
-			{
-				sarvAccuracy = FlxG.save.data.sarvAccuracy;
-			}
-		if (FlxG.save.data.comboPopup != null)
-			{
-				comboPopup = FlxG.save.data.comboPopup;
-			}
-		if (FlxG.save.data.wrongCamera != null)
-			{
-				wrongCamera = FlxG.save.data.wrongCamera;
-			}
-		if (FlxG.save.data.msPopup != null)
-			{
-				msPopup = FlxG.save.data.msPopup;
-			}
-		if (FlxG.save.data.msPrecision != null)
-			{
-				msPrecision = FlxG.save.data.msPrecision;
-			}
-		if (FlxG.save.data.changeTBcolour != null)
-			{
-				changeTBcolour = FlxG.save.data.changeTBcolour;
-			}		
-		if (FlxG.save.data.cutscenes != null)
-			{
-				cutscenes = FlxG.save.data.cutscenes;
-			}
-		if (FlxG.save.data.camPanMode != null)
-			{
-				camPanMode = FlxG.save.data.camPanMode;
-			}
-		if (FlxG.save.data.flinchy != null)
-			{
-				flinchy = FlxG.save.data.flinchy;
-			}
-		if (FlxG.save.data.mouseControls != null)
-			{
-				mouseControls = FlxG.save.data.mouseControls;
-			}
-		if (FlxG.save.data.checkForUpdates != null)
-			{
-				checkForUpdates = FlxG.save.data.checkForUpdates;
-			}
-		if (FlxG.save.data.comboStacking != null)
-			{
-				comboStacking = FlxG.save.data.comboStacking;
-			}
-		if (FlxG.save.data.subtitles != null)
-			{
-				subtitles = FlxG.save.data.subtitles;
-			}
-		if (FlxG.save.data.missSoundVolume != null)
-			{
-				missSoundVolume = FlxG.save.data.missSoundVolume;
-			}
-		if (FlxG.save.data.hitSound != null)
-			{
-				hitSound = FlxG.save.data.hitSound;
-			}
-		if (FlxG.save.data.osuManiaSustains != null)
-			{
-				osuManiaSustains = FlxG.save.data.osuManiaSustains;
-			}
-		if (FlxG.save.data.accuracyMode != null)
-			{
-				accuracyMode = FlxG.save.data.accuracyMode;
+				var savedMap:Map<String, Dynamic> = settingsSave.data.settings;
+				for (name => value in savedMap)
+				{
+					switch(name) {
+						case "framerate":
+							//need to do this because flixel big weird
+							if(value > FlxG.drawFramerate) {
+								FlxG.updateFramerate = value;
+								FlxG.drawFramerate = value;
+							} else {
+								FlxG.drawFramerate = value;
+								FlxG.updateFramerate = value;
+							}
+						case "globalAntialiasing": 
+							flixel.FlxSprite.defaultAntialiasing = value;
+							FlxG.mouse.unload();
+							flixel.input.mouse.FlxMouse.antialiasing = value;
+							FlxG.mouse.load();
+						case "animateMouse": flixel.input.mouse.FlxMouse.animated = value;
+						case "resolution":
+							var val = cast (value, String);
+							var split = val.split("x");
+							CoolUtil.resetResolutionScaling(Std.parseInt(split[0]), Std.parseInt(split[1]));
+							FlxG.resizeGame(Std.parseInt(split[0]), Std.parseInt(split[1]));
+							Application.current.window.width = Std.parseInt(split[0]);
+							Application.current.window.height = Std.parseInt(split[1]);
+						#if !html5
+						case "autoPause": FlxG.autoPause = value;
+						#end
+					}
+					settings.set(name, value);
+				}
 			}
 
-		var save:FlxSave = new FlxSave();
-		save.bind('controls_v2', 'ninjamuffin99');
-		if(save != null && save.data.customControls != null) {
-			var loadedControls:Map<String, Array<FlxKey>> = save.data.customControls;
+			if(settingsSave.data.gameplaySettings != null)
+			{
+				var savedMap:Map<String, Dynamic> = settingsSave.data.gameplaySettings;
+				for (name => value in savedMap)
+				{
+					gameplaySettings.set(name, value);
+				}
+			}
+
+			if (settingsSave.data.arrowHSV != null) arrowHSV = settingsSave.data.arrowHSV;
+			if (settingsSave.data.comboOffset != null) comboOffset = settingsSave.data.comboOffset;
+		}
+
+		var controlsSave:FlxSave = new FlxSave();
+		controlsSave.bind('controls_v3');
+		if(controlsSave != null && controlsSave.data.customControls != null) {
+			var loadedControls:Map<String, Array<FlxKey>> = controlsSave.data.customControls;
 			for (control => keys in loadedControls) {
 				keyBinds.set(control, keys);
 			}
 			reloadControls();
 		}
+		
+		// flixel automatically saves your volume!
+		if (FlxG.save.data.volume != null) FlxG.sound.volume = FlxG.save.data.volume;
+		if (FlxG.save.data.mute != null) FlxG.sound.muted = FlxG.save.data.mute;
 	}
 
 	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic):Dynamic {
-		return /*PlayState.isStoryMode ? defaultValue : */ (gameplaySettings.exists(name) ? gameplaySettings.get(name) : defaultValue);
+		return (gameplaySettings.exists(name) ? gameplaySettings.get(name) : defaultValue);
 	}
 
 	public static function reloadControls() {
 		PlayerSettings.player1.controls.setKeyboardScheme(KeyboardScheme.Solo);
-
-		InitState.muteKeys = copyKey(keyBinds.get('volume_mute'));
-		InitState.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
-		InitState.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
+		InitState.muteKeys = keyBinds.get('volume_mute').copy();
+		InitState.volumeDownKeys = keyBinds.get('volume_down').copy();
+		InitState.volumeUpKeys = keyBinds.get('volume_up').copy();
 		FlxG.sound.muteKeys = InitState.muteKeys;
 		FlxG.sound.volumeDownKeys = InitState.volumeDownKeys;
 		FlxG.sound.volumeUpKeys = InitState.volumeUpKeys;
 	}
-	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey> {
-		var copiedArray:Array<FlxKey> = arrayToCopy.copy();
-		var i:Int = 0;
-		var len:Int = copiedArray.length;
 
-		while (i < len) {
-			if(copiedArray[i] == NONE) {
-				copiedArray.remove(NONE);
-				--i;
-			}
-			i++;
-			len = copiedArray.length;
-		}
-		return copiedArray;
-	}
-}
-
-class Keybinds
-{
-    public static function fill():Array<Array<Dynamic>>
+	inline public static function fillKeys():Array<Array<Dynamic>>
     {
-        return [
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_one1'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two2'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three2')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three3'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four2')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four3')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_four4'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five2')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five3')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five4')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five5'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six2')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six3')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six4')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six5')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six6'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven2')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven3')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven4')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven5')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven6')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven7'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight2')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight3')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight4')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight5')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight6')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight7')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight8'))
-			],
-			[
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine1')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine2')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine3')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine4')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine5')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine6')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine7')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine8')),
-				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine9'))
-			]
-		];
+        var returArr:Array<Array<Dynamic>> = [];
+        var tempArr:Array<Dynamic> = [];
+        for (i in 1...10) {
+            for (j in 1...i+1) {
+                tempArr.push(keyBinds.get('note_$i$j').copy());
+            }
+            returArr.push(tempArr);
+            tempArr = [];
+        }
+        return returArr;
     }
 }

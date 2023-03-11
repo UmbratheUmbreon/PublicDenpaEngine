@@ -1,0 +1,13 @@
+//var FlxG = require('flixel.FlxG');
+var PlayState = require('PlayState');
+var Shader = require('FlxRuntimeShader');
+var Paths = require('Paths');
+//var FlxColor = require('flixel.util.FlxColor');
+
+function onCreate() {
+    /*var snowShader:Shader = new Shader(Paths.frag('Chromatic'), null);
+    trace(snowShader);
+    trace("this WORKS!!! right???");
+    PlayState.instance.camGame.setShaders([snowShader]);*/
+    //PlayState.instance.tintMap.set("winter-horrorland", PlayState.instance.addATint(1, FlxColor__fromRGB(120,10,5)));
+}

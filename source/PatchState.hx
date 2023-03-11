@@ -3,18 +3,13 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flash.text.TextField;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-import lime.utils.Assets;
-
-using StringTools;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
 
 /**
 * State used to give full explanations of updates.
@@ -24,6 +19,7 @@ class PatchState extends MusicBeatState
 	var curSelected:Int = -1;
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
+	var lerpList:Array<Bool> = [];
 	private var iconArray:Array<AttachedSprite> = [];
 	private var patchStuff:Array<Array<String>> = [];
 
@@ -45,9 +41,7 @@ class PatchState extends MusicBeatState
 
 	override function create()
 	{
-		Paths.clearUnusedMemory();
 		#if desktop
-		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Patch Notes", null);
 		#end
 
@@ -56,19 +50,16 @@ class PatchState extends MusicBeatState
 		add(bg);
 		bg.screenCenter();
 
-		bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-		bgScroll.velocity.set(29, 30); // Speed (Can Also Be Modified For The Direction Aswell)
-		bgScroll.antialiasing = ClientPrefs.globalAntialiasing;
-		bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'), 0, 0, 0);
-		bgScroll2.velocity.set(-29, -30); // Speed (Can Also Be Modified For The Direction Aswell)
-		bgScroll2.antialiasing = ClientPrefs.globalAntialiasing;
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
+			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll.velocity.set(29, 30);
+			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'));
+			bgScroll2.velocity.set(-29, -30);
 			add(bgScroll);
 			add(bgScroll2);
 		}
 
 		gradient = new FlxSprite().loadGraphic(Paths.image('gradient'));
-		gradient.antialiasing = ClientPrefs.globalAntialiasing;
 		add(gradient);
 		gradient.screenCenter();
 
@@ -105,8 +96,9 @@ class PatchState extends MusicBeatState
 
 		var pisspoop:Array<Array<String>> = [ //Ver - Icon name - Update Ver - Update Name - Description - Link - BG Color
 			['Denpa Engine'],
-			['0.7.0b',		'iidol',		"0.7.0b", "", 'Press ' + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'))) + ' or ' + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'), 1)) + ' to view.',							'https://docs.google.com/document/d/1FYPeiyaO2OSlejfHyqvg8VlNH2PbRCJ2PTIDohbZmUI/edit?usp=sharing',	'6FD2D2'],
-			['0.7.0',		'iidol',		"0.7.0", "", 'Press ' + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'))) + ' or ' + InputFormatter.getKeyName(ClientPrefs.getKeyThing(ClientPrefs.keyBinds.get('accept'), 1)) + ' to view.',							'https://docs.google.com/document/d/1FYPeiyaO2OSlejfHyqvg8VlNH2PbRCJ2PTIDohbZmUI/edit?usp=sharing',	'6FD2D2'],
+			['0.8.0',		'widol',		"0.8.0", "", 'This update is too large to list in a reasonable format. Explore the engine to see the changes!',	'',	'4DB33C'],
+			['0.7.0b',		'iidol',		"0.7.0b", "", 'Press ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[0]) + ' or ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[1]) + ' to view.',							'https://docs.google.com/document/d/1FYPeiyaO2OSlejfHyqvg8VlNH2PbRCJ2PTIDohbZmUI/edit?usp=sharing',	'6FD2D2'],
+			['0.7.0',		'iidol',		"0.7.0", "", 'Press ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[0]) + ' or ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[1]) + ' to view.',							'https://docs.google.com/document/d/1FYPeiyaO2OSlejfHyqvg8VlNH2PbRCJ2PTIDohbZmUI/edit?usp=sharing',	'6FD2D2'],
 			['0.5.1',		'waidol',		"0.5.1", "", 'A-Freeplay Sections, A-Dynamic Icons, A-Volume Controllers per Song, A-Option to Toggle Old Score Popup, I-Modcharts, I-Chart Editor, I-Song Credits, I-Kade Engine Score Display, I-CrossFade Auto Colouring, I-Stage Layering, F-Duet Notes, F-Minor GF Section Icon Bug, O-Stepper Code In Chara Editor, R-Deprecated Pulse Shader Code, R-Winning Icons Option, RFV-0.5.1',			'',	'3B4CB7'],
 			['0.5.0d',		'waidol',		"0.5.0d", "", 'A-NPS, A-Bopeebo and Fresh Insanity Charts, U-Credits, I-Modcharts, I-Kade Score Display, I-Title Screen, I-Chart Editor Position Display, F-Third Strum Bug, F-Multikey Input Bug, F-Crash Handler Not Showing Up, F-Null Bitmap Reference in Offset Editor, F-Invalid JSON Detector, F-Title Screen Sync, F-Invalid Song Detector, F-Incorrect BPMs When Changing Menus, RFV-0.5.0d',	'',	'3B4CB7'],
 			['0.5.0c',		'waidol',		"0.5.0c", "", 'A-FNF+ Score Display, A-FNM Score Dispaly, A-Poison Modifier, A-Autopause Option, A-Gradient Time Bar, F-Main Menu Mouse Controls, F-Tankman Bugs, F-Healthbars, O-Healthbars, RFV-0.5.0c',							'wait till next update',	'3B4CB7'],
@@ -144,15 +136,14 @@ class PatchState extends MusicBeatState
 		{
 			var isSelectable:Bool = !unselectableCheck(i);
 			var optionText:Alphabet = new Alphabet(0, 70 * i, patchStuff[i][0], !isSelectable, false);
-			optionText.isMenuItem = true;
 			optionText.screenCenter(X);
 			optionText.yAdd -= 70;
 			if(isSelectable) {
 				optionText.x -= 70;
 			}
 			optionText.forceX = optionText.x;
-			//optionText.yMult = 90;
 			optionText.targetY = i;
+			lerpList.push(true);
 			grpOptions.add(optionText);
 
 			if(isSelectable) {
@@ -165,9 +156,9 @@ class PatchState extends MusicBeatState
 				icon.xAdd = -icon.width - 10;
 				icon.sprTracker = optionText;
 	
-				// using a FlxGroup is too much fuss!
 				iconArray.push(icon);
 				add(icon);
+				icon.copyState = true;
 				Paths.currentModDirectory = '';
 
 				if(curSelected == -1) curSelected = i;
@@ -195,7 +186,7 @@ class PatchState extends MusicBeatState
 		add(descText);
 
 		bg.color = getCurrentBGColor();
-		if (!ClientPrefs.lowQuality) {
+		if (!ClientPrefs.settings.get("lowQuality")) {
 			bgScroll.color = getCurrentBGColor();
 			bgScroll2.color = getCurrentBGColor();
 		}
@@ -217,9 +208,10 @@ class PatchState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
-		var mult:Float = FlxMath.lerp(1, bg.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+		var mult:Float = FlxMath.lerp(1, bg.scale.x, CoolUtil.clamp(1 - (elapsed * 9), 0, 1));
 		bg.scale.set(mult, mult);
 		bg.updateHitbox();
+		bg.offset.set();
 
 		if(!quitting)
 		{
@@ -233,16 +225,16 @@ class PatchState extends MusicBeatState
 
 				if (upP)
 				{
-					changeSelection(-1 * shiftMult);
+					changeSelection(-shiftMult);
 					holdTime = 0;
 				}
 				if (downP)
 				{
-					changeSelection(1 * shiftMult);
+					changeSelection(shiftMult);
 					holdTime = 0;
 				}
 
-				if(FlxG.mouse.wheel != 0 && ClientPrefs.mouseControls)
+				if(FlxG.mouse.wheel != 0)
 					{
 						changeSelection(-shiftMult * FlxG.mouse.wheel);
 					}
@@ -260,12 +252,12 @@ class PatchState extends MusicBeatState
 				}
 			}
 
-			if(controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) {
+			if(controls.ACCEPT) {
 				if (patchStuff[curSelected][5] != null && patchStuff[curSelected][5].length > 0) {
 					CoolUtil.browserLoad(patchStuff[curSelected][5]);
 				}
 			}
-			if (controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
+			if (controls.BACK)
 			{
 				if(colorTween != null) {
 					colorTween.cancel();
@@ -285,26 +277,41 @@ class PatchState extends MusicBeatState
 			}
 		}
 		
-		for (item in grpOptions.members)
+		final lerpVal:Float = CoolUtil.clamp(elapsed * 12, 0, 1);
+		for (i=>item in grpOptions.members)
 		{
+			item.visible = item.active = lerpList[i] = true;
+			if (Math.abs(item.targetY) > 7 && !(curSelected == 1 || curSelected == grpOptions.length - 1))
+				item.visible = item.active = lerpList[i] = false;
+
 			if(!item.isBold)
 			{
-				var lerpVal:Float = CoolUtil.boundTo(elapsed * 12, 0, 1);
-				if(item.targetY == 0)
-				{
-					item.x = FlxMath.lerp(item.x, (FlxG.width - item.width) - 115, lerpVal);
-					item.forceX = item.x;
-				}
-				else
-				{
-					item.x = FlxMath.lerp(item.x, (FlxG.width - item.width) - 15, lerpVal);
-					item.forceX = item.x;
+				@:privateAccess {
+					if (lerpList[i]) {
+						item.y = FlxMath.lerp(item.y, (item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd, lerpVal);
+						if(item.targetY == 0)
+							item.x = FlxMath.lerp(item.x, (FlxG.width - item.width) - 115, lerpVal);
+						else
+							item.x = FlxMath.lerp(item.x, (FlxG.width - item.width) - 15, lerpVal);
+					} else {
+						item.y = ((item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd);
+						if(item.targetY == 0)
+							item.x = ((FlxG.width - item.width) - 115);
+						else
+							item.x = ((FlxG.width - item.width) - 15);
+					}
 				}
 			} else {
-				item.x = FlxG.width - item.width - 25;
-				item.forceX = item.x;
+				@:privateAccess {
+					if (lerpList[i])
+						item.y = FlxMath.lerp(item.y, (item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd, lerpVal);
+					else
+						item.y = ((item.scaledY * item.yMult) + (FlxG.height * 0.48) + item.yAdd);
+				}
+				item.x = (FlxG.width - item.width - 25);
 			}
 		}
+
 		super.update(elapsed);
 	}
 
@@ -343,16 +350,18 @@ class PatchState extends MusicBeatState
 					colorTween = null;
 				}
 			});
-			bgScrollColorTween = FlxTween.color(bgScroll, 1, bgScroll.color, intendedColor, {
-				onComplete: function(twn:FlxTween) {
-					bgScrollColorTween = null;
-				}
-			});
-			bgScrollColorTween = FlxTween.color(bgScroll2, 1, bgScroll2.color, intendedColor, {
-				onComplete: function(twn:FlxTween) {
-					bgScrollColorTween = null;
-				}
-			});
+			if (!ClientPrefs.settings.get("lowQuality")) {
+				bgScrollColorTween = FlxTween.color(bgScroll, 1, bgScroll.color, intendedColor, {
+					onComplete: function(twn:FlxTween) {
+						bgScrollColorTween = null;
+					}
+				});
+				bgScrollColorTween = FlxTween.color(bgScroll2, 1, bgScroll2.color, intendedColor, {
+					onComplete: function(twn:FlxTween) {
+						bgScrollColorTween = null;
+					}
+				});
+			}
 			gradientColorTween = FlxTween.color(gradient, 1, gradient.color, intendedColor, {
 				onComplete: function(twn:FlxTween) {
 					gradientColorTween = null;
@@ -373,6 +382,11 @@ class PatchState extends MusicBeatState
 					item.alpha = 1;
 				}
 			}
+		}
+
+		for (icon in iconArray) {
+			icon.active = true;
+			icon.visible = true;
 		}
 
 		if(nameTextTwn != null) nameTextTwn.cancel();
@@ -437,6 +451,6 @@ class PatchState extends MusicBeatState
 
 		bg.scale.set(1.06,1.06);
 		bg.updateHitbox();
-		//trace('beat hit' + curBeat);
+		bg.offset.set();
 	}
 }

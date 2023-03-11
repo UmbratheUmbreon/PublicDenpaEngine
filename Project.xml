@@ -3,14 +3,9 @@
 	<!-- _________________________ Application Settings _________________________ -->
 
 	<app title="Friday Night Funkin': Denpa Engine" file="DenpaEngine" packageName="com.detean.denpaengine" package="com.deteam.denpaengine" main="Main" version="0.2.8" company="DETeam" />
-
-	<!-- NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
-	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/> <!-- stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
-
-	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
-		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
-	<!-- <app preloader="Preloader" resizable="true" /> -->
 	<app preloader="flixel.system.FlxPreloader" />
+
+	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/>
 
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
@@ -32,19 +27,20 @@
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 
+	<!-- LOCATION OF SOURCE FILES -->
 	<classpath name="source" />
 	
 	<!-- DENPA ENGINE CUSTOMIZATION -->
-	<define name="MODS_ALLOWED" if="desktop" />
-	<define name="LUA_ALLOWED" if="desktop" />
-	<!-- <define name="VIDEOS_ALLOWED" if="web || windows" unless="32bits"/> --> <!-- UNCOMMENT THIS TO ENABLE VIDEOS -->
-	<define name="DENPA_WATERMARKS"/> <!-- COMMENT OUT THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
-	<!--<define name="FLIXEL_STUDIO"/>--> <!-- UNCOMMENT THIS TO ENABLE THE ADVANCED DEBUG MENU (WARNING: LAGGY) -->
-	<define name="CRASH_HANDLER" if="desktop release" />
-	<!-- <define name="DSIABLE_OPTIMIZE"/> --> <!-- DO NOT UNCOMMENT THIS! -->
+	<section if="desktop">
+		<define name="MODS_ALLOWED" /> <!-- COMMENT OUT TO DISABLE MODS -->
+		<define name="LUA_ALLOWED" if="cpp"/> <!-- COMMENT OUT TO DISABLE LUA -->
+		<define name="HSCRIPT_ALLOWED" /> <!-- COMMENT OUT TO DISABLE HSCRIPT -->
+	</section>
 
-	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
-	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/>
+	<define name="VIDEOS_ALLOWED" if="desktop || web" unless="32bits"/> <!-- COMMENT OUT TO DISABLE VIDEOS -->
+	<define name="DENPA_WATERMARKS"/> <!-- COMMENT OUT THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
+	<define name="CRASH_HANDLER" if="desktop release" /> <!-- COMMENT OUT TO DISABLE CRASH HANDLER -->
+	<!-- <define name="DSIABLE_OPTIMIZE"/> --> <!-- DO NOT UNCOMMENT THIS! -->
 
 	<!-- <define name="PRELOAD_ALL" unless="web" /> --> <!-- UNCOMMENT THIS TO DISABLE LOADING SCREEN -->
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
@@ -57,66 +53,32 @@
 	<section if="PRELOAD_ALL">
 		<library name="songs"         preload="true" />
 		<library name="shared"        preload="true" />
-		<library name="week1"         preload="true" />
-		<library name="week2"         preload="true" />
-		<library name="week3"         preload="true" />
-		<library name="week4"         preload="true" />
-		<library name="week5"         preload="true" />
-		<library name="week6"         preload="true" />
-		<library name="week7"         preload="true" />
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
 		<library name="songs"         preload="false" />
 		<library name="shared"        preload="false" />
-		<library name="week1"         preload="false" />
-		<library name="week2"         preload="false" />
-		<library name="week3"         preload="false" />
-		<library name="week4"         preload="false" />
-		<library name="week5"         preload="false" />
-		<library name="week6"         preload="false" />
-		<library name="week7"         preload="false" />
-	</section>
-
-	<section if="VIDEOS_ALLOWED">
-		<assets
-		path="plugins/"
-		embed='true'
-		rename=''
-		if="windows" />
-		<assets
-		path="dlls/"
-		rename=''
-		if="windows" />
-		<assets
-		path="assets/videos"
-		library="videos" />
 	</section>
 	
 	<!-- PATH DEFINITIONS -->
-	<assets path="assets/songs"         library="songs"         exclude="*.ogg" if="web"/>
-	<assets path="assets/songs"         library="songs"         exclude="*.mp3" unless="web"/>
-	<assets path="assets/shared"        library="shared"        exclude="*.ogg" if="web"/>
-	<assets path="assets/shared"        library="shared"        exclude="*.mp3" unless="web"/>
-	<assets path="assets/splash"        library="splash"        exclude="*.ogg" if="web"/>
-	<assets path="assets/splash"        library="splash"        exclude="*.mp3" unless="web"/>
-	<assets path="assets/week1"         library="week1"         exclude="*.ogg" if="web"/>
-	<assets path="assets/week1"         library="week1"         exclude="*.mp3" unless="web"/>
-	<assets path="assets/week2"         library="week2"         exclude="*.ogg" if="web"/>
-	<assets path="assets/week2"         library="week2"         exclude="*.mp3" unless="web"/>
-	<assets path="assets/week3"         library="week3"         exclude="*.ogg" if="web"/>
-	<assets path="assets/week3"         library="week3"         exclude="*.mp3" unless="web"/>
-	<assets path="assets/week4"         library="week4"         exclude="*.ogg" if="web"/>
-	<assets path="assets/week4"         library="week4"         exclude="*.mp3" unless="web"/>
-	<assets path="assets/week5"         library="week5"         exclude="*.ogg" if="web"/>
-	<assets path="assets/week5"         library="week5"         exclude="*.mp3" unless="web"/>
-	<assets path="assets/week6"         library="week6"         exclude="*.ogg" if="web"/>
-	<assets path="assets/week6"         library="week6"         exclude="*.mp3" unless="web"/>
-	<assets path="assets/week7"         library="week7"         exclude="*.ogg" if="web"/>
-	<assets path="assets/week7"         library="week7"         exclude="*.mp3" unless="web"/>
-	
+
+	<section if="web">
+		<assets path="assets/preload"		rename="assets"			exclude="*.ogg" />
+		<assets path="assets/songs"         library="songs"         exclude="*.ogg" />
+		<assets path="assets/shared"        library="shared"        exclude="*.ogg" />
+		<assets path="assets/splash"        library="splash"        exclude="*.ogg" />
+	</section>
+
+	<section unless="web">
+		<assets path="assets/preload"		rename="assets"			exclude="*.mp3" />
+		<assets path="assets/songs"         library="songs"         exclude="*.mp3" />
+		<assets path="assets/shared"        library="shared"        exclude="*.mp3" />
+		<assets path="assets/splash"        library="splash"        exclude="*.mp3" />
+	</section>
+
+	<assets path="assets/videos" library="videos" if="VIDEOS_ALLOWED"/>
 	<assets path='example_mods' rename='mods' embed='false' if="MODS_ALLOWED"/>
-	<assets path='art/readme.txt' rename='do NOT readme.txt' />
+	<assets path='crshhndlr/export/release/windows/bin' rename='crshhndlr' if="CRASH_HANDLER"/>
 
 	<!-- NOTE FOR FUTURE SELF SINCE FONTS ARE ALWAYS FUCKY 
 		TO FIX ONE OF THEM, I CONVERTED IT TO OTF. DUNNO IF YOU NEED TO
@@ -124,58 +86,142 @@
 		NOT USING A DIRECT THING TO THE ASSET!!!
 	-->
 	<assets path="assets/fonts" embed='true'/>
+
 	<!-- _________________________________ Flags ________________________________ -->
 
-	<haxeflag name="-dce no"  if="debug" />
-	<haxeflag name="-dce std" unless="debug" />
+    <!-- ALWAYS OFF FOR HSCRIPT USERS -->
+	<haxeflag name="-dce no" if="HSCRIPT_ALLOWED"/>
+    <haxeflag name="-dce full" unless="HSCRIPT_ALLOWED"/>
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
 	<haxedev set='webgl' />
-
-	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
-	<haxelib name="hscript" />
-
-	<!--In case you want to use the ui package-->
+	<haxelib name="hscript" if="HSCRIPT_ALLOWED" />
 	<haxelib name="flixel-ui" />
-	<haxelib name="hxcodec" if="VIDEOS_ALLOWED" />
+	<haxelib name="hxCodec" if="VIDEOS_ALLOWED" />
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="flixel-studio" if="FLIXEL_STUDIO"/>
+	<haxelib name="hxcpp-debug-server" if="debug"/>
+	<haxelib name="flxanimate" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
-	<!--Disable the Flixel core focus lost screen-->
+	<!-- Disables the Flixel focus lost screen -->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 
-	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
-	<haxedef name="FLX_NO_DEBUG" unless="debug" />
+	<!-- Disables Mouse and Keyboard inputs on mobile targets (currently commented out until we do mobile shit) -->
+	<!-- <section if="mobile">
+		<haxedef name="FLX_NO_MOUSE" />
+		<haxedef name="FLX_NO_KEYBOARD" />
+	</section> -->
 
-	<!--Enable this for Nape release builds for a serious peformance improvement-->
-	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+	<!-- Disables Touch inputs on desktop (excluding mac) targets -->
+	<section if="desktop" unless="mac">
+		<haxedef name="FLX_NO_TOUCH" />
+	</section>
 
-	<haxedef name="HXCPP_CHECK_POINTER" if="CRASH_HANDLER" />
-	<haxedef name="HXCPP_STACK_LINE" if="CRASH_HANDLER" />
+	<!-- Automatically gets set when compiling source to with the debug flag -->
+	<section if="debug">
+		<!-- Prints stats for gc after a session. Very useful! -->
+		<haxedef name="HXCPP_GC_SUMMARY" if="cpp"/>
+		<!-- Disables complete optimization. -->
+		<haxedef name="no_copt"  if="DSIABLE_OPTIMIZE" />
+		<!-- Disables optimization. -->
+		<haxedef name="no_opt"  if="DSIABLE_OPTIMIZE" />
+		<!-- Disables inlining. -->
+		<haxedef name="no_inline"  if="DSIABLE_OPTIMIZE" />
+	</section>
 
-	<!-- No deprecation warnings. -->
-	<haxedef name="no-deprecation-warnings"/>
+	<!-- Allows "Big Blocks" for HxCpp GC, allowing WRAM greater than 1 GB. -->
+	<haxedef name="HXCPP_GC_BIG_BLOCKS" if="cpp"/>
 
-	<haxedef name="no_copt"  if="DSIABLE_OPTIMIZE" />
-	<haxedef name="no_opt"  if="DSIABLE_OPTIMIZE" />
-	<haxedef name="no_traces"  unless="debug" />
+	<haxedef name="hscriptPos" if="HSCRIPT_ALLOWED"/>
 
-	<error value="You're not using NebulaZoruas github fork of luajit, use it instead." if="${linc_luajit == 0.0.4}" />
+	<!-- Automatically gets set on release builds -->
+	<section unless="debug">
+		<!-- Disables tracing. -->
+		<haxedef name="no_traces" />
+		<!-- Disable the Flixel core debugger. -->
+		<haxedef name="FLX_NO_DEBUG" />
+		<!-- Nape perforamnce improvement. -->
+		<haxedef name="NAPE_RELEASE_BUILD" />
+		<!-- Disables deprecation warnings. -->
+		<haxedef name="no-deprecation-warnings" />
+	</section>
 
-	<error value="You're using Haxe 4.1.5, update to 4.2.5." if="${haxe == 4.1.5}" unless="linux" />
+	<section if="CRASH_HANDLER">
+		<haxedef name="HXCPP_CHECK_POINTER" />
+		<haxedef name="HXCPP_STACK_LINE" />
+	</section>
 
-	<!-- _________________________________ Custom _______________________________ -->
+	<!-- Throws an exception if you are using the wrong luajit version. -->
+	<error value="You're not using NebulaZoruas github fork of luajit, install it instead." 
+		if="${linc_luajit == 0.0.1} ||
+		${linc_luajit == 0.0.2} ||
+		${linc_luajit == 0.0.3} ||
+		${linc_luajit == 0.0.4}" />
+	<!-- Throws an exception if you are using the wrong haxe version. -->
+	<error value="You're using an outdated Haxe, update to 4.2.5." 
+		if="${haxe == 4.1.0} ||
+		${haxe == 4.1.1} ||
+		${haxe == 4.1.2} ||
+		${haxe == 4.1.3} ||
+		${haxe == 4.1.4} ||
+		${haxe == 4.1.5}" />
+	<!-- Throws an exception if you are using the wrong flixel version. -->
+	<error value="You're using an outdated Flixel, update to 5.2.2." 
+		if="${flixel == 4.11.0} ||
+		${flixel == 5.0.0} ||
+		${flixel == 5.0.1} ||
+		${flixel == 5.0.2} ||
+		${flixel == 5.1.0} ||
+		${flixel == 5.2.0} ||
+		${flixel == 5.2.1}" />
+	<!-- Throws an exception if you are using the wrong flixel-addons version. -->
+	<error value="You're using an outdated Flixel Addons, update to 3.0.2." 
+		if="${flixel-addons == 2.11.0} ||
+		${flixel-addons == 3.0.0} ||
+		${flixel-addons == 3.0.1}" />
+	<!-- Throws an exception if you are using the wrong flixel-ui version. -->
+	<error value="You're using an outdated Flixel UI, update to 2.5.0."
+		if="${flixel-ui == 2.4.0} ||
+		${flixel-ui == 2.3.0} ||
+		${flixel-ui == 2.3.1} ||
+		${flixel-ui == 2.3.2} ||
+		${flixel-ui == 2.3.3}" />
+	<!-- Throws an exception if you are using the wrong flxanimate version. -->
+	<error value="You're using an outdated FlxAnimate, update to 3.0.4." 
+		if="${flxanimate == 1.2.0} ||
+		${flxanimate == 2.0.0} ||
+		${flxanimate == 2.1.0} ||
+		${flxanimate == 3.0.0} ||
+		${flxanimate == 3.0.1} ||
+		${flxanimate == 3.0.2} ||
+		${flxanimate == 3.0.3}" />
+	<!-- Throws an exception if you are using the wrong hxCodec version. (Currently commented out because the compiler conditionals are handling this) -->
+	<!-- <error value="You're using an outdated hxCodec, install the git version instead." 
+		if="${hxCodec == 2.5.0} ||
+		${hxCodec == 2.5.1} ||
+		${hxCodec == 2.6.0} ||
+		${hxCodec == 2.6.1}" /> -->
 
-	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
+	<!-- ________________________________ Misc __________________________________ -->
 	
-	<icon path="art/icon16.png" size='16'/>
-	<icon path="art/icon32.png" size='32'/>
-	<icon path="art/icon64.png" size='64'/>
-	<icon path="art/iconOG.png" />
+	<!-- Sets icons -->
+	<icon path="assets/icons/16.png" size='16'/>
+	<icon path="assets/icons/24.png" size='24'/>
+	<icon path="assets/icons/32.png" size='32'/>
+	<icon path="assets/icons/40.png" size='40'/>
+	<icon path="assets/icons/48.png" size='48'/>
+	<icon path="assets/icons/64.png" size='64'/>
+	<icon path="assets/icons/96.png" size='96'/>
+	<icon path="assets/icons/128.png" size='128'/>
+	<icon path="assets/icons/196.png" size='196'/>
+	<icon path="assets/icons/256.png" size='256'/>
+	<icon path="assets/icons/512.png" size='512'/>
+	<icon path="assets/icons/768.png" size='768'/>
+	<icon path="assets/icons/OG.png" />
 </project>

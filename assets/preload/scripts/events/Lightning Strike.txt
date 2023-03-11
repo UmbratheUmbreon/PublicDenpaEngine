@@ -1,0 +1,4 @@
+Starts a lightning strike.
+
+Value 1: Whether to play the sound (true/false)
+Value 2: Intensity Multiplier (leave blank for default)

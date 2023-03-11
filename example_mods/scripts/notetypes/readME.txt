@@ -1,0 +1,1 @@
+This is where your .hscript & .lua files for note types go.

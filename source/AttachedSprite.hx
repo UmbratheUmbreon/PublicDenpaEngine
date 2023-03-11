@@ -1,9 +1,8 @@
 package;
 
-import flixel.util.FlxColor;
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
 
-using StringTools;
 /**
 * Class used to create `FlxSprite`s that automatically follow other `FlxSprite`s.
 */
@@ -18,6 +17,7 @@ class AttachedSprite extends FlxSprite
 	public var copyAngle:Bool = true;
 	public var copyAlpha:Bool = true;
 	public var copyVisible:Bool = false;
+	public var copyState:Bool = false;
 
 	public function new(?file:String = null, ?anim:String = null, ?library:String = null, ?loop:Bool = false)
 	{
@@ -29,7 +29,6 @@ class AttachedSprite extends FlxSprite
 		} else if(file != null) {
 			loadGraphic(Paths.image(file));
 		}
-		antialiasing = ClientPrefs.globalAntialiasing;
 		scrollFactor.set();
 	}
 
@@ -49,6 +48,11 @@ class AttachedSprite extends FlxSprite
 
 			if(copyVisible) 
 				visible = sprTracker.visible;
+
+			if (copyState) {
+				visible = sprTracker.visible;
+				active = sprTracker.active;
+			}
 		}
 	}
 }
@@ -73,7 +77,6 @@ class NGAttachedSprite extends FlxSprite
 	{
 		super();
 		makeGraphic(width, height, color);
-		antialiasing = ClientPrefs.globalAntialiasing;
 		scrollFactor.set();
 	}
 

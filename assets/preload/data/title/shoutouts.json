@@ -1,0 +1,29 @@
+{	
+	"data": [
+		{
+			"sprite": "bambail",
+			"textArray": ["The good mod", "with stridents", "Bambail Insurgency"],
+			"height": 0.43
+		},
+		{
+			"sprite": "denpa",
+			"textArray": ["No way", "its the", "Denpa Mod"],
+			"height": 0.42
+		},
+		{
+			"sprite": "comedy",
+			"textArray": ["The comedy gold", "and comedic value", "Comedy Funkin"],
+			"height": 0.5
+		},
+		{
+			"sprite": "scratch",
+			"textArray": ["SCRATCH", "NOT THE SITE", "Vs Scratch"],
+			"height": 0.49
+		},
+		{
+			"sprite": "penis_2",
+			"textArray": ["Say hello", "to", "penis (2).png"],
+			"height": 0.47
+		}
+	]
+}

@@ -1,19 +1,15 @@
 package options;
 
-import flixel.util.FlxStringUtil;
+import flixel.FlxCamera;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxSpriteGroup;
+import flixel.math.FlxPoint;
+import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.text.FlxText;
-import flixel.group.FlxSpriteGroup;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.util.FlxColor;
-import flixel.FlxSprite;
-import flixel.FlxCamera;
 import flixel.ui.FlxBar;
-import flixel.math.FlxPoint;
-
-using StringTools;
+import flixel.util.FlxColor;
 
 /**
 * State used in the options menu to adjust offsets, both audio and visual wise.
@@ -48,17 +44,6 @@ class NoteOffsetState extends MusicBeatState
 
 	override public function create()
 	{
-		Paths.clearStoredMemory();
-		Paths.clearUnusedMemory();
-		var directory:String = 'week1';
-		var weekDir:String = StageData.forceNextDirectory;
-		StageData.forceNextDirectory = null;
-
-		if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
-
-		Paths.setCurrentLevel(directory);
-		trace('Setting asset folder to ' + directory);
-
 		SoundTestState.isPlaying = false;
 		// Cameras
 		camGame = new FlxCamera();
@@ -89,12 +74,12 @@ class NoteOffsetState extends MusicBeatState
 
 		// Characters
 		gf = new Character(400, 130, 'gf');
-		gf.x += gf.positionArray[0];
-		gf.y += gf.positionArray[1];
+		gf.x += gf.positionOffset.x;
+		gf.y += gf.positionOffset.y;
 		gf.scrollFactor.set(0.95, 0.95);
 		boyfriend = new Character(770, 100, 'bf', true);
-		boyfriend.x += boyfriend.positionArray[0];
-		boyfriend.y += boyfriend.positionArray[1];
+		boyfriend.x += boyfriend.positionOffset.x;
+		boyfriend.y += boyfriend.positionOffset.y;
 		add(gf);
 		add(boyfriend);
 
@@ -102,17 +87,14 @@ class NoteOffsetState extends MusicBeatState
 
 		healthBar = new FlxSprite().makeGraphic(601, 19, FlxColor.BLACK);
 		healthBar.cameras = [camHUD];
-		healthBar.antialiasing = ClientPrefs.globalAntialiasing;
 		var healthBarRed = new AttachedSprite.NGAttachedSprite(Std.int(healthBar.width/2)-3, 13, 0xFFFF0000);
 		healthBarRed.cameras = [camHUD];
-		healthBarRed.antialiasing = ClientPrefs.globalAntialiasing;
 		healthBarRed.xAdd = 3;
 		healthBarRed.yAdd = 3;
 		healthBarRed.sprTracker = healthBar;
 		healthBarRed.copyVisible = true;
 		var healthBarGreen = new AttachedSprite.NGAttachedSprite(Std.int(healthBar.width/2)-3, 13, 0xFF54FF00);
 		healthBarGreen.cameras = [camHUD];
-		healthBarGreen.antialiasing = ClientPrefs.globalAntialiasing;
 		healthBarGreen.xAdd = 301;
 		healthBarGreen.yAdd = 3;
 		healthBarGreen.sprTracker = healthBar;
@@ -138,7 +120,6 @@ class NoteOffsetState extends MusicBeatState
 		rating.cameras = [camHUD];
 		rating.setGraphicSize(Std.int(rating.width * 0.7));
 		rating.updateHitbox();
-		rating.antialiasing = ClientPrefs.globalAntialiasing;
 		
 		add(rating);
 
@@ -159,7 +140,6 @@ class NoteOffsetState extends MusicBeatState
 			numScore.cameras = [camHUD];
 			numScore.setGraphicSize(Std.int(numScore.width * 0.5));
 			numScore.updateHitbox();
-			numScore.antialiasing = ClientPrefs.globalAntialiasing;
 			comboNums.add(numScore);
 			daLoop++;
 		}
@@ -187,7 +167,7 @@ class NoteOffsetState extends MusicBeatState
 		timeTxt.visible = false;
 		timeTxt.cameras = [camHUD];
 
-		barPercent = ClientPrefs.noteOffset;
+		barPercent = ClientPrefs.settings.get("noteOffset");
 		updateNoteDelay();
 		
 		timeBarBG = new FlxSprite(0, timeTxt.y + 48).makeGraphic(400, 20, FlxColor.BLACK);
@@ -201,21 +181,17 @@ class NoteOffsetState extends MusicBeatState
 		timeBar.scrollFactor.set();
 		timeBar.screenCenter(X);
 		timeBar.createFilledBar(0xFF000000, 0xFF82A17B);
-		#if (haxe >= "4.1.0")
-			if (ClientPrefs.lowQuality) {
+			if (ClientPrefs.settings.get("lowQuality")) {
 				timeBar.numDivisions = Std.int((timeBar.width)/4);
 			} else {
 				timeBar.numDivisions = Std.int(timeBar.width); //what if it was 1280 :flushed:
 			}
-		#end
 		timeBar.visible = false;
 		timeBar.cameras = [camHUD];
 
 		add(timeBarBG);
 		add(timeBar);
 		add(timeTxt);
-
-		///////////////////////
 
 		var blackBox:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, 40, FlxColor.BLACK);
 		blackBox.scrollFactor.set();
@@ -240,8 +216,8 @@ class NoteOffsetState extends MusicBeatState
 	var onComboMenu:Bool = true;
 	var holdingObjectType:Null<Bool> = null;
 
-	var startMousePos:FlxPoint = new FlxPoint();
-	var startComboOffset:FlxPoint = new FlxPoint();
+	var startMousePos:FlxPoint = FlxPoint.get();
+	var startComboOffset:FlxPoint = FlxPoint.get();
 
 	override public function update(elapsed:Float)
 	{
@@ -270,11 +246,6 @@ class NoteOffsetState extends MusicBeatState
 				FlxG.keys.justPressed.K,
 				FlxG.keys.justPressed.L,
 				FlxG.keys.justPressed.J
-
-				/*FlxG.keys.justPressed.J,
-				FlxG.keys.justPressed.L,
-				FlxG.keys.justPressed.I,
-				FlxG.keys.justPressed.K*/
 			];
 
 			if(controlArray.contains(true))
@@ -350,6 +321,7 @@ class NoteOffsetState extends MusicBeatState
 					var addNum:Int = holdingObjectType ? 2 : 0;
 					ClientPrefs.comboOffset[addNum + 0] = Math.round((mousePos.x - startMousePos.x) + startComboOffset.x);
 					ClientPrefs.comboOffset[addNum + 1] = -Math.round((mousePos.y - startMousePos.y) - startComboOffset.y);
+					mousePos.put();
 					repositionCombo();
 				}
 			}
@@ -367,12 +339,12 @@ class NoteOffsetState extends MusicBeatState
 		{
 			if(controls.UI_LEFT_P)
 			{
-				barPercent = Math.max(delayMin, Math.min(ClientPrefs.noteOffset - 1, delayMax));
+				barPercent = Math.max(delayMin, Math.min(ClientPrefs.settings.get("noteOffset") - 1, delayMax));
 				updateNoteDelay();
 			}
 			else if(controls.UI_RIGHT_P)
 			{
-				barPercent = Math.max(delayMin, Math.min(ClientPrefs.noteOffset + 1, delayMax));
+				barPercent = Math.max(delayMin, Math.min(ClientPrefs.settings.get("noteOffset") + 1, delayMax));
 				updateNoteDelay();
 			}
 
@@ -406,19 +378,10 @@ class NoteOffsetState extends MusicBeatState
 			updateMode();
 		}
 
-		if(controls.BACK || (FlxG.mouse.justPressedRight && ClientPrefs.mouseControls))
+		if(controls.BACK)
 		{
 			if(zoomTween != null) zoomTween.cancel();
 			if(beatTween != null) beatTween.cancel();
-
-			var directory:String = 'shared';
-			var weekDir:String = StageData.forceNextDirectory;
-			StageData.forceNextDirectory = null;
-	
-			if(weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
-	
-			Paths.setCurrentLevel(directory);
-			trace('Setting asset folder to ' + directory);
 
 			persistentUpdate = false;
 			CustomFadeTransition.nextCamera = camOther;
@@ -535,7 +498,7 @@ class NoteOffsetState extends MusicBeatState
 
 	function updateNoteDelay()
 	{
-		ClientPrefs.noteOffset = Math.round(barPercent);
+		ClientPrefs.settings.set("noteOffset", Math.round(barPercent));
 		timeTxt.text = 'Current offset: ' + Math.floor(barPercent) + ' ms';
 	}
 
@@ -560,5 +523,11 @@ class NoteOffsetState extends MusicBeatState
 
 		changeModeText.text = changeModeText.text.toUpperCase();
 		FlxG.mouse.visible = onComboMenu;
+	}
+
+	override function destroy() {
+		startMousePos = FlxDestroyUtil.put(startMousePos);
+		startComboOffset = FlxDestroyUtil.put(startComboOffset);
+		super.destroy();
 	}
 }

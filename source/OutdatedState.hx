@@ -1,21 +1,15 @@
 package;
 
-import flixel.addons.ui.FlxUI9SliceSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import openfl.display.BlendMode;
-import flixel.tweens.FlxEase;
-import flixel.group.FlxSpriteGroup;
-import flixel.FlxSprite;
-import flixel.FlxSubState;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.effects.FlxFlicker;
-import lime.app.Application;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.addons.display.FlxBackdrop;
 import flash.geom.Rectangle;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxBackdrop;
+import flixel.addons.ui.FlxUI9SliceSprite;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import openfl.display.BlendMode;
 
 /**
 * State used to inform the user of updates.
@@ -36,38 +30,33 @@ class OutdatedState extends MusicBeatState
 	var selected:Int = 0;
 	override function create()
 	{
-		Paths.clearUnusedMemory();
 		super.create();
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
 		add(bg);
 
-		bottomLayer = new FlxBackdrop(Paths.image('oscillators/bottom'), 0, 0, true, true, 0, 0);
-		bottomLayer.velocity.set(-12, -5); // Speed (Can Also Be Modified For The Direction Aswell)
-		bottomLayer.antialiasing = ClientPrefs.globalAntialiasing;
+		bottomLayer = new FlxBackdrop(Paths.image('oscillators/bottom'), XY, 0, 0);
+		bottomLayer.velocity.set(-12, -5);
 		bottomLayer.scale.set(2,2);
 		bottomLayer.updateHitbox();
 		bottomLayer.blend = BlendMode.MULTIPLY;
 
-		middleLayer = new FlxBackdrop(Paths.image('oscillators/top'), 0, 0, true, true, 0, 0);
-		middleLayer.velocity.set(-5, -12); // Speed (Can Also Be Modified For The Direction Aswell)
-		middleLayer.antialiasing = ClientPrefs.globalAntialiasing;
+		middleLayer = new FlxBackdrop(Paths.image('oscillators/top'), XY, 0, 0);
+		middleLayer.velocity.set(-5, -12);
 		middleLayer.alpha = 0.5;
 		middleLayer.scale.set(2,2);
 		middleLayer.updateHitbox();
 		middleLayer.blend = BlendMode.DIFFERENCE;
 
-		topLayer = new FlxBackdrop(Paths.image('oscillators/verytop'), 0, 0, true, true, 0, 0);
-		topLayer.velocity.set(-24, -14); // Speed (Can Also Be Modified For The Direction Aswell)
-		topLayer.antialiasing = ClientPrefs.globalAntialiasing;
+		topLayer = new FlxBackdrop(Paths.image('oscillators/verytop'), XY, 0, 0);
+		topLayer.velocity.set(-24, -14);
 		topLayer.alpha = 0;
 		topLayer.scale.set(2,2);
 		topLayer.updateHitbox();
 		topLayer.blend = BlendMode.ADD;
 
-		clouds = new FlxBackdrop(Paths.image('oscillators/clouds'), 0, 0, true, true, 40, 20);
-		clouds.velocity.set(27, 20); // Speed (Can Also Be Modified For The Direction Aswell)
-		clouds.antialiasing = ClientPrefs.globalAntialiasing;
+		clouds = new FlxBackdrop(Paths.image('oscillators/clouds'), XY, 40, 20);
+		clouds.velocity.set(27, 20);
 		clouds.scale.set(13,13);
 		clouds.updateHitbox();
 		clouds.alpha = 0;
@@ -77,7 +66,6 @@ class OutdatedState extends MusicBeatState
 		window = new FlxUI9SliceSprite(0,0, Paths.image('oscillators/sex'), new Rectangle(0, 0, 896, 512), [32, 32, 96, 96]);
 		window.screenCenter();
 		window.alpha = 0;
-		//trace(window.x + ' ' + window.y);
 		window.y += 700;
 
 		buttonYes = new FlxSprite(0, 0);
@@ -125,7 +113,7 @@ class OutdatedState extends MusicBeatState
 
 		warnText = new FlxText(10, 0, FlxG.width,
 			"Your version of DENPA Engine is outdated!\n
-			Your version is: " + MainMenuState.denpaEngineVersion + ",\n
+			Your version is: " + Main.denpaEngineVersion.version + ",\n
 			The current version is: " + TitleState.updateVersion + ".\n
 			Would you like to update?",
 			32);
@@ -156,11 +144,11 @@ class OutdatedState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		if(!leftState) {
-			if ((controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) && selected == 0) {
+			if ((controls.ACCEPT) && selected == 0) {
 				leftState = true;
 				CoolUtil.browserLoad("https://github.com/UmbratheUmbreon/PublicDenpaEngine");
 			}
-			if ((controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.mouseControls)) && selected == 1) {
+			if ((controls.ACCEPT) && selected == 1) {
 				leftState = true;
 			}
 

@@ -10,8 +10,6 @@ import llua.Lua;
 import llua.State;
 #end
 
-using StringTools;
-
 /**
 * Class used to control Discord Rich Presence.
 */
@@ -34,7 +32,6 @@ class DiscordClient
 		{
 			DiscordRpc.process();
 			sleep(2);
-			//trace("Discord Client Update");
 		}
 
 		DiscordRpc.shutdown();
@@ -67,10 +64,14 @@ class DiscordClient
 
 	public static function initialize()
 	{
-		var DiscordDaemon = sys.thread.Thread.create(() ->
-		{
+		#if (target.threaded && sys)
+		Main.threadPool.run(() -> {
 			new DiscordClient();
 		});
+		#else
+		trace("Discord Client shut down. (No threads available!)");
+		return;
+		#end
 		trace("Discord Client initialized");
 		isInitialized = true;
 	}
@@ -88,15 +89,13 @@ class DiscordClient
 			details: details,
 			state: state,
 			largeImageKey: 'sun',
-			largeImageText: "Engine Version: " + MainMenuState.denpaEngineVersion,
+			largeImageText: 'Version ${Main.denpaEngineVersion.version}',
 			smallImageKey : smallImageKey,
-			smallImageText: CoolUtil.formatStringProper(smallImageKey),
+			smallImageText: CoolUtil.toTitleCase(smallImageKey),
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
             endTimestamp : Std.int(endTimestamp / 1000)
 		});
-
-		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
 	}
 
 	#if LUA_ALLOWED
