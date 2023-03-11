@@ -1,14 +1,3 @@
-# DenpaFunkinSource
-
-This is the Repository for "DENPA" Funkin's Source Code, also referred to externally as Denpa Engine.
-
-In order to compile, please run the QUICK SETUP.bat batch file
-It installs all the required shit, except the VSC stuff which you have to do yourself.
-
----------------------
-
-PROTOTPYE README
-
 ![Supported Platforms](https://img.shields.io/badge/supported%20platforms-windows%2C%20linux-blue)
 ![GitHub Commits Since Latest (By Date)](https://img.shields.io/github/commits-since/UmbratheUmbreon/PublicDenpaEngine/latest)
 [![Repo Size](https://img.shields.io/github/repo-size/UmbratheUmbreon/PublicDenpaEngine)](https://github.com/UmbratheUmbreon/PublicDenpaEngine)
