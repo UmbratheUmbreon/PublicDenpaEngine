@@ -234,7 +234,10 @@ class CharacterSelectSubstate extends MusicBeatSubstate
         Paths.setModsDirectoryFromType(NONE, '', true);
     }
 
+    var alreadyDoingExit:Bool = false;
     function leEpicTween() {
+        if (alreadyDoingExit) return;
+        alreadyDoingExit = true;
         FlxTween.tween(bg, {alpha: 0}, 0.7, {
             onComplete: function(_) {
                 bg.kill();
