@@ -484,6 +484,7 @@ class PlayState extends MusicBeatState
 		cpp.vm.Gc.enable(false); //prevent lag spikes where it matters most
 		#end
 
+		MusicBeatState.disableManual = true;
 		SoundTestState.isPlaying = false;
 		FlxG.mouse.visible = false;
 		instance = this;

@@ -52,6 +52,7 @@ class OptionsState extends MusicBeatState
 		DiscordClient.changePresence("In the Options Menu", null);
 		#end
 
+		MusicBeatState.disableManual = true;
 		FreeplayState.destroyFreeplayVocals();
 		FlxG.sound.playMusic(Paths.music('msm'), 0);
 		FlxG.sound.music.fadeIn(1, 0, 0.6);

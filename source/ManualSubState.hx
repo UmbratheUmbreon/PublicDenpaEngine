@@ -119,7 +119,10 @@ class ManualSubState extends MusicBeatSubstate {
         manual = new FlxSprite().loadGraphic(Paths.image('oscillators/manual'));
         manual.screenCenter(X);
         manual.y = FlxG.height;
-        FlxTween.tween(manual, {y: lastManualPos}, 1, {ease: FlxEase.expoOut});
+        FlxTween.tween(manual, {y: lastManualPos}, 1, {
+            ease: FlxEase.expoOut,
+            onComplete: _ -> blockInput = false
+        });
         manual.scrollFactor.set();
         manual.antialiasing = false;
         add(manual);
@@ -133,6 +136,7 @@ class ManualSubState extends MusicBeatSubstate {
         }
     }
 
+    var blockInput:Bool = true;
     override function update(elapsed) {
         super.update(elapsed);
         if (control('back')) exit();
@@ -148,6 +152,7 @@ class ManualSubState extends MusicBeatSubstate {
             icon.changeIcon(usableIcons[FlxG.random.int(0, usableIcons.length-1)]);
             icon.animation.curAnim.curFrame = FlxG.random.int(0, icon.animation.curAnim.frames.length-1);
         }
+        if (blockInput) return;
         final mult = (FlxG.keys.pressed.SHIFT ? 32000 : (FlxG.keys.pressed.CONTROL ? 5000 : 9000)); //keep in mind how large this is
         if (controls.UI_DOWN) moveManual(manual.y - (elapsed*mult), scrollSound);
         if (controls.UI_UP) moveManual(manual.y + (elapsed*mult), scrollSound);
@@ -155,7 +160,7 @@ class ManualSubState extends MusicBeatSubstate {
         if (FlxG.keys.justPressed.END) moveManual((-manual.height + FlxG.height) - 60, endSound);
         if (FlxG.keys.justPressed.PAGEUP) moveManual(manual.y + manual.height/22, pageSound);
         if (FlxG.keys.justPressed.PAGEDOWN) moveManual(manual.y - (manual.height/22), pageSound);
-        if (manual != null) FlxG.watch.addQuick('manualY', manual.y);
+        #if debug FlxG.watch.addQuick('manualY', manual.y); #end
     }
 
     var moveTwn:FlxTween = null;
@@ -169,8 +174,8 @@ class ManualSubState extends MusicBeatSubstate {
 
     var alreadyExiting:Bool = false;
     function exit() {
-        if (alreadyExiting) return;
-        alreadyExiting = true;
+        if (alreadyExiting || blockInput) return;
+        blockInput = alreadyExiting = true;
 
         state.persistentDraw = true; //doing this seperate so you can see it during the exit anim
         bgMusic.fadeOut(0.44, 0, _ -> {

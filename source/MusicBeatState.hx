@@ -22,6 +22,7 @@ class MusicBeatState extends FlxUIState
 
 	public static var camBeat:FlxCamera;
 	public static var curInstance:MusicBeatState = null;
+	public static var disableManual:Bool = false;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -29,6 +30,7 @@ class MusicBeatState extends FlxUIState
 	override function destroy() {
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPress);
         FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, keyRelease);
+		disableManual = false;
         super.destroy();
     }
 
@@ -89,7 +91,7 @@ class MusicBeatState extends FlxUIState
 
 			secRet += calc(diff, Std.int(nextChange.bpm));
 		}
-		trace(secRet);
+		//trace(secRet);
 		return secRet / playbackRate;
 	}
 
@@ -120,6 +122,7 @@ class MusicBeatState extends FlxUIState
 	}
 
 	function openManual() {
+		FreeplayState.destroyFreeplayVocals();
 		persistentUpdate = persistentDraw = false;
 		openSubState(new ManualSubState(this));
 	}
@@ -131,7 +134,7 @@ class MusicBeatState extends FlxUIState
         if (key == -1) return;
 
 		//yippie
-		if (ClientPrefs.keyBinds.get('manual').contains(key) && !(FlxSubState.curInstance != null && FlxSubState.curInstance.name == 'ManualSubState')) 
+		if (ClientPrefs.keyBinds.get('manual').contains(key) && !(FlxSubState.curInstance != null && FlxSubState.curInstance.name == 'ManualSubState') && !disableManual) 
 			openManual();
 		//toggle debug display
 		if (ClientPrefs.keyBinds.get('debug_3').contains(key) && FlxG.keys.checkStatus(key, JUST_PRESSED) && Main.fpsCounter.visible)

@@ -43,8 +43,8 @@ class CrashState extends flixel.FlxState {
         for (i=>check in ['Character.hx', 'Song.hx', 'StageData.hx', 'WeekData.hx', 
             'HealthIcon.hx', 'CreditsState.hx', 'PatchState.hx', 'DialogueBox.hx', 'DialogueBoxDenpa.hx',
             'FreeplayState.hx', 'Hscript.hx', 'Modcharts.hx', 'SoundtestState.hx', 'FunkinLua.hx',
-            'CharacterEditorState.hx (line 2022)', 'hscript/Parser.hx', 'HscriptSubstate.hx', 'HscriptState.hx',
-            'HscriptClass.hx', 'hscript/Interp.hx'])
+            'hscript/Parser.hx', 'HscriptSubstate.hx', 'HscriptState.hx', 'HscriptClass.hx',
+            'hscript/Interp.hx', 'Note.hx'])
         {
             if (log.contains(check)) {
                 switch (i) {
@@ -75,18 +75,30 @@ class CrashState extends flixel.FlxState {
                     case 8:
                         if (!(extralines.contains('\nYour Dialogue .json may be invalid!')))
                             extralines.push('\nYour Dialogue .json may be invalid!');
-                    case 10 | 11 | 15 | 16 | 17 | 18 | 19:
+                    case 10 | 14 | 18:
                         if (!(extralines.contains('\nYour .hscript may be invalid!')))
                             extralines.push('\nYour .hscript may be invalid!');
+                    case 11:
+                        if (!(extralines.contains('\nYour Modchart .hscript may be invalid!')))
+                            extralines.push('\nYour Modchart .hscript may be invalid!');
+                    case 15:
+                        if (!(extralines.contains('\nYour SubState .hscript may be invalid!')))
+                            extralines.push('\nYour SubState .hscript may be invalid!');
+                    case 16:
+                        if (!(extralines.contains('\nYour State .hscript may be invalid!')))
+                            extralines.push('\nYour State .hscript may be invalid!');
+                    case 17:
+                        if (!(extralines.contains('\nYour Class .hscript may be invalid!')))
+                            extralines.push('\nYour Class .hscript may be invalid!');
                     case 12:
                         if (!(extralines.contains('\nYour Album .json may be invalid!')))
                             extralines.push('\nYour Album .json may be invalid!');
                     case 13:
                         if (!(extralines.contains('\nYour .lua may be invalid!')))
                             extralines.push('\nYour .lua may be invalid!');
-                    case 14:
-                        if (!(extralines.contains('\nThis one is funny it made me laugh')))
-                            extralines.push('\nThis one is funny it made me laugh');
+                    case 19:
+                        if (!(extralines.contains('\nYour note skin may be invalid!')))
+                            extralines.push('\nYour note skin may be invalid!');
                 }
             }
         }

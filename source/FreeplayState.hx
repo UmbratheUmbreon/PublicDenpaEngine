@@ -548,9 +548,7 @@ class FreeplayState extends MusicBeatState
 					songJsonPopup();
 			}
 			#end
-		}
-
-		if (accepted)
+		} else if (accepted)
 		{
 			persistentUpdate = false;
 			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
@@ -635,6 +633,7 @@ class FreeplayState extends MusicBeatState
 		if(FlxG.keys.anyJustPressed([END, HOME]))
 		{
 			changeSelection((FlxG.keys.pressed.END ? (songs.length - curSelected)-1 : -curSelected), true, true);
+			changeDiff();
 		}
 
 		hscript.call("onUpdatePost", [elapsed]);

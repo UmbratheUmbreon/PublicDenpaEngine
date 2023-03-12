@@ -489,9 +489,8 @@ class StrumNote extends FlxSprite
 			animation.addByPrefix('pressed', skinThing[1] + ' press', 24, false);
 			animation.addByPrefix('confirm', skinThing[1] + ' confirm', 24, false);
 		}
-		animationLengths[1] = animation.getByName('pressed').numFrames;
-		animationLengths[2] = animation.getByName('confirm').numFrames;
-		animationLengths[0] = animation.getByName('static').numFrames;
+		for (i=>anim in ['static', 'pressed', 'confirm'])
+			animationLengths[i] = (animation.getByName(anim) != null ? animation.getByName('pressed').numFrames : 1);
 
 		updateHitbox();
 
