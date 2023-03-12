@@ -104,13 +104,16 @@ class CharacterSelectSubstate extends MusicBeatSubstate
         Paths.setModsDirectoryFromType(NONE, '', true);
 	}
 
+    var blockInput:Bool = false;
 	override function update(elapsed:Float)
 	{
         super.update(elapsed);
         if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
+        if (blockInput) return;
         if (controls.ACCEPT) {
+            blockInput = true;
             Paths.clearUnusedCache();
             character.skipDance = true;
             if (character != null) {
@@ -128,6 +131,7 @@ class CharacterSelectSubstate extends MusicBeatSubstate
             leEpicTween();
         }
         if (controls.BACK) {
+            blockInput = true;
             Paths.clearUnusedCache();
             character.skipDance = true;
             FlxG.sound.play(Paths.sound('cancelMenu'), 1);
@@ -136,23 +140,28 @@ class CharacterSelectSubstate extends MusicBeatSubstate
         if (controls.NOTE_DOWN_P) {
             if(character != null && character.animOffsets.exists('singDOWN')) {
                 character.playAnim('singDOWN', true);
+                canDance = false;
             }
         }
         if (controls.NOTE_LEFT_P) {
             if(character != null && character.animOffsets.exists('singLEFT')) {
                 character.playAnim('singLEFT', true);
+                canDance = false;
             }
         }
         if (controls.NOTE_RIGHT_P) {
             if(character != null && character.animOffsets.exists('singRIGHT')) {
                 character.playAnim('singRIGHT', true);
+                canDance = false;
             }
         }
         if (controls.NOTE_UP_P) {
             if(character != null && character.animOffsets.exists('singUP')) {
                 character.playAnim('singUP', true);
+                canDance = false;
             }
         }
+        if (controls.NOTE_DOWN_R || controls.NOTE_LEFT_R || controls.NOTE_RIGHT_R || controls.NOTE_UP_R) canDance = true;
         if (controls.UI_LEFT_P) {
             changeSelection(-1);
         }
@@ -173,10 +182,11 @@ class CharacterSelectSubstate extends MusicBeatSubstate
         super.destroy();
     }
 
+    var canDance = true;
     override function beatHit() {
         super.beatHit();
 
-        if (character != null) character.dance();
+        if (character != null && canDance) character.dance();
     }
 
     var dummyTween:FlxTween = null;
@@ -234,10 +244,7 @@ class CharacterSelectSubstate extends MusicBeatSubstate
         Paths.setModsDirectoryFromType(NONE, '', true);
     }
 
-    var alreadyDoingExit:Bool = false;
     function leEpicTween() {
-        if (alreadyDoingExit) return;
-        alreadyDoingExit = true;
         FlxTween.tween(bg, {alpha: 0}, 0.7, {
             onComplete: function(_) {
                 bg.kill();
@@ -253,6 +260,6 @@ class CharacterSelectSubstate extends MusicBeatSubstate
                 }
             });
         }
-        new FlxTimer().start(0.75, function(_){ close(); });
+        new FlxTimer().start(0.75, _ -> close());
     }
 }

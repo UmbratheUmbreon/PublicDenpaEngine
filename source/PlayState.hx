@@ -83,7 +83,6 @@ class PlayState extends MusicBeatState
 	public var modchartTexts:Map<String, ModchartText> = new Map<String, ModchartText>();
 	public var modchartSaves:Map<String, FlxSave> = new Map<String, FlxSave>();
 	public var modchartBackdrops:Map<String, FlxBackdrop> = new Map<String, FlxBackdrop>();
-	public var addedCharaGroups:Bool = false;
 	//json sprites (can be used in lua as well)
 	public var jsonSprites:Map<String, FlxSprite> = new Map<String, FlxSprite>();
 	public var jsonSprGrp:FlxTypedGroup<FlxBasic>;
@@ -1001,23 +1000,7 @@ class PlayState extends MusicBeatState
 		gfCrossFade = new FlxTypedGroup<CrossFade>(3);
 		grpBFCrossFade = new FlxTypedGroup<CrossFade>(4);
 
-		// STAGE SCRIPTS
-		#if (MODS_ALLOWED && LUA_ALLOWED)
-		var doPush:Bool = false;
-		var luaFile:String = 'scripts/stages/' + curStage + '.lua';
-		if(FileSystem.exists(Paths.modFolders(luaFile))) {
-			luaFile = Paths.modFolders(luaFile);
-			doPush = true;
-		} else {
-			luaFile = Paths.getPreloadPath(luaFile);
-			if(FileSystem.exists(luaFile)) {
-				doPush = true;
-			}
-		}
-
-		if(doPush) luaArray.push(new FunkinLua(luaFile));
-		#end
-
+		// STAGE SCRIPTS (Hscript)
 		#if HSCRIPT_ALLOWED
 		addHscript('stages/$curStage'); //lol?
 		#end
@@ -1045,8 +1028,6 @@ class PlayState extends MusicBeatState
 		add(boyfriendGroup);
 		add(jsonSprGrpFront);
 
-		addedCharaGroups = true;
-		
 		switch(curStage) {
 			case 'school': add(halloweenWhite);
 			case 'tank': add(foregroundSprites);
@@ -1110,6 +1091,23 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
+		#end
+
+		//LUA STAGES
+		#if (MODS_ALLOWED && LUA_ALLOWED)
+		var doPush:Bool = false;
+		var luaFile:String = 'scripts/stages/' + curStage + '.lua';
+		if(FileSystem.exists(Paths.modFolders(luaFile))) {
+			luaFile = Paths.modFolders(luaFile);
+			doPush = true;
+		} else {
+			luaFile = Paths.getPreloadPath(luaFile);
+			if(FileSystem.exists(luaFile)) {
+				doPush = true;
+			}
+		}
+
+		if(doPush) luaArray.push(new FunkinLua(luaFile));
 		#end
 
 		//in case of null
@@ -3357,7 +3355,7 @@ class PlayState extends MusicBeatState
 		{
 			final spawnTime:Float = (1750/songSpeed)/(FlxMath.bound(camHUD.zoom, null, 1)); //spawns within [time] ms (btw this BARELY edges close enough to the screen to not be too far ahead and not spawning on screen)
 
-			while (unspawnNotes.length > 0 && unspawnNotes[0].strumTime - Conductor.songPosition < spawnTime)
+			while (unspawnNotes.length > 0 && unspawnNotes[0].strumTime - Conductor.songPosition < spawnTime * unspawnNotes[0].spawnTimeMult)
 			{
 				var dunceNote:Note = unspawnNotes[0];
 				//dunceNote.active = false;
@@ -3433,7 +3431,7 @@ class PlayState extends MusicBeatState
 							//Jesus fuck this took me so much mother fucking time AAAAAAAAAA
 							if(strumGroup.members[daNote.noteData].downScroll)
 							{
-								if (daNote.animation.curAnim.name.endsWith('end')) {
+								if (daNote.animation.curAnim.name.endsWith('tail')) { 
 									daNote.y += 10.5 * (fakeCrochet / 400) * 1.5 * songSpeed + (46 * (songSpeed - 1));
 									daNote.y -= 46 * (1 - (fakeCrochet / 600)) * songSpeed;
 									daNote.y += (isPixelStage ? 8 + (6 - daNote.originalHeightForCalcs) * PlayState.daPixelZoom : -19);
@@ -5360,7 +5358,7 @@ class PlayState extends MusicBeatState
 			gf.playAnim('scared', true);
 
 		var time:Float = 0.15;
-		if(note.isSustainNote && note.animation.curAnim != null && !note.animation.curAnim.name.endsWith('end')) time += 0.15;
+		if(note.isSustainNote && note.animation.curAnim != null && !note.animation.curAnim.name.endsWith('tail')) time += 0.15;
 
 		strumPlayAnim(p4 ? note.strum : 0, Std.int(Math.abs(note.noteData)) % Note.ammo[mania], time);
 
@@ -5504,7 +5502,7 @@ class PlayState extends MusicBeatState
 		if(cpuControlled)
 		{
 			var time:Float = 0.15;
-			if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) time += 0.15;
+			if(note.isSustainNote && !note.animation.curAnim.name.endsWith('tail')) time += 0.15;
 
 			strumPlayAnim(1, Std.int(Math.abs(note.noteData)) % Note.ammo[mania], time);
 		} else {

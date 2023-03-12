@@ -72,7 +72,7 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		Paths.clearUnusedCache();
-		Paths.refreshModsMaps();
+		Paths.refreshModsMaps(false, true, true);
 		instance = this;
 		
 		persistentUpdate = true;

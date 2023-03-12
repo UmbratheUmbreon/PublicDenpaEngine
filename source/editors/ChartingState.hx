@@ -301,7 +301,7 @@ class ChartingState extends MusicBeatState
 	{
 		for(listener in mouse_listeners) FlxG.stage.addEventListener(listener, handleMouseInput);
 		Paths.clearUnusedCache();
-		Paths.refreshModsMaps();
+		Paths.refreshModsMaps(false, true, true);
 
 		if (PlayState.SONG != null)
 			_song = PlayState.SONG;
@@ -804,7 +804,7 @@ class ChartingState extends MusicBeatState
 		{
 			_song.assets.enablePlayer4 = check_enablePlayer4.checked;
 		};
-	
+
 		var characters:Array<String> = [];
 		for (key in Paths.characterMap.keys()) {
 			characters.push(key);

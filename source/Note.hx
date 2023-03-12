@@ -110,6 +110,7 @@ class Note extends FlxSprite
 	public var copyVisible:Bool = true;
 	public var copyScale:Bool = false;
 	public var scaleHackHitbox:Bool = true;
+	public var spawnTimeMult:Float = 1;
 
 	public var hitHealth:Float = 0.023;
 	public var missHealth:Float = 0.0475;
@@ -156,6 +157,7 @@ class Note extends FlxSprite
 					gfNote = true;
 				case 'Third Strum':
 					strum = 2;
+					spawnTimeMult = 2;
 				#if MODS_ALLOWED
 				case '' | 'Hey!' | 'Cross Fade' | 'Alt Animation' | 'Normal':
 					//do nothing dumbass
@@ -220,28 +222,12 @@ class Note extends FlxSprite
 			updateHitbox();
 	
 			offsetX -= width / 2;
-			if (flipY) {
-				if (!PlayState.isPixelStage) {
-					//this is harder to get right than it looks
-					offset.y -= (18 * Note.pixelScales[mania]) * PlayState.instance.songSpeed * (PlayState.instance.songSpeed/3);
-				} else {
-					offsetY += (15 * Note.pixelScales[mania]) * PlayState.instance.songSpeed * PlayState.instance.songSpeed;
-				}
-			}
 	
 			if (PlayState.isPixelStage) offsetX += 30 * Note.pixelScales[mania];
 	
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${Note.keysShit.get(mania).get('letters')[prevNote.noteData]} hold');
-	
-				if (flipY) {
-					if (!PlayState.isPixelStage) {
-						prevNote.offset.y += (18 * Note.pixelScales[mania]) * PlayState.instance.songSpeed * (PlayState.instance.songSpeed/3);
-					} else {
-						prevNote.offsetY -= (15 * Note.pixelScales[mania]) * PlayState.instance.songSpeed * PlayState.instance.songSpeed;
-					}
-				}
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.05;
 				if(PlayState.instance != null) prevNote.scale.y *= PlayState.instance.songSpeed;
 	
@@ -340,16 +326,12 @@ class Note extends FlxSprite
     {
 		if(isSustainNote) {
 			for (i=>letter in gfxLetter) {
-				if (i == noteData % Note.ammo[mania]) {
-					animation.add('$letter hold', [i]);
-					animation.add('$letter tail', [i + 9]);
-				}
+				animation.add('$letter hold', [i]);
+				animation.add('$letter tail', [i + 9]);
 			}
 		} else {
 			for (i=>letter in gfxLetter) {
-				if (i == noteData % Note.ammo[mania]) {
-					animation.add(letter, [i + 9]);
-				}
+				animation.add(letter, [i + 9]);
 			}
 		}
 	}
@@ -616,10 +598,8 @@ class NoteSplash extends FlxSprite
 		colorSwap.saturation = satColor;
 		colorSwap.brightness = brtColor;
 
-		//im not redoing all of these nuh uh
-		final offsets = [[-25, -15], [-20, -13], [-15, -11], [-22, -15], [-12, -9], [-12, -8], [-12, -8], [-12, -7], [-8, -5]];
-		offset.set(offsets[PlayState.mania][0], offsets[PlayState.mania][1]);
-		if (PlayState.isPixelStage || texture != 'splashes/noteSplashes') offset.set(12,12);
+		offset.set(-34 * Note.scales[PlayState.mania], -23 * Note.scales[PlayState.mania]);
+		if (PlayState.isPixelStage || texture != 'splashes/noteSplashes') offset.set(14 / Note.scales[PlayState.mania], 14 / Note.scales[PlayState.mania]);
 
 		var fps:Int = (texture == 'splashes/pixelSplashes' ? 42 : 24);
 		animation.play('note' + Note.keysShit.get(PlayState.mania).get('pixelAnimIndex')[note] + '${(texture == 'splashes/noteSplashes' ? '-${FlxG.random.int(1,2)}' : '')}', true, false);

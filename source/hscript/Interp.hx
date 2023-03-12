@@ -493,7 +493,7 @@ class Interp {
             switch( Tools.expr(e) ) {
             case EField(e,f):
                 var obj = expr(e);
-                trace(e);
+                #if HSCRIPT_DEBUG trace(e); #end
                 if( obj == null ) error(EInvalidAccess(f));
                 return fcall(obj,f,args);
             default:

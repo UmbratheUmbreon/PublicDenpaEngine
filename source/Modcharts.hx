@@ -3,11 +3,10 @@ package;
 import haxescript.Hscript;
 
 class Modcharts {
-	
 	public var hscript:Hscript;
 	public var strum:Int;
     public function new(name:String = 'none', strumNum:Int = 0) {
-		if (name != 'none' && strumNum < 2)
+		if (strumNum > 1 || (name != 'none' && strumNum < 2))
 			hscript = new Hscript(Paths.hscript('scripts/modcharts/$name'), true);
 		this.strum = strumNum;
 		if (hscript == null) return;
@@ -21,7 +20,7 @@ class Modcharts {
 			hscript.stop();
 			hscript = null;
 		}
-		if (newName != 'none' && strum < 2)
+		if (strum > 1 || (newName != 'none' && strum < 2))
 			hscript = new Hscript(Paths.hscript('scripts/modcharts/$newName'), true);
 		if (hscript == null) return;
 		PlayState.instance.hscripts.push(hscript);

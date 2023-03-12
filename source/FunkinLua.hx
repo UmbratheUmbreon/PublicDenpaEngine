@@ -1318,10 +1318,7 @@ class FunkinLua {
 							} else if(PlayState.instance.members.indexOf(PlayState.instance.dadGroup) < position) {
 								position = PlayState.instance.members.indexOf(PlayState.instance.dadGroup);
 							}
-							if (PlayState.instance.addedCharaGroups)
-								PlayState.instance.insert(position, sprite);
-							else
-								getInstance().add(sprite);
+							PlayState.instance.insert(position, sprite);
 						}
 					}
 					sprite.wasAdded = true;

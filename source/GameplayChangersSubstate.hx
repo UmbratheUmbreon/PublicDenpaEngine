@@ -30,6 +30,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		option.scrollSpeed = 2.0;
 		option.minValue = 0.35;
 		option.changeValue = 0.05;
+		option.slowChangeValue = 0.01;
 		option.decimals = 2;
 		if (goption.getValue() != "constant")
 		{
@@ -39,13 +40,14 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		else
 		{
 			option.displayFormat = "%v";
-			option.maxValue = 6;
+			option.maxValue = 10;
 		}
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Playback Rate', 'songspeed', 'float', 1);
 		option.scrollSpeed = 2;
 		option.changeValue = 0.25;
+		option.slowChangeValue = 0.05;
 		option.minValue = 0.1;
 		option.maxValue = 10; //peeps wanted 10x speed
 		option.displayFormat = '%vX';
@@ -57,6 +59,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		option.minValue = 0;
 		option.maxValue = 5;
 		option.changeValue = 0.1;
+		option.slowChangeValue = 0.1;
 		option.displayFormat = '%vX';
 		optionsArray.push(option);
 
@@ -65,6 +68,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		option.minValue = 0.5;
 		option.maxValue = 5;
 		option.changeValue = 0.1;
+		option.slowChangeValue = 0.1;
 		option.displayFormat = '%vX';
 		optionsArray.push(option);
 
@@ -249,7 +253,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 						if(pressed) {
 							var add:Dynamic = null;
 							if(curOption.type != 'string') {
-								add = controls.UI_LEFT ? -curOption.changeValue : curOption.changeValue;
+								add = (controls.UI_LEFT ? (FlxG.keys.pressed.CONTROL ? -curOption.slowChangeValue : -curOption.changeValue) : (FlxG.keys.pressed.CONTROL ? curOption.slowChangeValue : curOption.changeValue));
 							}
 
 							switch(curOption.type)
@@ -292,7 +296,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 											if (curOption.getValue() == "constant")
 											{
 												oOption.displayFormat = "%v";
-												oOption.maxValue = 6;
+												oOption.maxValue = 10;
 											}
 											else
 											{
@@ -471,6 +475,7 @@ class GameplayOption
 	public var curOption:Int = 0; //Don't change this
 	public var options:Array<String> = null; //Only used in string type
 	public var changeValue:Dynamic = 1; //Only used in int/float/percent type, how much is changed when you PRESS
+	public var slowChangeValue:Dynamic = 1;
 	public var minValue:Dynamic = null; //Only used in int/float/percent type
 	public var maxValue:Dynamic = null; //Only used in int/float/percent type
 	public var decimals:Int = 1; //Only used in float/percent type
@@ -518,6 +523,7 @@ class GameplayOption
 	
 			case 'percent':
 				displayFormat = '%v%';
+				slowChangeValue = 0.01;
 				changeValue = 0.01;
 				minValue = 0;
 				maxValue = 1;

@@ -124,7 +124,7 @@ class Hscript
                 try {
                     final rawClass = Type.resolveClass(name);
                     if(rawClass == null) { 
-                        trace('failed state switch: $name is not a valid hscript- or base class!'); 
+                        #if HSCRIPT_DEBUG trace('failed state switch: $name is not a valid hscript- or base class!'); #end
                         return; 
                     }
 
@@ -132,11 +132,11 @@ class Hscript
                     MusicBeatState.switchState(state);
                 }
                 catch(e) {
-                    trace('$e : Unspecified result for opening state "$name", could not switch states!');
+                    #if HSCRIPT_DEBUG trace('$e : Unspecified result for opening state "$name", could not switch states!'); #end
                     return;
                 }
             }
-            trace('switched to state: $name');
+            #if HSCRIPT_DEBUG trace('switched to state: $name'); #end
         });
 
         interpreter.variables.set("openSubState", (name:String, args:Array<Dynamic>) -> {
@@ -152,7 +152,7 @@ class Hscript
                 try {
                     final rawClass = Type.resolveClass(name);
                     if(rawClass == null) { 
-                        trace('failed to open substate: $name is not a valid hscript- or base class!'); 
+                        #if HSCRIPT_DEBUG trace('failed to open substate: $name is not a valid hscript- or base class!'); #end
                         return;
                     }
                     //Did a lil oopsie, now it should work fine!!
@@ -160,11 +160,11 @@ class Hscript
                     MusicBeatState.curInstance.openSubState(substate);
                 }
                 catch(e) {
-                    trace('$e : Unspecified result for opening substate "$name", could not be opened!');
+                    #if HSCRIPT_DEBUG trace('$e : Unspecified result for opening substate "$name", could not be opened!'); #end
                     return;
                 }
             }
-            trace('Opened substate: $name');
+            #if HSCRIPT_DEBUG trace('Opened substate: $name'); #end
         });
         #end
 
@@ -176,7 +176,7 @@ class Hscript
     
         try {
             if (file != 'trace("No script found");') {
-                trace('Loading hscript of type $parseType: $path');
+                #if HSCRIPT_DEBUG trace('Loading hscript of type $parseType: $path'); #end
                 activeScripts.push(this);
                 FlxG.signals.preStateSwitch.add(() -> { activeScripts.remove(this); });
 
@@ -187,7 +187,7 @@ class Hscript
                     call("onCreate", []);
                 return;
             }
-            trace('$path hscript file doesnt exist!! (Loading Error)');
+            #if HSCRIPT_DEBUG trace('$path hscript file doesnt exist!! (Loading Error)'); #end
         } catch(e) { //Truly the variable naming ever, like at least be a little bit concise
             if (e.toString() == "Null Object Reference")
             {

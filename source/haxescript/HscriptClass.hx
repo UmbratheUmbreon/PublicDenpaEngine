@@ -72,7 +72,7 @@ class HscriptClass extends ExtendClass {
                 vars: interpRef.trackedVars,
                 funcs: interpRef.trackedFuncs
             };
-            trace(classContainer);
+            #if HSCRIPT_DEBUG trace(classContainer); #end
         }
         //Check post-parse related things
         for(name=>variable in classContainer.vars) {

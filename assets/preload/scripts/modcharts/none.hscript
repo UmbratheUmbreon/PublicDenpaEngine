@@ -1,0 +1,28 @@
+var PlayState = require("PlayState");
+var FlxTypedGroup = require("flixel.group.FlxGroup.FlxTypedGroup");
+var StrumNote = require("Note.StrumNote");
+var Note = require("Note");
+
+var strum:FlxTypedGroup<StrumNote>;
+var strumNum:Int = 0;
+
+function onStartModchart(str) {
+    strum = PlayState.instance.thirdStrums;
+    strumNum = str;
+}
+
+function onUpdatePost(elapsed) {
+    strum.forEach(function(spr:StrumNote)
+	{
+        switch(PlayState.mania) {
+            case 0 | 1 | 2:
+		        spr.x = (PlayState.instance.player4.x) + (spr.width * spr.noteData) + (5 * spr.noteData);
+            case 3:
+            	spr.x = (PlayState.instance.player4.x) + (Note.swagWidth * spr.noteData) + (5 * spr.noteData);
+            default:
+                spr.x = (PlayState.instance.player4.x) + ((spr.width - Note.lessX[PlayState.mania]) * spr.noteData) + (5 * spr.noteData);
+        }
+        spr.x -= 10;
+        spr.y = (PlayState.instance.player4.y) - 110;
+	});
+}

@@ -111,7 +111,7 @@ class CharacterEditorState extends MusicBeatState
 	override function create()
 	{
 		Paths.clearUnusedCache();
-		Paths.refreshModsMaps();
+		Paths.refreshModsMaps(false, true, true);
 		if (PlayState.curStage != null && PlayState.curStage != '') currentStage = PlayState.curStage;
 		music = new EditorMusic();
 

@@ -76,7 +76,7 @@ class InitState extends FlxState
 		//why does the fps shit fail to work
 		Main.toggleFPS(ClientPrefs.settings.get("showFPS"));
 
-		Paths.refreshModsMaps();
+		Paths.refreshModsMaps(true, true, true);
 
 		#if HSCRIPT_ALLOWED
 		final foldersToCheck:Array<String> = ["classes", "states", "substates"];
@@ -109,7 +109,7 @@ class InitState extends FlxState
 		parseClasses(["classes"], [H_CLASS]);*/ //Reparse classes with hInit on to do any stuff that needs to be done after all classes have been parsed once!!
 		#end
 
-		#if HSCRIPT_ALLOWED
+		#if (HSCRIPT_ALLOWED && HSCRIPT_DEBUG)
 		trace(InitState.scriptStaticVars);
 		#end
 	}

@@ -60,7 +60,7 @@ class Main extends Sprite
 	 * 
 	 * Use `debugVersion` to get the version with build date.
 	 */
-	public static final denpaEngineVersion:GameVersion = new GameVersion(0, 8, 0, 'c');
+	public static final denpaEngineVersion:GameVersion = new GameVersion(0, 8, 0, 'd');
 
 	public static var fpsCounter:FramerateDisplay;
 	public static var ramCount:DebugDisplay;

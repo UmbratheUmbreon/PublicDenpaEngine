@@ -467,10 +467,21 @@ class Paths
 		}
 	}
 
-	public static function refreshModsMaps() {
-		characterMap.clear();
-		iconsMap.clear();
-		for (a in FileSystem.readDirectory('mods')) {
+	static var cachedFolderList:Array<String> = [];
+	public static function refreshModsMaps(force:Bool = false, includePreload:Bool = false, clear:Bool = false) {
+		var curFolderList = FileSystem.readDirectory('mods');
+		if (!force && curFolderList.toString() == cachedFolderList.toString()) //cant compare arrays directly???
+			return;
+
+		cachedFolderList = curFolderList;
+
+		if (clear) {
+			characterMap.clear();
+			iconsMap.clear();
+			stageMap.clear();
+		}
+
+		for (a in curFolderList) {
             if (ignoreModFolders.contains(a) || a.contains('.')) continue;
 			if (FileSystem.exists('mods/$a/data/characters')) {
 				for (b in FileSystem.readDirectory('mods/$a/data/characters')) {
@@ -491,18 +502,7 @@ class Paths
 				}
 			}
         }
-		for (a in FileSystem.readDirectory('assets/data/characters')) {
-			if (!a.endsWith('.json')) continue;
-			characterMap.set(a.substr(0, a.length - 5), '');
-		}
-		for (a in FileSystem.readDirectory('assets/images/icons')) {
-			if (!a.endsWith('.png')) continue;
-			iconsMap.set(a.substr(0, a.length - 4).replace('icon-', ''), '');
-		}
-		for (a in FileSystem.readDirectory('assets/data/stages')) {
-			if (!a.endsWith('.json')) continue;
-			stageMap.set(a.substr(0, a.length - 5), '');
-		}
+
 		if (FileSystem.exists('mods/data/characters')) {
 			for (a in FileSystem.readDirectory('mods/data/characters')) {
 				if (!a.endsWith('.json')) continue;
@@ -520,6 +520,20 @@ class Paths
 				if (!a.endsWith('.png')) continue;
 				iconsMap.set(a.substr(0, a.length - 4).replace('icon-', ''), '');
 			}
+		}
+
+		if (!includePreload) return;
+		for (a in FileSystem.readDirectory('assets/data/characters')) {
+			if (!a.endsWith('.json')) continue;
+			characterMap.set(a.substr(0, a.length - 5), '');
+		}
+		for (a in FileSystem.readDirectory('assets/images/icons')) {
+			if (!a.endsWith('.png')) continue;
+			iconsMap.set(a.substr(0, a.length - 4).replace('icon-', ''), '');
+		}
+		for (a in FileSystem.readDirectory('assets/data/stages')) {
+			if (!a.endsWith('.json')) continue;
+			stageMap.set(a.substr(0, a.length - 5), '');
 		}
 	}
 	#end
