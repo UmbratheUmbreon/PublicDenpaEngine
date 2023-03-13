@@ -2019,7 +2019,7 @@ class CharacterEditorState extends MusicBeatState
 
 		switch(event.type) {
 			case MouseEvent.MOUSE_DOWN | MouseEvent.RIGHT_MOUSE_DOWN:
-				if (char == null || char.iconProperties == null || char.animationsArray == null) return;
+				if (char == null || char.iconProperties == null || char.animationsArray == null || editOffsetsCheckbox == null || char.animationsArray[curAnim] == null) return;
 				initialXY = editOffsetsCheckbox.checked ? [Std.int(char.iconProperties.offsets[0]), Std.int(char.iconProperties.offsets[1])] : char.animationsArray[curAnim].offsets;
 				camXY = [char.cameraPosition.x, char.cameraPosition.y];
 				mouseXY = [FlxG.mouse.x, FlxG.mouse.y];

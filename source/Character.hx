@@ -678,23 +678,27 @@ class Character extends FlxSprite
 
 	public function getAnimationsFromXml():Array<String>
 	{
+		Paths.setModsDirectoryFromType(CHARACTER, curCharacter, false);
 		var arr:Array<String> = [];
-		switch (_spriteType) {
-			case 'sparrow':
-				var data:Access = new Access(Xml.parse(Paths.getTextFromFile('images/$imageFile.xml')).firstElement());
-				for (texture in data.nodes.SubTexture) arr.push(texture.att.name.substr(0, texture.att.name.length - 3));
-			//? do i need substr here? i cant really check since no one uses these
-			/*case 'packer':
-				var data = Paths.getTextFromFile('images/$imageFile.xml').trim().split('\n');
-				for (i in 0...data.length)
-				{
-					var currImageData = data[i].split("=");
-					arr.push(currImageData[0].trim());
-				}
-			case 'texpack':
-				var xml = Xml.parse(Paths.getTextFromFile('images/$imageFile.xml'));
-				for (sprite in xml.firstElement().elements()) arr.push(sprite.get("n"));*/
+		if (Paths.fileExists('images/$imageFile.xml', TEXT)) {
+			switch (_spriteType) {
+				case 'sparrow':
+					var data:Access = new Access(Xml.parse(Paths.getTextFromFile('images/$imageFile.xml')).firstElement());
+					for (texture in data.nodes.SubTexture) arr.push(texture.att.name.substr(0, texture.att.name.length - 3));
+				//? do i need substr here? i cant really check since no one uses these
+				/*case 'packer':
+					var data = Paths.getTextFromFile('images/$imageFile.xml').trim().split('\n');
+					for (i in 0...data.length)
+					{
+						var currImageData = data[i].split("=");
+						arr.push(currImageData[0].trim());
+					}
+				case 'texpack':
+					var xml = Xml.parse(Paths.getTextFromFile('images/$imageFile.xml'));
+					for (sprite in xml.firstElement().elements()) arr.push(sprite.get("n"));*/
+			}		
 		}
+		Paths.setModsDirectoryFromType(NONE, '', true);
 		return CoolUtil.removeDuplicates(arr);
 	}
 }

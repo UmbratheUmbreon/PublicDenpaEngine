@@ -98,11 +98,13 @@ class SoundTestState extends MusicBeatState
         }
 		#if MODS_ALLOWED
 		path = Paths.modFolders("data/albums");
-        for (file in FileSystem.readDirectory(path)) {
-            if (file.endsWith(".json")) {
-				albums.push(Json.parse(Paths.getTextFromFile("data/albums" + '/' + file)));
-            }
-        }
+		if (FileSystem.exists(path)) {
+			for (file in FileSystem.readDirectory(path)) {
+				if (file.endsWith(".json")) {
+					albums.push(Json.parse(Paths.getTextFromFile("data/albums" + '/' + file)));
+				}
+			}
+		}
         #end
 		totalDisks = albums.length-1;
 
