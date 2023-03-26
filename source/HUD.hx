@@ -360,26 +360,24 @@ class HUD extends FlxSpriteGroup {
 			FlxTween.tween(songCard, {x: 0}, 0.7, {
 				startDelay: 0.1,
 				ease: FlxEase.backInOut,
-				onComplete: function(twn:FlxTween)
+				onComplete: _ ->
 				{
-					new FlxTimer().start(1.3/(Conductor.bpm/100)/PlayState.instance.playbackRate, function(tmr:FlxTimer)
+					new FlxTimer().start(1.3/(Conductor.bpm/100)/PlayState.instance.playbackRate, _ ->
 						{
 							if(songCard != null){
 								FlxTween.tween(songCard, {x: cardTweenTo}, 0.5, {
 									startDelay: 0.1,
 									ease: FlxEase.backInOut,
-									onComplete: function(twn:FlxTween)
+									onComplete: _ ->
 									{
-										var objects = [songCard, mirrorSongCard, songCreditsTxt, remixCreditsTxt, songNameTxt];
-										for (obj in objects) {
-											obj.kill();
+										for (obj in [songCard, mirrorSongCard, songCreditsTxt, remixCreditsTxt, songNameTxt]) {
+											remove(obj, true);
 											obj.destroy();
 										}
 									}
 								});
 							}
-							var objects = [mirrorSongCard, songCreditsTxt, remixCreditsTxt, songNameTxt];
-							for (obj in objects) {
+							for (obj in [mirrorSongCard, songCreditsTxt, remixCreditsTxt, songNameTxt]) {
 								FlxTween.tween(obj, {x: (obj == mirrorSongCard ? -1202 : cardTweenTo)}, 0.5, {
 									startDelay: 0.1,
 									ease: (obj == songNameTxt ? FlxEase.quadInOut : FlxEase.backInOut)
@@ -397,9 +395,8 @@ class HUD extends FlxSpriteGroup {
 			}
 		} else {
 			if (songCard != null) {
-				var objects = [songCard, mirrorSongCard, songCreditsTxt, remixCreditsTxt, songNameTxt];
-				for (obj in objects) {
-					obj.kill();
+				for (obj in [songCard, mirrorSongCard, songCreditsTxt, remixCreditsTxt, songNameTxt]) {
+					remove(obj, true);
 					obj.destroy();
 				}
 			}
@@ -412,11 +409,7 @@ class HUD extends FlxSpriteGroup {
 			timeTxtTween.cancel();
 		}
 		timeTxt.scale.set(1.075, 1.075);
-		timeTxtTween = FlxTween.tween(timeTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 1.5 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {
-			onComplete: function(twn:FlxTween) {
-				timeTxtTween = null;
-			}
-		});
+		timeTxtTween = FlxTween.tween(timeTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 1.5 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {onComplete: _ -> timeTxtTween = null});
     }
 
     public function scoreTween(daRating:String) {
@@ -431,20 +424,8 @@ class HUD extends FlxSpriteGroup {
         scoreTxt.scale.set(scaler, scaler);
         leftTxt.scale.set(scaler, scaler);
         rightTxt.scale.set(scaler, scaler);
-        scoreTxtTween = FlxTween.tween(scoreTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 2 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {
-            onComplete: function(twn:FlxTween) {
-                scoreTxtTween = null;
-            }
-        });
-        leftTxtTween = FlxTween.tween(leftTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 2 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {
-            onComplete: function(twn:FlxTween) {
-                leftTxtTween = null;
-            }
-        });
-        rightTxtTween = FlxTween.tween(rightTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 2 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {
-            onComplete: function(twn:FlxTween) {
-                rightTxtTween = null;
-            }
-        });
+        scoreTxtTween = FlxTween.tween(scoreTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 2 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {onComplete: _ ->scoreTxtTween = null});
+        leftTxtTween = FlxTween.tween(leftTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 2 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {onComplete: _ -> leftTxtTween = null});
+        rightTxtTween = FlxTween.tween(rightTxt.scale, {x: 1, y: 1}, Conductor.crochet / 1250 / 2 / PlayState.instance.playbackRate * PlayState.instance.gfSpeed, {onComplete: _ -> rightTxtTween = null});
     }
 }

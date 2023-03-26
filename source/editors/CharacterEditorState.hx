@@ -111,7 +111,7 @@ class CharacterEditorState extends MusicBeatState
 	override function create()
 	{
 		Paths.clearUnusedCache();
-		Paths.refreshModsMaps(false, true, true);
+		Paths.refreshModsMaps(true, true, true);
 		if (PlayState.curStage != null && PlayState.curStage != '') currentStage = PlayState.curStage;
 		music = new EditorMusic();
 
@@ -322,7 +322,6 @@ class CharacterEditorState extends MusicBeatState
 		while(i >= 0) {
 			var memb:FlxBasic = bgLayer.members[i];
 			if(memb != null) {
-				memb.kill();
 				bgLayer.remove(memb, true);
 				memb.destroy();
 			}
@@ -334,7 +333,6 @@ class CharacterEditorState extends MusicBeatState
 		while(i >= 0) {
 			var memb:FlxBasic = frontLayer.members[i];
 			if(memb != null) {
-				memb.kill();
 				frontLayer.remove(memb, true);
 				memb.destroy();
 			}
@@ -346,7 +344,6 @@ class CharacterEditorState extends MusicBeatState
 		while(i >= 0) {
 			var memb:FlxBasic = fuckLayer.members[i];
 			if(memb != null) {
-				memb.kill();
 				fuckLayer.remove(memb, true);
 				memb.destroy();
 			}
@@ -1566,7 +1563,6 @@ class CharacterEditorState extends MusicBeatState
 		while(i >= 0) {
 			var memb:Character = charLayer.members[i];
 			if(memb != null) {
-				memb.kill();
 				charLayer.remove(memb);
 				memb.destroy();
 			}

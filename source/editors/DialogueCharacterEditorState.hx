@@ -414,9 +414,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 	private static var DEFAULT_TEXT:String = 'Lorem ipsum dolor sit amet';
 	function reloadText() {
 		if(daText != null) {
-			daText.killTheTimer();
-			daText.kill();
-			hudGroup.remove(daText);
+			hudGroup.remove(daText, true);
 			daText.destroy();
 		}
 		daText = new Alphabet(0, 0, DEFAULT_TEXT, false, true, 0.05, 0.7);

@@ -92,6 +92,7 @@ class CustomFadeTransition extends MusicBeatSubstate {
 		if(leTween != null) {
 			finishCallback();
 			leTween.cancel();
+			leTween.destroy();
 		}
 		colorForFunnyGrad = FlxColor.BLACK;
 		super.destroy();

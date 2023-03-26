@@ -50,9 +50,14 @@ class FlxBar extends FlxSprite
 	public var killOnEmpty:Bool = false;
 
 	/**
-	 * The percentage of how full the bar is (a value between 0 and 100)
+	 * The percentage of how full the bar is, as a Float. (a value between 0 and 100)
 	 */
 	public var percent(get, set):Float;
+
+	/**
+	 * The percentage of how full the bar is, as an Integer. (a value between 0 and 100)
+	 */
+	public var roundedPercent(get, never):Float;
 
 	/**
 	 * The current value - must always be between min and max
@@ -217,7 +222,7 @@ class FlxBar extends FlxSprite
 		_filledBarPoint = null;
 
 		parent = null;
-		positionOffset = null;
+		positionOffset = FlxDestroyUtil.put(positionOffset);
 		emptyCallback = null;
 		filledCallback = null;
 
@@ -757,7 +762,7 @@ class FlxBar extends FlxSprite
 		var percent:Float = fraction * _maxPercent;
 		var maxScale:Float = (_fillHorizontal) ? barWidth : barHeight;
 		var scaleInterval:Float = maxScale / numDivisions;
-		var interval:Float = Math.round(Std.int(fraction * maxScale / scaleInterval) * scaleInterval);
+		var interval:Float = Math.round((fraction * maxScale / scaleInterval) * scaleInterval);
 
 		if (_fillHorizontal)
 		{
@@ -809,7 +814,7 @@ class FlxBar extends FlxSprite
 				if (frontFrames != null)
 				{
 					_filledFlxRect.copyFromFlash(_filledBarRect).round();
-					if (Std.int(percent) > 0)
+					if (roundedPercent > 0)
 					{
 						_frontFrame = frontFrames.frame.clipTo(_filledFlxRect, _frontFrame);
 					}
@@ -852,7 +857,7 @@ class FlxBar extends FlxSprite
 		if (alpha == 0)
 			return;
 
-		if (percent > 0 && _frontFrame.type != FlxFrameType.EMPTY)
+		if (roundedPercent > 0 && _frontFrame.type != FlxFrameType.EMPTY)
 		{
 			for (camera in cameras)
 			{
@@ -916,7 +921,8 @@ class FlxBar extends FlxSprite
 			return _maxPercent;
 		}
 
-		return Math.floor(((value - min) / range) * _maxPercent);
+		//Was previously incorrectly rounded.
+		return ((value - min) / range) * _maxPercent;
 	}
 
 	function set_percent(newPct:Float):Float
@@ -926,6 +932,11 @@ class FlxBar extends FlxSprite
 			value = pct * newPct;
 		}
 		return newPct;
+	}
+
+	function get_roundedPercent():Float
+	{
+		return Math.floor(percent);
 	}
 
 	function set_value(newValue:Float):Float

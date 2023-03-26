@@ -242,9 +242,7 @@ class DialogueEditorState extends MusicBeatState
 	private static var DEFAULT_BUBBLETYPE:String = "normal";
 	function reloadText(speed:Float = 0.05, ?bold:Bool = false) {
 		if(daText != null) {
-			daText.killTheTimer();
-			daText.kill();
-			remove(daText);
+			remove(daText, true);
 			daText.destroy();
 		}
 

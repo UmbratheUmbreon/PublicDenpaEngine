@@ -72,7 +72,7 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		Paths.clearUnusedCache();
-		Paths.refreshModsMaps(false, true, true);
+		Paths.refreshModsMaps(true, true, true);
 		instance = this;
 		
 		persistentUpdate = true;
@@ -525,8 +525,8 @@ class FreeplayState extends MusicBeatState
 				funnyText.setFormat("VCR OSD Mono", 64, FlxColor.RED, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				add(funnyText);
 				FlxTween.tween(funnyText, {alpha: 0}, 0.9, {
-					onComplete: function(tween:FlxTween)
-					{
+					onComplete: _ -> {
+						remove(funnyText, true);
 						funnyText.destroy();
 					}
 				});
@@ -597,8 +597,8 @@ class FreeplayState extends MusicBeatState
 				funnyText.setFormat("VCR OSD Mono", 64, FlxColor.RED, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				add(funnyText);
 				FlxTween.tween(funnyText, {alpha: 0}, 0.9, {
-					onComplete: function(tween:FlxTween)
-					{
+					onComplete: _ -> {
+						remove(funnyText, true);
 						funnyText.destroy();
 					}
 				});

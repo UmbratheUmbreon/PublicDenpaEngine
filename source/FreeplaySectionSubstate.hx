@@ -133,7 +133,7 @@ class FreeplaySectionSubstate extends MusicBeatSubstate {
                     bgScroll2.visible = true;
                 }
                 for (spr in funnyArray) {
-                    spr.kill();
+					remove(spr, true);
                     funnyArray.remove(spr);
                     spr.destroy();
                 }

@@ -79,9 +79,9 @@ class Alphabet extends FlxSpriteGroup
 	{
 		for (i in 0...lettersArray.length) {
 			var letter = lettersArray[0];
-			letter.destroy();
-			remove(letter);
+			remove(letter, true);
 			lettersArray.remove(letter);
+			letter.destroy();
 		}
 		lettersArray = [];
 		splitWords = [];
@@ -244,6 +244,7 @@ class Alphabet extends FlxSpriteGroup
 				}
 
 				add(letter);
+				lettersArray.push(letter); //so it can be destroyed later
 
 				lastSprite = letter;
 			}
@@ -327,6 +328,9 @@ class AlphaCharacter extends FlxSprite
 {
 	//actual xml mapping
 	private static final characters:Map<String, String> = [
+		//SPECIAL CHARS -> DIFF NAME
+		"ñ" => "ENE LOWERCASE",
+		"Ñ" => "ENE",
 		//numbers -> proper name
 		"1" => "ONE",
 		"2" => "TWO",
@@ -362,22 +366,24 @@ class AlphaCharacter extends FlxSprite
 		"_" => "UNDERSCORE",
 		"." => "PERIOD",
 		"," => "COMMA",
-		"'" => "QUOTE",
+		"'" => "APOSTROPHE",
 		"\"" => "DBL QUOTE START",
 		"!" => "EXCLAMATION",
+		"¡" => "EXCLAMATION",
 		"?" => "QUESTION",
+		"¿" => "QUESTION",
 		"{" => "L CRLY BRACKET",
 		"}" => "R CRLY BRACKET",
 		"`" => "BACKTICK",
 		"\\" => "BACKSLASH",
-		"/" => "SLASH",
+		"/" => "FORWARD SLASH",
 		"×" => "MULTIPLY",
 		"↑" => "UP ARROW",
 		"→" => "RIGHT ARROW",
 		"←" => "LEFT ARROW",
 		"↓" => "DOWN ARROW",
 		"♥" => "HEART",
-		"😡" => "ANGRY" //ah yes, emoji in code
+		"😡" => "ANGRY FAIC" //ah yes, emoji in code
 	];
 	
 	//for determaining which it is
@@ -385,7 +391,7 @@ class AlphaCharacter extends FlxSprite
 
 	public static final numbers:String = "1234567890";
 
-	public static final symbols:String = "|~#&$%()*+-:;<=>@[]^_.,'\"!?\\/×↑→←↓♥😡";
+	public static final symbols:String = "|~#&$%()*+-:;<=>@[]^_.,'\"!¡?¿\\/×↑→←↓♥😡ñÑ";
 
 	public var row:Int = 0;
 
@@ -394,44 +400,37 @@ class AlphaCharacter extends FlxSprite
 	public function new(x:Float, y:Float, textSize:Float)
 	{
 		super(x, y);
-		var tex = Paths.getSparrowAtlas('alphabet');
-		frames = tex;
 
-		setGraphicSize(Std.int(width * textSize));
-		updateHitbox();
 		this.textSize = textSize;
 		moves = false;
 	}
 
 	public function set(character:String, letter:Bool, bold:Bool, ?typed:Bool = false) {
-		if (letter) {
-			final prefix:String = ((character.toUpperCase() != character) ? '${character.toUpperCase()} LOWERCASE' : character);
-			animation.addByPrefix(character, '${bold ? '${character.toUpperCase()} BOLD' : '${prefix}0'}', 24);
-		} else {
-			final prefix:String = ((bold && character == '_') ? characters.get('-') : characters.get(character));
-			animation.addByPrefix(character, '$prefix${bold ? ' BOLD' : '0'}', 24);
-		}
+		var path = (letter ? (character.toUpperCase() != character ? '${character.toUpperCase()} LOWERCASE' : character) : '');
+		if (!letter) path = characters.get((bold && character == '_') ? '-' : character); //??
+		if (!Paths.fileExists('images/alphabet/' + (bold ? path.replace('LOWERCASE', '').trim() + ' BOLD' : path) + '.png', IMAGE))
+			path = 'QUESTION';
+		var gfx = Paths.image('alphabet/' + (bold ? path.replace('LOWERCASE', '').trim() + ' BOLD' : path));
+		loadGraphic(gfx, true, Math.floor(gfx.width/2), gfx.height);
+		setGraphicSize(Std.int(width * textSize));
+		animation.add(character, [0, 0, 1, 1], 24);
 		animation.play(character);
 		updateHitbox();
 
 		if (bold) {
-			switch (character)
+			switch (character.toUpperCase())
 			{
 				case "'": y -= 20 * textSize;
-				case '-': y += 20 * textSize;
+				case '-': y += 22 * textSize;
 				case '_': y += 50 * textSize; //totally real underscore
-				case '(':
-					x += (typed ? 1 * textSize : -35 * textSize);
-					y -= 5 * textSize;
-					offset.x = (typed ? -58 * textSize : -3 * textSize);
-				case ')':
-					x -= (typed ? 32 * textSize : 10 / textSize);
-					y -= 5 * textSize;
-					offset.x = (typed ? 12 * textSize : 24 * textSize);
-				case '.':
-					y += 45 * textSize;
-					x += (typed ? -3 : 5) * textSize;
-					offset.x += 3 * textSize;
+				case '(' | ')': y -= 5 * textSize;
+				case '.': y += 47 * textSize;
+				case 'Ñ': y -= 26 * textSize; //ñ (eñe)
+				case '!': y -= 11 * textSize;
+				case '?': y -= 7 * textSize;
+				case '¿' | '¡': flipX = flipY = true;
+				case '+': y += 13 * textSize;
+				case '~': y += 16 * textSize;
 			}
 			return;
 		}
@@ -457,6 +456,9 @@ class AlphaCharacter extends FlxSprite
 			case 'j': y += 5.7 * textSize;
 			case 'q': y += 12.8 * textSize;
 			case 'y': y += 11.4 * textSize;
+			case '¿' | '¡':
+				y += 10 * textSize;
+				flipX = flipY = true;
 		}
 	}
 }

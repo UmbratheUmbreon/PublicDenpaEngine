@@ -36,6 +36,12 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
+		#if windows
+		@:functionCode('
+		#include <Windows.h>
+		SetProcessDPIAware()
+		')
+		#end
 
 		if (stage != null)
 			init();
@@ -60,7 +66,7 @@ class Main extends Sprite
 	 * 
 	 * Use `debugVersion` to get the version with build date.
 	 */
-	public static final denpaEngineVersion:GameVersion = new GameVersion(0, 8, 0, 'e');
+	public static final denpaEngineVersion:GameVersion = new GameVersion(0, 8, 1, '');
 
 	public static var fpsCounter:FramerateDisplay;
 	public static var ramCount:DebugDisplay;
@@ -129,7 +135,6 @@ class Main extends Sprite
 		//negates need for constant clearStored etc
 		FlxG.signals.preStateSwitch.add(() -> {
 			Paths.clearStoredCache(true);
-			FlxG.bitmap.dumpCache();
 			FlxG.sound.destroy(false);
 
 			var cache = cast(Assets.cache, AssetCache);
@@ -139,11 +144,11 @@ class Main extends Sprite
 				cache.removeSound(key);
 			cache = null;
 
-			gc();
+			gc(true);
 		});
 		FlxG.signals.postStateSwitch.add(() -> {
 			Paths.clearUnusedCache();
-			gc(true);
+			gc();
 		});
 
 		#if html5

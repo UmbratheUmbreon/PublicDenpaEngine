@@ -2,7 +2,7 @@
 	"dialogue": [
 		{
 			"expression": "talk",
-			"text": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM\\nNOPQRSTUVWXYZ1234567890|~#&$%()*+-:;\\n<=>@[]^_.,'\"!?{}\\/×↑→←↓♥😡",
+			"text": "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJK\\nLMNÑOPQRSTUVWXYZ1234567890|~#&$%()*\\n+-:;<=>@[]^_.,'\"!¡?¿{}\\/×↑→←↓♥😡",
 			"boxState": "normal",
 			"sound": "",
 			"speed": 0.05,

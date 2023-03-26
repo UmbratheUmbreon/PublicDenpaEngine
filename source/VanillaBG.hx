@@ -19,8 +19,14 @@ class PhillyGlowParticle extends FlxSprite
 	public function new(x:Float, y:Float, color:FlxColor)
 	{
 		super(x, y);
+		start(x, y, color);
+	}
+
+	public function start(x:Float, y:Float, color:FlxColor) {
+		setPosition(x, y);
 		this.color = color;
 
+		alpha = 1;
 		loadGraphic(Paths.image('effectSprites/particle'));
 		lifeTime = FlxG.random.float(0.6, 0.9);
 		decay = FlxG.random.float(0.8, 1);
@@ -48,8 +54,6 @@ class PhillyGlowParticle extends FlxSprite
 			if(alpha > 0)
 			{
 				scale.set(originalScale * alpha, originalScale * alpha);
-			} else {
-				return destroy(); //AMBATUKUM
 			}
 		}
 		super.update(elapsed);

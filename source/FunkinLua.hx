@@ -1437,8 +1437,8 @@ class FunkinLua {
 			}
 
 			if(destroy) {
-				sprite.destroy();
 				PlayState.instance.modchartSprites.remove(tag);
+				sprite.destroy();
 			}
 		});
 
@@ -1967,8 +1967,8 @@ class FunkinLua {
 			}
 
 			if(destroy) {
-				text.destroy();
 				PlayState.instance.modchartTexts.remove(tag);
+				text.destroy();
 			}
 		});
 
@@ -2299,23 +2299,23 @@ class FunkinLua {
 			return;
 		}
 		
-		var pee:ModchartText = PlayState.instance.modchartTexts.get(tag);
-		pee.kill();
-		if(pee.wasAdded) {
-			PlayState.instance.remove(pee, true);
+		var text:ModchartText = PlayState.instance.modchartTexts.get(tag);
+		text.kill();
+		if(text.wasAdded) {
+			PlayState.instance.remove(text, true);
 		}
-		pee.destroy();
+		text.destroy();
 		PlayState.instance.modchartTexts.remove(tag);
 	}
 
 	function resetSpriteTag(tag:String) {
 		if (PlayState.instance.modchartSprites.exists(tag)) {
-			var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
-			pee.kill();
-			if(pee.wasAdded) {
-				PlayState.instance.remove(pee, true);
+			var spr:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
+			spr.kill();
+			if(spr.wasAdded) {
+				PlayState.instance.remove(spr, true);
 			}
-			pee.destroy();
+			spr.destroy();
 			PlayState.instance.modchartSprites.remove(tag);
 			return;
 		}

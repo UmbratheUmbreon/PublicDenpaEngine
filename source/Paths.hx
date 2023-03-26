@@ -39,7 +39,11 @@ class Paths
 	[
 		'assets/music/freakyMenu.$SOUND_EXT',
 		'assets/shared/music/breakfast.$SOUND_EXT',
-		'assets/shared/music/tea-time.$SOUND_EXT',
+		'assets/music/elevator.$SOUND_EXT',
+		'assets/sounds/bfBeep.$SOUND_EXT',
+		'assets/sounds/scrollMenu.$SOUND_EXT',
+		'assets/sounds/confirmMenu.$SOUND_EXT',
+		'assets/sounds/cancelMenu.$SOUND_EXT'
 	];
 	/// haya I love you for the base cache dump I took to the max
 	/**

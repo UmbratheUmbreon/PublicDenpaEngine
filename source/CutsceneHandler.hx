@@ -59,7 +59,6 @@ class CutsceneHandler extends FlxBasic
 
 			for (spr in objects)
 			{
-				spr.kill();
 				PlayState.instance.remove(spr);
 				spr.destroy();
 			}
@@ -77,10 +76,9 @@ class CutsceneHandler extends FlxBasic
 		
 				for (spr in objects)
 				{
-					spr.kill();
 					PlayState.instance.remove(spr);
-					spr.destroy();
 					objects.remove(spr);
+					spr.destroy();
 				}
 		
 				for (sound in sounds)
@@ -99,9 +97,8 @@ class CutsceneHandler extends FlxBasic
 
 				timedEvents = [];
 		
-				kill();
-				destroy();
 				PlayState.instance.remove(this);
+				destroy();
 			}
 		}
 		

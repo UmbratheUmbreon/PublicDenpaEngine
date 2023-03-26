@@ -301,7 +301,7 @@ class ChartingState extends MusicBeatState
 	{
 		for(listener in mouse_listeners) FlxG.stage.addEventListener(listener, handleMouseInput);
 		Paths.clearUnusedCache();
-		Paths.refreshModsMaps(false, true, true);
+		Paths.refreshModsMaps(true, true, true);
 
 		if (PlayState.SONG != null)
 			_song = PlayState.SONG;
@@ -1139,41 +1139,30 @@ class ChartingState extends MusicBeatState
 			for (note in _song.notes[curSection].sectionNotes)
 			{
 				var boob = note[1];
-				if (boob>_song.options.mania){
-					boob -= _song.options.mania+1;
+				if (boob > _song.options.mania){
+					boob -= Note.ammo[_song.options.mania];
 				}else{
-					boob += _song.options.mania+1;
+					boob += Note.ammo[_song.options.mania];
 				}
 				
 				var copiedNote:Array<Dynamic> = [note[0], boob, note[2], note[3]];
 				duetNotes.push(copiedNote);
 			}
 			
-			for (i in duetNotes){
-			_song.notes[curSection].sectionNotes.push(i);
-				
-			}
+			for (i in duetNotes)
+				_song.notes[curSection].sectionNotes.push(i);
 			
 			updateGrid(false);
 		});
 		var mirrorButton:FlxButton = new FlxButton(210, duetButton.y + 40, "Mirror Notes", function()
 		{
-			//istg this doesnt work on the right side
-			var duetNotes:Array<Array<Dynamic>> = [];
 			for (note in _song.notes[curSection].sectionNotes)
 			{
-				var boob = note[1]%(Note.ammo[_song.options.mania] * 2);
+				var boob = note[1] % Note.ammo[_song.options.mania];
 				boob = _song.options.mania - boob;
-				if (note[1] > _song.options.mania) boob += _song.options.mania+1;
+				if (note[1] > _song.options.mania) boob += Note.ammo[_song.options.mania];
 					
 				note[1] = boob;
-				//var copiedNote:Array<Dynamic> = [note[0], boob, note[2], note[3]];
-				//duetNotes.push(copiedNote);
-			}
-			
-			for (i in duetNotes){
-			//_song.notes[curSection].sectionNotes.push(i);
-				
 			}
 			
 			updateGrid(false);
@@ -2622,7 +2611,10 @@ class ChartingState extends MusicBeatState
 			selectionArrow.size = GRID_SIZE;
 		}
 
-		gridLayer.forEach(obj -> obj.destroy());
+		gridLayer.forEach(obj -> {
+			gridLayer.remove(obj);
+			obj.destroy();
+		});
 		gridLayer.clear();
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE + GRID_SIZE * Note.ammo[_song.options.mania] * 2, Std.int(GRID_SIZE * 32 * zoomList[curZoom]));
 		gridBG.active = false;
@@ -2664,7 +2656,10 @@ class ChartingState extends MusicBeatState
 
 		if (strumLineNotes != null)
 		{
-			strumLineNotes.forEach(note -> note.destroy());
+			strumLineNotes.forEach(note -> {
+				strumLineNotes.remove(note);
+				note.destroy();
+			});
 			strumLineNotes.clear();
 			for (i in 0...(Note.ammo[_song.options.mania] * 2)){
 				var note:Note.StrumNote = new Note.StrumNote(GRID_SIZE * (i+1), strumLine.y, i % Note.ammo[_song.options.mania], 0);
@@ -2995,16 +2990,31 @@ class ChartingState extends MusicBeatState
 	function updateGrid(?updateNext:Bool = true):Void
 	{
 		renderedSustainsMap.clear();
-		curRenderedNotes.forEach(note -> note.destroy());
+		curRenderedNotes.forEach(note -> {
+			curRenderedNotes.remove(note, true);
+			note.destroy();
+		});
 		curRenderedNotes.clear();
-		curRenderedSustains.forEach(sus -> sus.destroy());
+		curRenderedSustains.forEach(sus -> {
+			curRenderedSustains.remove(sus, true);
+			sus.destroy();
+		});
 		curRenderedSustains.clear();
-		curRenderedNoteType.forEach(txt -> txt.destroy());
+		curRenderedNoteType.forEach(txt -> {
+			curRenderedNoteType.remove(txt, true);
+			txt.destroy();
+		});
 		curRenderedNoteType.clear();
 		if (updateNext) {
-			nextRenderedNotes.forEach(note -> note.destroy());
+			nextRenderedNotes.forEach(note -> {
+				nextRenderedNotes.remove(note, true);
+				note.destroy();
+			});
 			nextRenderedNotes.clear();
-			nextRenderedSustains.forEach(sus -> sus.destroy());
+			nextRenderedSustains.forEach(sus -> {
+				nextRenderedSustains.remove(sus, true);
+				sus.destroy();
+			});
 			nextRenderedSustains.clear();
 		}
 
@@ -3527,8 +3537,8 @@ class ChartingState extends MusicBeatState
 			funnyText.setFormat("VCR OSD Mono", 64, FlxColor.RED, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			add(funnyText);
 			FlxTween.tween(funnyText, {alpha: 0}, 0.6, {
-				onComplete: function(tween:FlxTween)
-				{
+				onComplete: _ -> {
+					remove(funnyText, true);
 					funnyText.destroy();
 				}
 			});

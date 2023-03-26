@@ -57,11 +57,12 @@ class HealthIcon extends FlxSprite
 		}
 
 		//Internal Bopping
+		//maybe make this affected by gf speed would be cool i think (takes longer on higher ones)
 		switch (curBopType.toLowerCase()) {
 			case 'swing' | 'snap' | 'none':
 				//Prevent Default Scaling
 			case 'stretch':
-				setGraphicSize(Std.int(FlxMath.lerp(150 * scaleMult, width, 0.8)),Std.int(FlxMath.lerp(150 * scaleMult, height, 0.8)));
+				setGraphicSize(Std.int(FlxMath.lerp(150 * scaleMult, width, 0.8)), Std.int(FlxMath.lerp(150 * scaleMult, height, 0.8)));
 				updateHitbox();
 			case 'old':
 				setGraphicSize(Std.int(FlxMath.lerp(150 * scaleMult, width, 0.50)));
@@ -88,9 +89,9 @@ class HealthIcon extends FlxSprite
 		if(curBopType != iconAnim) curBopType = iconAnim;
 
 		final info:BopInfo = checkInfo(bopInfo);
-		switch (iconAnim.toLowerCase()) { //Messy Math hell jumpscare (it is more customizeable though)
-			case 'swing':
-				if (info.curBeat % info.gfSpeed == 0) {
+		if (info.curBeat % info.gfSpeed == 0) {
+			switch (iconAnim.toLowerCase()) { //Messy Math hell jumpscare (it is more customizeable though)
+				case 'swing':
 					info.curBeat % (info.gfSpeed * 2) == 0 ? {
 						var scaleArray:Array<Float> = [1.1 * bopMult, 0.8 / bopMult];
 						switch(type) {
@@ -99,7 +100,7 @@ class HealthIcon extends FlxSprite
 						}
 						scale.set(scaleMult * scaleArray[0], scaleMult * scaleArray[1]);
 						final reverse = type > 0 ? 1 : -1;
-		
+			
 						FlxTween.angle(this, 15 * reverse, 0, Conductor.crochet / 1300 / info.playbackRate * info.gfSpeed, {ease: FlxEase.quadOut});
 					} : {
 						var scaleArray:Array<Float> = [1.1 / bopMult, 1.3 * bopMult];
@@ -109,20 +110,18 @@ class HealthIcon extends FlxSprite
 						}
 						scale.set(scaleMult * scaleArray[0], scaleMult * scaleArray[1]);
 						final reverse = type > 0 ? -1 : 1;
-		
+			
 						FlxTween.angle(this, 15 * reverse, 0, Conductor.crochet / 1300 / info.playbackRate * info.gfSpeed, {ease: FlxEase.quadOut});
 					}
-					
+						
 					final scaleThing:Float = type == 2 ? 0.75 : 1;
 					FlxTween.tween(this, {'scale.x': scaleMult * scaleThing, 'scale.y': scaleMult * scaleThing}, Conductor.crochet / 1250 / info.playbackRate * info.gfSpeed, {ease: FlxEase.quadOut});
-				}
-			case 'bop':
-				final scaleThing:Float = type == 2 ? 1 : 1.2;
-				scale.set((scaleMult * scaleThing) * bopMult, (scaleMult * scaleThing) * bopMult);
-			case 'old':
-				setGraphicSize(Std.int((width + 30) * bopMult));
-			case 'snap':
-				if (info.curBeat % info.gfSpeed == 0) {
+				case 'bop':
+					final scaleThing:Float = type == 2 ? 1 : 1.2;
+					scale.set((scaleMult * scaleThing) * bopMult, (scaleMult * scaleThing) * bopMult);
+				case 'old':
+					setGraphicSize(Std.int((width + 30) * bopMult));
+				case 'snap':
 					info.curBeat % (info.gfSpeed * 2) == 0 ? {
 						var scaleArray:Array<Float> = [1.1 * bopMult, 0.8 / bopMult];
 						switch(type) {
@@ -130,7 +129,7 @@ class HealthIcon extends FlxSprite
 							case 2: scaleArray = [0.85 / bopMult, 1.1 * bopMult];
 						}
 						scale.set(scaleMult * scaleArray[0], scaleMult * scaleArray[1]);
-
+	
 						angle = type > 0 ? 15 : -15;
 					} : {
 						var scaleArray:Array<Float> = [1.1 / bopMult, 1.3 * bopMult];
@@ -139,19 +138,19 @@ class HealthIcon extends FlxSprite
 							case 2: scaleArray = [0.85 * bopMult, 0.65 / bopMult];
 						}
 						scale.set(scaleMult * scaleArray[0], scaleMult * scaleArray[1]);
-
+	
 						angle = type > 0 ? -15 : 15;
 					}
-			
+				
 					final scaleThing:Float = type == 2 ? 0.75 : 1;
 					FlxTween.tween(this, {'scale.x': scaleMult * scaleThing, 'scale.y': scaleMult * scaleThing}, Conductor.crochet / 1250 / info.playbackRate * info.gfSpeed, {ease: FlxEase.quadOut});
-				}
-			case 'stretch':
-				var funny:Float = (info.healthBarPercent * 0.01) + 0.01;
-				final trueFunny:Float = type > 0 ? (scaleMult * (2 - funny)) * bopMult : (scaleMult * funny) * bopMult;
-				final stretchValues = type == 2 ? [25, 12] : [50, 25];
-
-				setGraphicSize(Std.int(width + (stretchValues[0] * trueFunny)),Std.int(height - (stretchValues[1] * trueFunny)));
+				case 'stretch':
+					var funny:Float = (info.healthBarPercent * 0.01) + 0.01;
+					final trueFunny:Float = type > 0 ? (scaleMult * (2 - funny)) * bopMult : (scaleMult * funny) * bopMult;
+					final stretchValues = type == 2 ? [25, 12] : [50, 25];
+	
+					setGraphicSize(Std.int(width + (stretchValues[0] * trueFunny)),Std.int(height - (stretchValues[1] * trueFunny)));
+			}
 		}
 		updateHitbox();
 	}
@@ -182,10 +181,9 @@ class HealthIcon extends FlxSprite
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-face'; //Prevents crash from missing icon
 			var file:FlxGraphic = Paths.image(name);
 
-			loadGraphic(file); //Load stupidly first for getting the file size
-			type = (width < 200 ? SINGLE : ((width > 199 && width < 301) ? DEFAULT : WINNING));
+			type = (file.width < 200 ? SINGLE : ((file.width > 199 && file.width < 301) ? DEFAULT : WINNING));
 
-			loadGraphic(file, true, Math.floor(width / (type+1)), Math.floor(height));
+			loadGraphic(file, true, Math.floor(file.width / (type+1)), file.height);
 			offsets[0] = offsets[1] = (width - 150) / (type+1);
 			var frames:Array<Int> = [];
 			for (i in 0...type+1) frames.push(i);

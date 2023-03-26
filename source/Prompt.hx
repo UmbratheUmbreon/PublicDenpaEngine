@@ -112,6 +112,10 @@ class Prompt extends MusicBeatSubstate
 	
 	override function destroy() {
 		open = false;
+		panel = FlxDestroyUtil.destroy(panel);
+		panelbg = FlxDestroyUtil.destroy(panelbg);
+		buttonAccept = FlxDestroyUtil.destroy(buttonAccept);
+		buttonNo = FlxDestroyUtil.destroy(buttonNo);
 		super.destroy();
 	}
 }

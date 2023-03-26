@@ -93,6 +93,7 @@ class Note extends FlxSprite
 
 	// Lua shit
 	public var noteSplashDisabled:Bool = false;
+	public var forceNoteSplash:Bool = false;
 	public var noteSplashTexture:String = null;
 	public var noteSplashHue:Float = 0;
 	public var noteSplashSat:Float = 0;

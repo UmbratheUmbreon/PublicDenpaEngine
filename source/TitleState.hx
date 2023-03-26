@@ -137,10 +137,10 @@ class TitleState extends MusicBeatState
 			FlxG.save.flush();
 			MusicBeatState.switchState(new FlashingState());
 		} else {
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
+			//new FlxTimer().start(1, function(tmr:FlxTimer)
+			//{
 				startIntro();
-			});
+			//});
 		}
 	}
 
@@ -559,8 +559,10 @@ class TitleState extends MusicBeatState
 							for (i in [credIcon1, credIcon2, credIcon3, credIcon4])
 								i.visible = true;
 						case 1:
-							for (i in [credIcon1, credIcon2, credIcon3, credIcon4])
+							for (i in [credIcon1, credIcon2, credIcon3, credIcon4]) {
+								remove(i, true);
 								i.destroy();
+							}
 					}
 				#end
 			}
@@ -579,8 +581,10 @@ class TitleState extends MusicBeatState
 			remove(credGroup);
 			#if DENPA_WATERMARKS
 			for (i in [credIcon1, credIcon2, credIcon3, credIcon4])
-				if (i != null)
+				if (i != null) {
+					remove(i, true);
 					i.destroy();
+				}
 			#end
 			FlxG.camera.flash(FlxColor.WHITE, 3);
 			

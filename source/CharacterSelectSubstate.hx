@@ -247,7 +247,7 @@ class CharacterSelectSubstate extends MusicBeatSubstate
     function leEpicTween() {
         FlxTween.tween(bg, {alpha: 0}, 0.7, {
             onComplete: function(_) {
-                bg.kill();
+                remove(bg, true);
                 bg.destroy();
             }
         });
@@ -255,7 +255,7 @@ class CharacterSelectSubstate extends MusicBeatSubstate
         for (shit in shitToTween) {
             FlxTween.tween(shit, {alpha: 0}, 0.5, {
                 onComplete: function(_) {
-                    shit.kill();
+                    remove(shit, true);
                     shit.destroy();
                 }
             });

@@ -272,9 +272,7 @@ class DialogueBoxDenpa extends FlxSpriteGroup
 			if(PlayerSettings.player1.controls.ACCEPT) {
 				if(!daText.finishedText) {
 					if(daText != null) {
-						daText.killTheTimer();
-						daText.kill();
-						remove(daText);
+						remove(daText, true);
 						daText.destroy();
 					}
 					daText = new Alphabet(DEFAULT_TEXT_X, DEFAULT_TEXT_Y, textToType, false, true, 0.0, 0.7);
@@ -297,10 +295,8 @@ class DialogueBoxDenpa extends FlxSpriteGroup
 
 					box.animation.curAnim.curFrame = box.animation.curAnim.frames.length - 1;
 					box.animation.curAnim.reverse();
-					daText.kill();
-					remove(daText);
+					remove(daText, true);
 					daText.destroy();
-					daText = null;
 					updateBoxOffsets(box);
 					FlxG.sound.music.fadeOut(1, 0);
 				} else {
@@ -370,19 +366,15 @@ class DialogueBoxDenpa extends FlxSpriteGroup
 			}
 		} else { //Dialogue ending
 			if(box != null && box.animation.curAnim.curFrame <= 0) {
-				box.kill();
-				remove(box);
+				remove(box, true);
 				box.destroy();
-				box = null;
 			}
 
 			if(bgFade != null) {
 				bgFade.alpha -= 0.5 * elapsed;
 				if(bgFade.alpha == 0) {
-					bgFade.kill();
-					remove(bgFade);
+					remove(bgFade, true);
 					bgFade.destroy();
-					bgFade = null;
 				}
 			}
 
@@ -405,14 +397,13 @@ class DialogueBoxDenpa extends FlxSpriteGroup
 				for (i in 0...arrayCharacters.length) {
 					var leChar:DialogueCharacter = arrayCharacters[0];
 					if(leChar != null) {
+						remove(leChar, true);
 						arrayCharacters.remove(leChar);
-						leChar.kill();
-						remove(leChar);
 						leChar.destroy();
 					}
 				}
 				finishThing();
-				kill();
+				destroy();
 			}
 		}
 		super.update(elapsed);

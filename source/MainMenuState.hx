@@ -289,8 +289,8 @@ class MainMenuState extends MusicBeatState
 					funnyText.setFormat("VCR OSD Mono", 64, FlxColor.RED, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					add(funnyText);
 					FlxTween.tween(funnyText, {alpha: 0}, 0.6, {
-						onComplete: function(tween:FlxTween)
-						{
+						onComplete: _ -> {
+							remove(funnyText, true);
 							funnyText.destroy();
 						}
 					});
