@@ -172,7 +172,7 @@ class MusicBeatState extends FlxUIState
 		{
 			if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime) {
 				trackedBPMChanges++;
-				trace(trackedBPMChanges);
+				//trace(trackedBPMChanges);
 				lastChange = Conductor.bpmChangeMap[i];
 			}
 		}
