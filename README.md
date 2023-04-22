@@ -51,26 +51,43 @@ Ziad - Multiplayer Support
 
 Shygee - Additional Programmer
 
-## Liscence Summary
+## License Summary
 
-### You may
+### Permitted Actions
+
+You are permitted to perform the following actions:
 
 - Download and install this engine.
 
-### You must ask to
+### Required Actions
 
-- Redistrubute the unmodified engine on a site besides GameBanana, Gamejolt, or Github.
-- Use parts of this engine in another engine or mod WITH CREDIT.
+You must obtain permission to perform the following actions:
 
-### You may, if you offer the same rights
+- Redistribute the unmodified engine on a website other than GameBanana, Gamejolt, or Github.
+- Use parts of this engine in another engine or mod and provide credit.
 
-- Modify this engine and redistrubute the modified engine on Gamebanana, Gamejolt, or Github.
+### Permitted Actions with Conditions
 
-### You may not, under any circumstances
+You are permitted to perform the following actions under the following conditions:
 
-- Use this engine or parts of this engine commercially.
-- Use parts of this engine in another engine or mod WITHOUT CREDIT.
-- Publicly redistrubute malicious or potentially harmful scripts that utilize this engine.
+- Modify this engine and redistribute the modified engine on GameBanana, GameJolt, or GitHub, provided that you offer the same rights to others.
+
+### Prohibited Actions
+
+You are not allowed to perform the following actions under any circumstances:
+
+- Use this engine or parts of this engine for commercial purposes.
+- Use parts of this engine in another engine or mod without providing credit.
+- Publicly distribute malicious or potentially harmful scripts that utilize this engine. 
+
+### Additional Conditions
+
+You agree to the following additional conditions:
+
+- You will not modify this engine in any way that violates the license agreement.
+- You will not distribute any modified versions of this engine that do not comply with the terms of this license agreement.
+
+This license agreement is subject to change at any time, and continued use of the engine constitutes acceptance of any such changes.
 
 ## Installation
 
