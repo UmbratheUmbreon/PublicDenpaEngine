@@ -76,6 +76,7 @@ class Note extends FlxSprite
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
+	public var isSustainEnd:Bool = false;
 	public var noteType(default, set):String = null;
 
 	public var eventName:String = '';
@@ -219,6 +220,9 @@ class Note extends FlxSprite
 			copyAngle = false;
 	
 			animation.play('${Note.keysShit.get(mania).get('letters')[noteData]} tail');
+			isSustainEnd = true;
+			hitHealth = 0;
+			missHealth = 0;
 	
 			updateHitbox();
 	
@@ -229,7 +233,11 @@ class Note extends FlxSprite
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${Note.keysShit.get(mania).get('letters')[prevNote.noteData]} hold');
-				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.05;
+				prevNote.isSustainEnd = false;
+				prevNote.hitHealth = (0.023 / 2) / (PlayState.SONG.header.bpm / 150);
+				prevNote.missHealth = (0.0475 / 2) / (PlayState.SONG.header.bpm / 150);
+	
+				prevNote.scale.y *= Conductor.stepCrochet / 100 * (PlayState.isPixelStage ? 1.05 : 1.055);
 				if(PlayState.instance != null) prevNote.scale.y *= PlayState.instance.songSpeed;
 	
 				if(PlayState.isPixelStage) {

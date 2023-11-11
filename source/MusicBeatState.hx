@@ -15,7 +15,9 @@ import openfl.events.KeyboardEvent;
 */
 class MusicBeatState extends FlxUIState
 {
+	@:allow(stats.DebugDisplay)
 	private var curStep:Int = 0;
+	@:allow(stats.DebugDisplay)
 	private var curBeat:Int = 0;
 
 	private var controls(get, never):Controls;
@@ -127,6 +129,12 @@ class MusicBeatState extends FlxUIState
 		openSubState(new ManualSubState(this));
 	}
 
+	/**
+     * Function thats called whenever a key is pressed, automatically pre-handles whetever the input was valid or not.
+	 * 
+	 * Automatically handles debug display and manual toggling.
+     * @param event The `KeyboardEvent` object that the value of the key pressed.
+     */
 	public function keyPress(event:KeyboardEvent):Void
     {
 		var eventKey:FlxKey = event.keyCode;
@@ -136,10 +144,33 @@ class MusicBeatState extends FlxUIState
 		//yippie
 		if (ClientPrefs.keyBinds.get('manual').contains(key) && !(FlxSubState.curInstance != null && FlxSubState.curInstance.name == 'ManualSubState') && !disableManual) 
 			openManual();
+
+		//FlxKeyManager L.187 (turn into trace later, inconvenient from here, this is only so i know what the error was tmmrw)
+		#if debug try { #end
+		if (!Main.fpsCounter.visible || !FlxG.keys.checkStatus(key, JUST_PRESSED)) return;
+		#if debug
+		} catch (e) {
+			trace(e);
+			return;
+		}
+		#end
+
 		//toggle debug display
-		if (ClientPrefs.keyBinds.get('debug_3').contains(key) && FlxG.keys.checkStatus(key, JUST_PRESSED) && Main.fpsCounter.visible)
-			Main.toggleMEM(!Main.ramCount.visible);
-		if (ClientPrefs.keyBinds.get('debug_4').contains(key) && FlxG.keys.checkStatus(key, JUST_PRESSED) && Main.fpsCounter.visible)
+		if ([F3, F4, F5, F6].contains(key)) {
+			Main.ramCount.forceUpdate = true;
+			if (key == F3)
+				Main.toggleMEM(!Main.ramCount.visible);
+			if (key == F4)
+				Main.ramCount.showSystem = !Main.ramCount.showSystem;
+			if (key == F5)
+				Main.ramCount.showConductor = !Main.ramCount.showConductor;
+			if (key == F6)
+				Main.ramCount.showFlixel = !Main.ramCount.showFlixel;
+
+			return;
+		}
+
+		if (key == F7)
 			Main.togglePIE(!Main.ramPie.visible);
     }
 

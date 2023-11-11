@@ -405,6 +405,17 @@ class BitmapFrontEnd
         return total;
     }
 
+	public function getTotalBitmaps():Float
+    {
+        if (_cache == null) return 0;
+        var total:Float = 0;
+        for (key=>value in _cache) {
+            if (value == null || value.bitmap == null) continue;
+            total++;
+        }
+        return total;
+    }
+
 	#if !flash
 	function get_maxTextureSize():Int
 	{

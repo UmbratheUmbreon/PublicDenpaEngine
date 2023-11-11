@@ -94,8 +94,9 @@ class PatchState extends MusicBeatState
 		}
 		#end
 
-		var pisspoop:Array<Array<String>> = [ //Ver - Icon name - Update Ver - Update Name - Description - Link - BG Color
+		var denpaPatches = [ //Ver - Icon name - Update Ver - Update Name - Description - Link - BG Color
 			['Denpa Engine'],
+			['0.8.2',		'widol',		"0.8.2", "", 'Do you know how long these take to write?',	'',	'4DB33C'],
 			['0.8.1',		'widol',		"0.8.1", "", 'Additions:\nTimebar intro animations\nAlphabet now supports ¿, ¡, and ñ.\nImprovements:\nWindows builds now utilize DPI Awareness for crisper visuals.\nFixes:\nFreeplay vocals no longer persist into PlayState\nIcon animations now respect gfSpeed\nGhost tapping animations now respect gfSection\nFlxBars now fill smoothly\nFlxBars no longer incorrectly return a roudned percentage\nStrums are now perfectly centered\nThe bold (, ), and . characters are now properly offset in Alphabet\nThe duet and mirror section buttons now work properly on all mania amounts\nMod maps no longer require a game restart to refresh\nNote splashes are no longer incorrectly not spawned when a note has its ratings disabled\ncombo and rating popups no longer happen when the notes ratings are disabled.\nRFV-0.8.1',	'',	'4DB33C'],
 			['0.8.0',		'widol',		"0.8.0", "", 'This update is too large to list in a reasonable format. Explore the engine to see the changes!',	'',	'4DB33C'],
 			['0.7.0b',		'iidol',		"0.7.0b", "", 'Press ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[0]) + ' or ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[1]) + ' to view.',							'https://docs.google.com/document/d/1FYPeiyaO2OSlejfHyqvg8VlNH2PbRCJ2PTIDohbZmUI/edit?usp=sharing',	'6FD2D2'],
@@ -128,9 +129,10 @@ class PatchState extends MusicBeatState
 			['0.1.3',		'ap',			"0.1.3", "", 'R-Test Code, A-Modapps Disruption, U-MM Graphics/Layout, F-Credits Text, RFV-0.1.3',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/61273847c77579d227a2d6cbc35a9e28e56aee70',			'0088A0'],
 			['0.1.2',		'torb',			"0.1.2", "", 'A-Test Song For SecVoices, A-Credits Text, A-SecVoices, RFV-0.1.2',					'https://github.com/UmbratheUmbreon/DenpaFunkinSource/commit/4cb67777c939f33f261ff715eeaec2d75931d1dc',			'99AA0D']
 		];
-		
-		for(i in pisspoop){
-			patchStuff.push(i);
+
+		for(array in denpaPatches)
+		{
+			patchStuff.push(array);
 		}
 	
 		for (i in 0...patchStuff.length)
@@ -153,7 +155,9 @@ class PatchState extends MusicBeatState
 					Paths.currentModDirectory = patchStuff[i][7];
 				}
 
-				var icon:AttachedSprite = new AttachedSprite('patch/' + patchStuff[i][1]);
+				final name = (Paths.fileExists('images/patch/${patchStuff[i][1]}.png', IMAGE) ? patchStuff[i][1] : 'placeholder');
+				if (patchStuff[i][6].length != 6) patchStuff[i][6] = 'FFFFFF';
+				var icon:AttachedSprite = new AttachedSprite(name == 'placeholder' ? 'credits/$name' : 'patch/$name');
 				icon.xAdd = -icon.width - 10;
 				icon.sprTracker = optionText;
 	
@@ -417,16 +421,20 @@ class PatchState extends MusicBeatState
 		if(modsAdded.contains(folder)) return;
 
 		var patchFile:String = null;
-		if(folder != null && folder.trim().length > 0) patchFile = Paths.mods(folder + '/data/patch.txt');
-		else patchFile = Paths.mods('data/patch.txt');
+		folder = folder.trim();
+		if (folder.length > 0)
+		{
+			folder += '/';
+		}
+		patchFile = Paths.mods(folder + 'data/patch.txt');
 
 		if (FileSystem.exists(patchFile))
 		{
-			var firstarray:Array<String> = File.getContent(patchFile).split('\n');
+			var firstarray:Array<String> = File.getContent(patchFile).replace('\\n', '\n').split('\n');
+			patchStuff.push([folder.substr(0, folder.length - 2)]);
 			for(i in firstarray)
 			{
-				var arr:Array<String> = i.replace('\\n', '\n').split("::");
-				if(arr.length >= 7) arr.push(folder);
+				var arr:Array<String> = i.split("::");
 				patchStuff.push(arr);
 			}
 			patchStuff.push(['']);

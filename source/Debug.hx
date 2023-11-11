@@ -90,7 +90,7 @@ class Debug extends FlxBasic{
 
 	public function toggleDebug(keyHit:KeyboardEvent):Void
     {
-        if(keyHit.keyCode != F5 || !isDebug_) return;
+        if(keyHit.keyCode != F8 || !isDebug_) return;
 
         debugMode = !debugMode;
         trace('Debug: $debugMode');

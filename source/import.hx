@@ -5,6 +5,7 @@ import Paths;
 import flixel.FlxG;
 import flixel.math.FlxMath;
 import flixel.util.FlxDestroyUtil;
+using CoolUtil.MapUtil;
 #end
 
 import haxe.*;

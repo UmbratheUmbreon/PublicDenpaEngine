@@ -406,7 +406,7 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 			//72p,     120p,      144p,      270p       360p,      540p,      720p,       1080p (HD),  1440p (FHD), 2160p (UHD)
 			['128x72', '214x120', '256x144', '480x270', '640x360', '960x540', '1280x720', '1920x1080', '2560x1440', '3840x2160']);
 		addOption(option);
-		option.onChange = onChangeResolution;
+		option.onChange = changeOption;
 
 		//Apparently other framerates isn't correctly supported on Browser? Probably it has some V-Sync shit enabled by default, idk
 		var option:Option = new Option('Framerate:',
@@ -419,7 +419,7 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 		option.minValue = 1;
 		option.maxValue = 1000;
 		option.displayFormat = '%v FPS';
-		option.onChange = onChangeFramerate;
+		option.onChange = changeOption;
 		option.scrollSpeed = 120;
 		#end
 
@@ -429,7 +429,15 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
-		option.onChange = onChangeFPSCounter;
+		option.onChange = changeOption;
+
+		var option:Option = new Option('FPS Rainbow',
+			'If checked, the FPS counter will cycle between different colors in the rainbow.',
+			'rainbowFPS',
+			'bool',
+			false);
+		addOption(option);
+		option.onChange = changeOption;
 
 		#if !html
 		var option:Option = new Option('Auto Pause',
@@ -438,7 +446,7 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
-		option.onChange = onChangeAutoPause;
+		option.onChange = changeOption;
 		#end
 
 		var option:Option = new Option('Check For Updates',
@@ -455,46 +463,68 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
+		var option:Option = new Option('Colorblind Mode:',
+			"What type of colorblind are you?",
+			'colorblindMode',
+			'string',
+			'None',
+			['None', 'Deutranopia', 'Protanopia', 'Tritanopia']);
+		addOption(option);
+		option.onChange = changeOption;
+
+		var option:Option = new Option('Colorblind Intensity:',
+			'How intense should the colorblind filter be?',
+			'colorblindIntensity',
+			'percent',
+			0);
+		addOption(option);
+		option.onChange = changeOption;
+		option.scrollSpeed = 1.6;
+		option.minValue = 0.1;
+		option.maxValue = 1.0;
+		option.changeValue = 0.1;
+		option.decimals = 1;
+
 		super();
 	}
 
-	function onChangeResolution()
-	{
-		var val = cast (ClientPrefs.settings.get("resolution"), String);
-		var split = val.split("x");
-		CoolUtil.resetResolutionScaling(Std.parseInt(split[0]), Std.parseInt(split[1]));
-		FlxG.resizeGame(Std.parseInt(split[0]), Std.parseInt(split[1]));
-		Application.current.window.width = Std.parseInt(split[0]);
-		Application.current.window.height = Std.parseInt(split[1]);
-		//OptionsState.reopen(this);
-	}
-
-	function onChangeFramerate()
-	{
-		if(ClientPrefs.settings.get("framerate") > FlxG.drawFramerate) {
-			FlxG.updateFramerate = ClientPrefs.settings.get("framerate");
-			FlxG.drawFramerate = ClientPrefs.settings.get("framerate");
-		} else {
-			FlxG.drawFramerate = ClientPrefs.settings.get("framerate");
-			FlxG.updateFramerate = ClientPrefs.settings.get("framerate");
+	function changeOption(name:String) {
+		switch (name) {
+			case 'Resolution:':
+				var val = cast (ClientPrefs.settings.get("resolution"), String);
+				var split = val.split("x");
+				CoolUtil.resetResolutionScaling(Std.parseInt(split[0]), Std.parseInt(split[1]));
+				FlxG.resizeGame(Std.parseInt(split[0]), Std.parseInt(split[1]));
+				Application.current.window.width = Std.parseInt(split[0]);
+				Application.current.window.height = Std.parseInt(split[1]);
+				//OptionsState.reopen(this);
+			case 'Framerate:':
+				if(ClientPrefs.settings.get("framerate") > FlxG.drawFramerate) {
+					FlxG.updateFramerate = ClientPrefs.settings.get("framerate");
+					FlxG.drawFramerate = ClientPrefs.settings.get("framerate");
+				} else {
+					FlxG.drawFramerate = ClientPrefs.settings.get("framerate");
+					FlxG.updateFramerate = ClientPrefs.settings.get("framerate");
+				}
+				FlxG.game.focusLostFramerate = Math.ceil(ClientPrefs.settings.get("framerate")/2);
+			#if !mobile
+			case 'FPS Counter':
+				Main.toggleFPS(ClientPrefs.settings.get("showFPS"));
+				if (Main.ramCount.visible || Main.ramPie.visible) {
+					Main.toggleMEM(ClientPrefs.settings.get("showFPS"));
+					Main.togglePIE(ClientPrefs.settings.get("showFPS"));
+				}
+			case 'FPS Rainbow':
+				if (!ClientPrefs.settings.get('rainbowFPS'))
+					Main.setDisplayColors(0xffFFFFFF);
+			case 'Auto Pause':
+				FlxG.autoPause = ClientPrefs.settings.get("autoPause");
+			#end
+			case 'Colorblind Mode:' | 'Colorblind Intensity:':
+				var index = ['Deutranopia', 'Protanopia', 'Tritanopia'].indexOf(ClientPrefs.settings.get("colorblindMode"));
+				Main.updateColorblindFilter(index, ClientPrefs.settings.get("colorblindIntensity"));
 		}
 	}
-
-	#if !mobile
-	function onChangeFPSCounter()
-	{
-		Main.toggleFPS(ClientPrefs.settings.get("showFPS"));
-		if (Main.ramCount.visible) {
-			Main.toggleMEM(ClientPrefs.settings.get("showFPS"));
-			Main.togglePIE(ClientPrefs.settings.get("showFPS"));
-		}
-	}
-
-	function onChangeAutoPause()
-	{
-		FlxG.autoPause = ClientPrefs.settings.get("autoPause");
-	}
-	#end
 }
 
 /**
@@ -512,19 +542,18 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		title = 'Gameplay Settings';
 		rpcTitle = 'Gameplay Settings Menu'; //for Discord Rich Presence'
 
-		var option:Option = new Option('Rating Generosity:',
-			"How generous do you want the ratings?",
-			'ratingIntensity',
-			'string',
-			'Default',
-			['Generous', 'Default', 'Harsh']);
-		addOption(option);
-
 		var option:Option = new Option('Complex Accuracy',
 			"If checked, the complex accuracy calculations will be used, and provide more accurate accuracy.",
 			'complexAccuracy',
 			'bool',
 			false);
+		addOption(option);
+
+		var option:Option = new Option('Sustains Behave as Notes',
+			'If checked, holding sustains increases your health, and missing sustains will reduce your health and be counted as a miss.',
+			'sustainsAreNotes',
+			'bool',
+			true);
 		addOption(option);
 
 		var option:Option = new Option('Downscroll',
@@ -561,7 +590,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'percent',
 			0);
 		addOption(option);
-		option.onChange = onChangeHitsound;
+		option.onChange = changeOption;
 		option.scrollSpeed = 1.6;
 		option.minValue = 0.0;
 		option.maxValue = 1;
@@ -587,7 +616,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.displayFormat = '%vms';
 		option.scrollSpeed = 90;
 		windowOptions.push(option);
-		option.onChange = onChangeWindow;
+		option.onChange = changeOption;
 		addOption(option);
 
 		var option:Option = new Option('Sick Hit Window:',
@@ -598,7 +627,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.displayFormat = '%vms';
 		option.scrollSpeed = 90;
 		windowOptions.push(option);
-		option.onChange = onChangeWindow;
+		option.onChange = changeOption;
 		addOption(option);
 
 		var option:Option = new Option('Good Hit Window:',
@@ -609,7 +638,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.displayFormat = '%vms';
 		option.scrollSpeed = 90;
 		windowOptions.push(option);
-		option.onChange = onChangeWindow;
+		option.onChange = changeOption;
 		addOption(option);
 
 		var option:Option = new Option('Bad Hit Window:',
@@ -620,7 +649,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.displayFormat = '%vms';
 		option.scrollSpeed = 90;
 		windowOptions.push(option);
-		option.onChange = onChangeWindow;
+		option.onChange = changeOption;
 		addOption(option);
 
 		var option:Option = new Option('Shit Hit Window:',
@@ -631,7 +660,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.displayFormat = '%vms';
 		option.scrollSpeed = 90;
 		windowOptions.push(option);
-		option.onChange = onChangeWindow;
+		option.onChange = changeOption;
 		addOption(option);
 
 		var option:Option = new Option('Safe Frames:',
@@ -654,12 +683,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		windowBar.antialiasing = false;
 		insert(members.indexOf(descBox) - 1, windowBar);
 
-		onChangeWindow();
-	}
-
-	function onChangeHitsound() {
-		if (ClientPrefs.settings.get("hitsoundVolume") > 0)
-			FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.settings.get("hitsoundVolume"));
+		changeOption('Perfect Hit Window:');
 	}
 
 	override function changeSelection(change:Int = 0) {
@@ -668,31 +692,37 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		if (windowBar != null) windowBar.visible = (optionsArray[curSelected].name.contains('Hit Window'));
 	}
 
-	function onChangeWindow() {
-		var prevLine:Float = 0;
-		for (i=>option in windowOptions) {
-			option.minValue = windowDefaultMins[i];
-			option.maxValue = windowDefaultMaxes[i];
-			//clamp the mins/maxes so you cant do weird shit
-			if (windowOptions[i-1] != null) {
-				if (windowOptions[i-1].maxValue > option.minValue) option.minValue = windowOptions[i-1].maxValue;
-				//if (windowOptions[i-1].getValue() < option.minValue) option.minValue = windowOptions[i-1].getValue() + 1;
-			}
-			if (windowOptions[i+1] != null) {
-				if (windowOptions[i+1].minValue < option.maxValue) option.maxValue = windowOptions[i+1].minValue;
-				//if (windowOptions[i+1].getValue() > option.maxValue) option.maxValue = windowOptions[i+1].getValue() - 1;
-			}
-			//setGraphicSize makes me want to die so im gonna...
-			var pixels = windowBar.pixels;
-			for (y in 0...pixels.height) {
-				if (y / pixels.height <= option.getValue() / pixels.height && y / pixels.height > prevLine)
-					for (x in 0...pixels.width)
-						pixels.setPixel32(x, y, windowColours[i]);
-				else if (y / pixels.height > option.getValue() / pixels.height)
-					for (x in 0...pixels.width)
-						pixels.setPixel32(x, y, windowColours[windowColours.length-1]);
-			}
-			prevLine = option.getValue() / pixels.height;
+	function changeOption(name:String) {
+		switch (name) {
+			case 'Hitsound Volume:':
+				if (ClientPrefs.settings.get("hitsoundVolume") > 0)
+					FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.settings.get("hitsoundVolume"));
+			case 'Perfect Hit Window:' | 'Sick Hit Window:' | 'Good Hit Window:' | 'Bad Hit Window:' | 'Shit Hit Window:':
+				var prevLine:Float = 0;
+				for (i=>option in windowOptions) {
+					option.minValue = windowDefaultMins[i];
+					option.maxValue = windowDefaultMaxes[i];
+					//clamp the mins/maxes so you cant do weird shit
+					if (windowOptions[i-1] != null) {
+						if (windowOptions[i-1].maxValue > option.minValue) option.minValue = windowOptions[i-1].maxValue;
+						//if (windowOptions[i-1].getValue() < option.minValue) option.minValue = windowOptions[i-1].getValue() + 1;
+					}
+					if (windowOptions[i+1] != null) {
+						if (windowOptions[i+1].minValue < option.maxValue) option.maxValue = windowOptions[i+1].minValue;
+						//if (windowOptions[i+1].getValue() > option.maxValue) option.maxValue = windowOptions[i+1].getValue() - 1;
+					}
+					//setGraphicSize makes me want to die so im gonna...
+					var pixels = windowBar.pixels;
+					for (y in 0...pixels.height) {
+						if (y / pixels.height <= option.getValue() / pixels.height && y / pixels.height > prevLine)
+							for (x in 0...pixels.width)
+								pixels.setPixel32(x, y, windowColours[i]);
+						else if (y / pixels.height > option.getValue() / pixels.height)
+							for (x in 0...pixels.width)
+								pixels.setPixel32(x, y, windowColours[windowColours.length-1]);
+					}
+					prevLine = option.getValue() / pixels.height;
+				}
 		}
 	}
 }
@@ -723,7 +753,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'bool', //Variable type
 			false); //Default value
 		addOption(option);
-		option.onChange = onChangeLowQual;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Anti-Aliasing',
 			'If unchecked, disables anti-aliasing, increases performance\nat the cost of sharper visuals.',
@@ -731,7 +761,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'bool',
 			true);
 		option.showBoyfriend = true;
-		option.onChange = onChangeAntiAliasing; //Changing onChange is only needed if you want to make a special interaction after it changes the value
+		option.onChange = changeOption; //Changing onChange is only needed if you want to make a special interaction after it changes the value
 		addOption(option);
 
 		var option:Option = new Option('Watermarks',
@@ -740,7 +770,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
-		option.onChange = onChangeWatermarks;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Camera Zooms',
 			"If unchecked, the camera won't zoom in on a beat hit.",
@@ -748,7 +778,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
-		option.onChange = onChangeZoom;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Note Splashes',
 			"If unchecked, hitting \"Sick!\" notes won't show particles.",
@@ -756,7 +786,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
-		option.onChange = onChangeSplash;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Icon Animation:',
 			"What animation should the healthbar icons do?",
@@ -765,7 +795,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'Swing',
 			['Swing', 'Snap', 'Stretch', 'Bop', 'Old', 'None']);
 		addOption(option);
-		option.onChange = onChangeSwing;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Animate Mouse',
 		'If unchecked, mouse will not play any animations on clicking or scrolling.',
@@ -773,11 +803,18 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		'bool',
 		true);
 		addOption(option);
-		option.onChange = onChangeMouseAnimated;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Hide HUD',
 			'If checked, hides most HUD elements.',
 			'hideHud',
+			'bool',
+			false);
+		addOption(option);
+
+		var option:Option = new Option('Hide Rating Pop-ups',
+			'If checked, the rating pop-ups will no longer appear.',
+			'hideRating',
 			'bool',
 			false);
 		addOption(option);
@@ -817,7 +854,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			'FNF',
 			skinArr);
 		addOption(option);
-		option.onChange = onChangeSkin;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Score Display:',
 			"What engine's score display do you want?",
@@ -827,8 +864,8 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			['Psych', 'Kade', 'Sarvente', 'FPS+', 'FNF+', 'FNM', 'Vanilla', 'None']);
 		addOption(option);
 		
-		var option:Option = new Option('Score Text Zoom on Hit',
-			"If unchecked, disables the Score text zooming\neverytime you hit a note.",
+		var option:Option = new Option('Score Text Zoom',
+			"If checked, the score text will zoom in when you hit a note.",
 			'scoreZoom',
 			'bool',
 			true);
@@ -841,8 +878,8 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 
-		var option:Option = new Option('Time Bar:',
-			"What should the Time Bar display?",
+		var option:Option = new Option('Time Bar Format:',
+			"What format should the time bar be in?",
 			'timeBarType',
 			'string',
 			'Time Left',
@@ -882,6 +919,9 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		rating.scale.set(0.6,0.6);
 		rating.updateHitbox();
 		add(rating);
+
+		bgScroll.visible = !ClientPrefs.settings.get("lowQuality");
+		bgScroll2.visible = !ClientPrefs.settings.get("lowQuality");
 	}
 
 	var exiting = false;
@@ -974,63 +1014,38 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 	}
 	#end
 
-	inline function onChangeZoom()
-	{
-		shouldZoom = ClientPrefs.settings.get("camZooms");
-	}
+	function changeOption(name:String) {
+		switch (name) {
+			case 'Camera Zooms':
+				shouldZoom = ClientPrefs.settings.get("camZooms");
+			case 'Song Credits':
+				if (floatyTxt != null)
+					floatyTxt.visible = ClientPrefs.settings.get("watermarks");
+			case 'Note Splashes':
+				if (noteSplash != null) {
+					noteSplash.visible = ClientPrefs.settings.get("noteSplashes");
+					noteSplash.animation.play('splash${FlxG.random.int(1,4)}');
+				}
+			case 'Icon Animation:':
+				iconAnim = ClientPrefs.settings.get("iconAnim");
+			case 'Rating Skin:':
+				if (rating != null)
+					rating.loadGraphic(Paths.image('ratings/sick-' + ClientPrefs.settings.get("uiSkin").toLowerCase()));
+			case 'Animate Mouse':
+				//if it complains about this not being a real value, rest assured its just vsc being vsc
+				flixel.input.mouse.FlxMouse.animated = ClientPrefs.settings.get("animateMouse");
+			case 'Anti-Aliasing':
+				for (sprite in members)
+					if (sprite != null && sprite is FlxSprite && !(sprite is FlxText))
+						cast (sprite, FlxSprite).antialiasing = ClientPrefs.settings.get("globalAntialiasing");
 
-	inline function onChangeWatermarks()
-	{
-		if (floatyTxt != null)
-			floatyTxt.visible = ClientPrefs.settings.get("watermarks");
-	}
-
-	inline function onChangeSplash()
-	{
-		if (noteSplash != null) {
-			noteSplash.visible = ClientPrefs.settings.get("noteSplashes");
-			noteSplash.animation.play('splash${FlxG.random.int(1,4)}');
-		}
-	}
-
-	inline function onChangeSwing()
-	{
-		iconAnim = ClientPrefs.settings.get("iconAnim");
-	}
-
-	inline function onChangeSkin()
-	{
-		if (rating != null)
-			rating.loadGraphic(Paths.image('ratings/sick-' + ClientPrefs.settings.get("uiSkin").toLowerCase()));
-	}
-
-	inline function onChangeMouseAnimated()
-	{
-		//if it complains about this not being a real value, rest assured its just vsc being vsc
-		flixel.input.mouse.FlxMouse.animated = ClientPrefs.settings.get("animateMouse");
-	}
-
-	function onChangeAntiAliasing()
-	{
-		for (sprite in members)
-		{
-			var sprite:Dynamic = sprite; //Make it check for FlxSprite instead of FlxBasic
-			var sprite:FlxSprite = sprite; //Don't judge me ok
-			if(sprite != null && (Std.isOfType(sprite, FlxSprite)) && !(Std.isOfType(sprite, FlxText))) {
-				sprite.antialiasing = ClientPrefs.settings.get("globalAntialiasing");
-			}
-			FlxSprite.defaultAntialiasing = ClientPrefs.settings.get("globalAntialiasing");
-			FlxG.mouse.unload();
-			flixel.input.mouse.FlxMouse.antialiasing = ClientPrefs.settings.get("globalAntialiasing");
-			FlxG.mouse.load();
-		}
-	}
-
-	inline function onChangeLowQual()
-	{
-		if (bgScroll != null) {
-			bgScroll.visible = !ClientPrefs.settings.get("lowQuality");
-			bgScroll2.visible = !ClientPrefs.settings.get("lowQuality");
+				FlxSprite.defaultAntialiasing = ClientPrefs.settings.get("globalAntialiasing");
+				FlxG.mouse.unload();
+				flixel.input.mouse.FlxMouse.antialiasing = ClientPrefs.settings.get("globalAntialiasing");
+				FlxG.mouse.load();
+			case 'Low Quality':
+				bgScroll.visible = !ClientPrefs.settings.get("lowQuality");
+				bgScroll2.visible = !ClientPrefs.settings.get("lowQuality");
 		}
 	}
 }
@@ -1053,16 +1068,7 @@ class MiscSettingsSubState extends BaseOptionsMenu
 			'OVERDOSE',
 			['None', 'Breakfast', 'Property Surgery', 'OVERDOSE']);
 		addOption(option);
-		option.onChange = onChangePauseMusic;
-
-		//! Unfinished (Still needs colour functionality fixed)
-		var option:Option = new Option('CrossFade Options',
-			"Open CrossFade options submenu.",
-			'crossFadeLink',
-			'link',
-			false);
-		addOption(option);
-		option.onChange = openCrossfadeOptions;
+		option.onChange = changeOption;
 
 		var option:Option = new Option('Cutscenes:',
 			'When do you want cutscenes to play?',
@@ -1114,53 +1120,74 @@ class MiscSettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 
-		var option:Option = new Option('Use Wrong Camera',
-			'If checked, the rating popups will be in the game camera, not the HUD.',
+		var option:Option = new Option('Game Camera Ratings',
+			'If checked, the rating popups will be in the game camera, instead of the HUD.',
 			'wrongCamera',
 			'bool',
 			false);
 		addOption(option);
 
-		var option:Option = new Option('MS Timing Text',
-			'If checked, text displaying your MS timing will appear when hitting a note.',
+		var option:Option = new Option('Timing Popup',
+			'If checked, text displaying your Millisecond timing will appear when hitting a note.',
 			'msPopup',
 			'bool',
 			true);
 		addOption(option);
 
+		//! Unfinished (Still needs colour functionality fixed)
+		var option:Option = new Option('CrossFade Options',
+			"Open the CrossFade options submenu.",
+			'crossFadeLink',
+			'link',
+			false);
+		addOption(option);
+		option.onChange = changeOption;
+
+		var option:Option = new Option('Secret Options',
+			"Open the secret options submenu.",
+			'secretLink',
+			'link',
+			false);
+		addOption(option);
+		option.onChange = changeOption;
+
 		super();
 
 		instance = this;
 	}
-	
+
 	var changedMusic:Bool = false;
-	function onChangePauseMusic()
-	{
-		if(ClientPrefs.settings.get("pauseMusic") == 'None')
-			FlxG.sound.music.volume = 0;
-		else
-			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.settings.get("pauseMusic"))));
-
-		changedMusic = true;
-	}
-
-	function openCrossfadeOptions() {
-		stopLerping = true;
-		for (option in grpOptions) {
-			if (option.text != 'CrossFade Options') {
-				option.align = 'none';
-				FlxTween.tween(option, {x: option.x - 1280}, 0.48, {ease: FlxEase.expoIn});
-			} else {
-				option.align = 'center';
-				FlxTween.tween(option, {y: option.y - 720}, 0.66, {
-					startDelay: 0.15,
-					ease: FlxEase.expoIn,
-					onComplete: _ -> {
-						persistentUpdate = false;
-						openSubState(new CrossFadeSettingsSubState());
+	function changeOption(name:String) {
+		switch (name) {
+			case 'Pause Screen Song:':
+				if(ClientPrefs.settings.get("pauseMusic") == 'None')
+					FlxG.sound.music.volume = 0;
+				else
+					FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.settings.get("pauseMusic"))));
+		
+				changedMusic = true;
+			case 'CrossFade Options':
+				stopLerping = true;
+				for (option in grpOptions) {
+					if (option.text != 'CrossFade Options') {
+						option.align = 'none';
+						FlxTween.tween(option, {x: option.x - 1280}, 0.48, {ease: FlxEase.expoIn});
+					} else {
+						option.align = 'center';
+						FlxTween.tween(option, {y: option.y - 720}, 0.66, {
+							startDelay: 0.15,
+							ease: FlxEase.expoIn,
+							onComplete: _ -> {
+								persistentUpdate = false;
+								openSubState(new CrossFadeSettingsSubState());
+							}
+						});
 					}
-				});
-			}
+				}
+			case 'Secret Options':
+				/*var possibleSounds = ['bfBeep', 'cancelMenu', 'scrollMenu', 'confirmMenu', 'invalidJSON'];
+				FlxG.sound.play(Paths.sound(possibleSounds[FlxG.random.int(0, possibleSounds.length-1)]));*/
+				Main.updateColorblindFilter(FlxG.random.bool(45) ? 8 : FlxG.random.int(0, 7));
 		}
 	}
 
@@ -1697,8 +1724,6 @@ class ControlsSubState extends MusicBeatSubstate {
 		['DEBUG'],
 		['Editor 1', 'debug_1'],
 		['Editor 2', 'debug_2'],
-		['Display', 'debug_3'],
-		['RAM Pie', 'debug_4'],
 		[''],
 		['MULTIKEY'],
 		[''],

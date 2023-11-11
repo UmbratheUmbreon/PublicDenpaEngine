@@ -102,7 +102,8 @@ class NativeAudioSource
 			}
 		}
 
-		samples = Std.int((dataLength * 8) / (parent.buffer.channels * parent.buffer.bitsPerSample));
+		//Reversed here to increase the maximum length a song can be.
+		samples = Std.int(dataLength / ((parent.buffer.channels * parent.buffer.bitsPerSample)/8));
 	}
 
 	public function play():Void
@@ -428,7 +429,8 @@ class NativeAudioSource
 			return length;
 		}
 
-		return Std.int(samples / parent.buffer.sampleRate * 1000) - parent.offset;
+		//Clamping between 0 and 12173936 MS to prevent negative lengths, and lengths over the maximum.
+		return Std.int(Math.min(Math.max((samples / parent.buffer.sampleRate * 1000) - parent.offset, 0), 12173936));
 	}
 
 	public function setLength(value:Int):Int

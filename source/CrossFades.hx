@@ -13,7 +13,7 @@ import flixel.util.FlxColor;
 */
 class CrossFade extends FlxSprite
 {
-	private static var colorMap:Map<String, Array<Int>> = [
+	public static var colorMap:Map<String, Array<Int>> = [
 		'gf-tutorial' => [0xFFa5004d],
 		'gf' => [0xFFa5004d],
 		'gf-pixel' => [0xFFa5004d],

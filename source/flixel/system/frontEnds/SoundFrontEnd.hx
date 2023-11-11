@@ -385,7 +385,6 @@ class SoundFrontEnd
 
 	public function getTotalSoundBytes():Float
     {
-        if (cache == null) return 0;
         var total:Float = 0;
 		for (snd in defaultSoundGroup.sounds) {
 			if(snd != null && snd.buffer != null)
@@ -396,7 +395,6 @@ class SoundFrontEnd
 
 	public function getTotalMusicBytes():Float
     {
-        if (cache == null) return 0;
         var total:Float = 0;
 		for (snd in defaultMusicGroup.sounds) {
 			if(snd != null && snd.buffer != null)

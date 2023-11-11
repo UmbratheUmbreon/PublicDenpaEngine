@@ -7,7 +7,7 @@ class Option
 {
 	private var child:Alphabet;
 	public var text(get, set):String;
-	public var onChange:Void->Void = null; //Pressed enter (on Bool/Link type options) or pressed/held left/right (on other types)
+	public var onChange:String->Void = null; //Pressed enter (on Bool/Link type options) or pressed/held left/right (on other types)
 
 	public var type(get, default):String = 'bool'; //bool, int (or integer), float (or fl), percent, string (or str)
 	// Bool will use checkboxes
@@ -85,7 +85,7 @@ class Option
 	{
 		//nothing lol
 		if(onChange != null) {
-			onChange();
+			onChange(name);
 		}
 	}
 

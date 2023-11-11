@@ -107,7 +107,7 @@ class CreditsState extends MusicBeatState
 		#end
 
 		//? note to self: add having multiple links and having indicators for link domains in the bottom right
-		creditsStuff = [ //Username - Icon name - Name - Role - Description - Link - BG Color
+		var denpaCredits = [ //Username - Icon name - Name - Role - Description - Link - BG Color
 			["Denpa Team"],
 			['BlueVapor1234',	'at',			"AT", 		"Main Programmer & Creator", 		"\"What am i doing with my life\"",																	'https://twitter.com/BlueVapor1234', 								'34343C'],
 			['Toadette8394',	'toadette',		"Toadette", "Co Programmer", 					"\"Play All Star Funkin': VS Yoshikage Kira\"",														'https://twitter.com/Toadette8394',									'E2009B'],
@@ -152,6 +152,11 @@ class CreditsState extends MusicBeatState
 			['D.E. Discord',		'discord',	"Denpa Engine Discord", "Press " + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[0]) + ' or ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[1]) + " to Join", 	"What you will find in this server:\nOther Fans\nSupport\nTeasers\nRelease Notifications\nPolls\nScripts\nNews",					'https://discord.gg/pUX2ZMm4Qt', 	'5C89BF'],
 			['T.D.M. Discord',		'discord',	"Denpa Men Discord", 	"Press " + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[0]) + ' or ' + InputFormatter.getKeyName(ClientPrefs.keyBinds.get('accept')[1]) + " to Join", 	"What you will find in this server:\nDenpa Men Fans\nPolls\nDenpa Men Content\nDenpa Men QR Codes\nDenpa Men Fan Creations",		'https://discord.gg/thedenpamen',	'5C89BF']
 		];
+
+		for(array in denpaCredits)
+		{
+			creditsStuff.push(array);
+		}
 	
 		for (i in 0...creditsStuff.length)
 		{
@@ -174,7 +179,7 @@ class CreditsState extends MusicBeatState
 				}
 
 				final name = (Paths.fileExists('images/credits/${creditsStuff[i][1]}.png', IMAGE) ? creditsStuff[i][1] : 'placeholder');
-				if (name == 'placeholder') creditsStuff[i][6] = 'FFFFFF';
+				if (creditsStuff[i][6].length != 6) creditsStuff[i][6] = 'FFFFFF';
 				var icon:AttachedSprite = new AttachedSprite('credits/$name');
 				icon.xAdd = optionText.width + 10;
 				icon.sprTracker = optionText;
@@ -506,16 +511,20 @@ class CreditsState extends MusicBeatState
 		if(modsAdded.contains(folder)) return;
 
 		var creditsFile:String = null;
-		if(folder != null && folder.trim().length > 0) creditsFile = Paths.mods(folder + '/data/credits.txt');
-		else creditsFile = Paths.mods('data/credits.txt');
+		folder = folder.trim();
+		if (folder.length > 0)
+		{
+			folder += '/';
+		}
+		creditsFile = Paths.mods(folder + 'data/credits.txt');
 
 		if (FileSystem.exists(creditsFile))
 		{
-			var firstarray:Array<String> = File.getContent(creditsFile).split('\n');
+			var firstarray:Array<String> = File.getContent(creditsFile).replace('\\n', '\n').split('\n');
+			creditsStuff.push([folder.substr(0, folder.length - 2)]);
 			for(i in firstarray)
 			{
-				var arr:Array<String> = i.replace('\\n', '\n').split("::");
-				if(arr.length >= 7) arr.push(folder);
+				var arr:Array<String> = i.split("::");
 				creditsStuff.push(arr);
 			}
 			creditsStuff.push(['']);

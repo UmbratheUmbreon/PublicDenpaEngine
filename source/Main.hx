@@ -9,6 +9,7 @@ import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.utils.AssetCache;
+import openfl.filters.ColorMatrixFilter;
 import stats.DebugDisplay;
 import stats.DebugPie;
 import stats.FramerateDisplay;
@@ -66,7 +67,7 @@ class Main extends Sprite
 	 * 
 	 * Use `debugVersion` to get the version with build date.
 	 */
-	public static final denpaEngineVersion:GameVersion = new GameVersion(0, 8, 1, '');
+	public static final denpaEngineVersion:GameVersion = new GameVersion(0, 8, 2, '');
 
 	public static var fpsCounter:FramerateDisplay;
 	public static var ramCount:DebugDisplay;
@@ -168,6 +169,108 @@ class Main extends Sprite
 			});
 		}
 		#end
+	}
+
+	public static var colorblindMode:Int = -1;
+	public static function updateColorblindFilter(type:Int = -1, intensity:Float = 1) {
+		FlxG.game.setFilters([]);
+		
+		colorblindMode = type;
+		if (type == -1) return; //early return to avoid unnecessary calcs
+
+		var matrixShit:Array<Float> = [];
+		switch (type) {
+			//4x5 colour matrix
+			//1st in each row is red mult
+			//2nd in each row is green mult
+			//3rd in each row is blue mult
+			//4th in each row is alpha mult
+			//5th in each row is offset
+			//each row corresponds to rgba
+			//the value for each row is (matrixR * pixelR) + (matrixG * pixelG) + (matrixB * pixelB) + (matrixA * pixelA) + matrixO
+			case -1: //unchanged
+				matrixShit = [
+					1, 0, 0, 0, 0,
+					0, 1, 0, 0, 0,
+					0, 0, 1, 0, 0,
+					0, 0, 0, 1, 0];
+			case 0: //deutranopia
+				matrixShit = [
+					0.43, 0.72, -0.15, 0, 0,
+					0.34, 0.57, 0.09, 0, 0,
+					-0.02, 0.03, 1, 0, 0,
+					0, 0, 0, 1, 0];
+			case 1: //protanopia
+				matrixShit = [
+					0.2, 0.99, -0.19, 0, 0,
+					0.16, 0.79, 0.04, 0, 0,
+					0.01, -0.01, 1, 0, 0,
+					0, 0, 0, 1, 0];
+			case 2: //tritanopia
+				matrixShit = [
+					0.97, 0.11, -0.08, 0, 0,
+					0.02, 0.82, 0.16, 0, 0,
+					0.06, 0.88, 0.18, 0, 0,
+					0, 0, 0, 1, 0];
+			case 3: //gameboy mode
+				matrixShit = [
+					0, 0, 0, 0, 0,
+					0.33, 0.34, 0.33, 0, 0,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 1, 0];
+			case 4: //virtual boy mode
+				matrixShit = [
+					0.34, 0.33, 0.33, 0, 0,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 1, 0];
+			case 5: //b/w mode
+				matrixShit = [
+					0.33, 0.34, 0.33, 0, 0,
+					0.33, 0.34, 0.33, 0, 0,
+					0.33, 0.34, 0.33, 0, 0,
+					0, 0, 0, 1, 0];
+			case 6: //inverted mode
+				matrixShit = [
+					0, 0.5, 0.5, 0, 0,
+					0.5, 0, 0.5, 0, 0,
+					0.5, 0.5, 0, 0, 0,
+					0, 0, 0, 1, 0];
+			case 7: //idfk mode
+				matrixShit = [
+					0.07, 0.9, 0.03, 0, 0,
+					0.25, 0, 0.75, 0, 0,
+					0, 0.33, 0.67, 0, 0,
+					0, 0, 0, 1, 0];
+			case 8: //random mode
+				matrixShit = [
+					FlxG.random.float(0, 1), FlxG.random.float(0, 1), FlxG.random.float(0, 1), 0, 0,
+					FlxG.random.float(0, 1), FlxG.random.float(0, 1), FlxG.random.float(0, 1), 0, 0,
+					FlxG.random.float(0, 1), FlxG.random.float(0, 1), FlxG.random.float(0, 1), 0, 0,
+					0, 0, 0, 1, 0];
+		}
+		inline function checkRange(val:Int, low:Int, high:Int)
+			return (val >= low && val <= high);
+
+		for (i in 0...matrixShit.length) {
+			if (i % 5 == 4) continue; //dont fuck with the colour offsets
+			if (i > 14) break; //dont fuck with the alpha
+			if (matrixShit[i] == 0) matrixShit[i] = 0.00001;
+			if ((i % 5 == 0 && checkRange(i, 0, 4)) || (i % 5 == 1 && checkRange(i, 5, 9)) || (i % 5 == 2 && checkRange(i, 10, 14))) { //is color, we are on color.
+				matrixShit[i] = FlxMath.lerp(matrixShit[i], 1, CoolUtil.clamp(1 - intensity, 0, 1));
+				continue;
+			}
+			matrixShit[i] = FlxMath.lerp(matrixShit[i], 0, CoolUtil.clamp(1 - intensity, 0, 1));
+		}
+
+		var filter = new ColorMatrixFilter(matrixShit);
+		if (filter == null) return;
+
+		FlxG.game.setFilters([filter]);
+	}
+
+	public static function setDisplayColors(color:Int) {
+		ramPie.textColor = ramCount.textColor = fpsCounter.textColor = color;
 	}
 
 	#if CRASH_HANDLER

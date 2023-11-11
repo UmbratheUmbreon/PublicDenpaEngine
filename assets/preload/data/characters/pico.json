@@ -124,19 +124,19 @@
 	},
 	"healthbar_colors": [
 		{
-			"red": 60,
-			"green": 156,
-			"blue": 18
+			"red": 153,
+			"green": 255,
+			"blue": 102
 		},
 		{
-			"red": 40,
-			"green": 136,
-			"blue": 0
+			"red": 133,
+			"green": 235,
+			"blue": 82
 		},
 		{
-			"red": 20,
-			"green": 116,
-			"blue": 0
+			"red": 113,
+			"green": 215,
+			"blue": 62
 		}
 	],
 	"camera_position": [

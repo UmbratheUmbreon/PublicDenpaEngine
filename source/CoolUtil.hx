@@ -59,9 +59,8 @@ class CoolUtil
 	{
 		final formats = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 		var i = formats.indexOf(format);
-		i++; //offset
 		while (bytes > 1024) {
-			format = formats[i++];
+			format = formats[++i];
             bytes /= 1024;
 		}
 		return [bytes, format];
@@ -82,7 +81,7 @@ class CoolUtil
      */
 	inline public static function removeDuplicates(string:Array<String>):Array<String> {
 		var tempArray:Array<String> = new Array<String>();
-		var lastSeen:String;
+		var lastSeen:String = '';
 		string.sort(function(str1:String, str2:String) {
 		    return (str1 == str2) ? 0 : (str1 > str2) ? 1 : -1; 
 		});
@@ -107,6 +106,9 @@ class CoolUtil
 	inline public static function clamp(value:Float, min:Float, max:Float):Float
 		return Math.max(min, Math.min(max, value));
 
+	inline public static function iclamp(val:Float, min:Int, max:Int):Int
+		return Math.floor(Math.max(min, Math.min(max, val)));
+
 	inline public static function coolTextFile(path:String):Array<String>
 	{
 		#if sys
@@ -121,26 +123,24 @@ class CoolUtil
 	inline public static function listFromString(string:String):Array<String>
 		return string.trim().split('\n').map(str -> str.trim());
 
-	inline public static function dominantColor(sprite:flixel.FlxSprite):Int
+	public static function dominantColor(sprite:flixel.FlxSprite):Int
     {
 		var countByColor:Map<Int, Int> = [];
-		for(col in 0...sprite.frameWidth){
-			for(row in 0...sprite.frameHeight){
-			    var colorOfThisPixel:Int = sprite.pixels.getPixel32(col, row);
-			    if(colorOfThisPixel != 0){
-				    if(countByColor.exists(colorOfThisPixel)){
-				        countByColor[colorOfThisPixel] =  countByColor[colorOfThisPixel] + 1;
-				    } else if(countByColor[colorOfThisPixel] != 13520687 - (2*13520687)){
-					    countByColor[colorOfThisPixel] = 1;
-				    }
-			    }
+		for(col in 0...sprite.frameWidth) {
+			for(row in 0...sprite.frameHeight) 
+			{
+				var colorOfThisPixel:Int = sprite.pixels.getPixel32(col, row);
+				if(colorOfThisPixel != 0){
+					if(countByColor.exists(colorOfThisPixel)) countByColor[colorOfThisPixel] =  countByColor[colorOfThisPixel] + 1;
+					else if(countByColor[colorOfThisPixel] != 13520687 - (2*13520687)) countByColor[colorOfThisPixel] = 1;
+				}
 			}
 		}
 		var maxCount = 0;
 		var maxKey:Int = 0;//after the loop this will store the max color
 		countByColor[flixel.util.FlxColor.BLACK] = 0;
-		for(key in countByColor.keys()){
-			if(countByColor[key] >= maxCount){
+		for(key in countByColor.keys()) {
+			if(countByColor[key] >= maxCount) {
 				maxCount = countByColor[key];
 				maxKey = key;
 			}
@@ -339,4 +339,14 @@ class CoolUtil
 		}
 		return FlxColor.WHITE;
 	}
+}
+
+class MapUtil {
+	/**
+	 * Checks if map has the key `key` by checking if it returns null.
+	 * If you want you want to strictly check for existence (in case of the mapping being null), you should use `exists()`!
+	 * @param key The key you want to check for
+	 * @return True if key has a mapping, false if it doesnt (or if its null.)
+	 */
+	public static function hasKey<K, V>(map:Map<K,V>, key:K):Bool return map[key] != null;
 }

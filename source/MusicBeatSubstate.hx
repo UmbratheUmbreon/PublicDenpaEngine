@@ -15,8 +15,11 @@ class MusicBeatSubstate extends FlxSubState
 		curInstance = this;
 	}
 
+	@:allow(stats.DebugDisplay)
 	private var curStep:Int = 0;
+	@:allow(stats.DebugDisplay)
 	private var curBeat:Int = 0;
+	
 	private var controls(get, never):Controls;
 	public static var curInstance:MusicBeatSubstate = null;
 

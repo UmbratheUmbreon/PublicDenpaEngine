@@ -40,6 +40,9 @@ class ClientPrefs {
         "checkForUpdates" => true,
         "subtitles" => true,
 		"complexAccuracy" => false,
+		"sustainsAreNotes" => true,
+		"hideRating" => false,
+		"rainbowFPS" => false,
         //Ints
         "framerate" => 60,
         "noteOffset" => 0,
@@ -52,6 +55,7 @@ class ClientPrefs {
         //Floats
         "hitsoundVolume" => 0,
         "safeFrames" => 10,
+		"colorblindIntensity" => 1,
         //Strings
 		"resolution" => "1280x720",
         "uiSkin" => "FNF",
@@ -59,8 +63,8 @@ class ClientPrefs {
         "scoreDisplay" => "Psych",
         "timeBarType" => "Time Left",
         "pauseMusic" => "OVERDOSE",
-        "ratingIntensity" => "Default",
         "cutscenes" => "Story Mode Only",
+		"colorblindMode" => "None",
 		//Arrays
 		"crossFadeData" => ['Default', 'Healthbar', [255, 255, 255], 0.3, 0.35]
 	];
@@ -81,8 +85,7 @@ class ClientPrefs {
 		'quartiz' => false,
 		'ghostmode' => false,
 		'randommode' => false,
-		'flip' => false,
-		'opponentplay' => false
+		'flip' => false
 	];
 
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
@@ -112,8 +115,6 @@ class ClientPrefs {
 		
 		'debug_1'	=> [SEVEN],
 		'debug_2'	=> [EIGHT],
-		'debug_3'	=> [F3],
-		'debug_4'	=> [F4],
 
 		'manual'	=> [F12],
 
@@ -296,12 +297,12 @@ class ClientPrefs {
 		settingsSave.data.comboOffset = comboOffset;
 		settingsSave.data.settings = settings;
 		settingsSave.data.gameplaySettings = gameplaySettings;
-		settingsSave.flush();
+		settingsSave.close();
 
 		var controlsSave:FlxSave = new FlxSave();
 		controlsSave.bind('controls_v3'); //Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
 		controlsSave.data.customControls = keyBinds;
-		controlsSave.flush();
+		controlsSave.close();
 
 		FlxG.log.add("Settings saved!");
 	}
@@ -360,6 +361,7 @@ class ClientPrefs {
 			if (settingsSave.data.arrowHSV != null) arrowHSV = settingsSave.data.arrowHSV;
 			if (settingsSave.data.comboOffset != null) comboOffset = settingsSave.data.comboOffset;
 		}
+		settingsSave.destroy();
 
 		var controlsSave:FlxSave = new FlxSave();
 		controlsSave.bind('controls_v3');
@@ -370,6 +372,7 @@ class ClientPrefs {
 			}
 			reloadControls();
 		}
+		controlsSave.destroy();
 		
 		// flixel automatically saves your volume!
 		if (FlxG.save.data.volume != null) FlxG.sound.volume = FlxG.save.data.volume;
@@ -390,10 +393,11 @@ class ClientPrefs {
 		FlxG.sound.volumeUpKeys = InitState.volumeUpKeys;
 	}
 
-	inline public static function fillKeys():Array<Array<Dynamic>>
+	@:deprecated("`ClientPrefs.fillKeys` is deprecated, use `ClientPrefs.getManiaKeys` instead.")
+	inline public static function fillKeys():Array<Array<Array<FlxKey>>>
     {
-        var returArr:Array<Array<Dynamic>> = [];
-        var tempArr:Array<Dynamic> = [];
+        var returArr:Array<Array<Array<FlxKey>>> = [];
+        var tempArr:Array<Array<FlxKey>> = [];
         for (i in 1...10) {
             for (j in 1...i+1) {
                 tempArr.push(keyBinds.get('note_$i$j').copy());
@@ -403,4 +407,12 @@ class ClientPrefs {
         }
         return returArr;
     }
+
+	inline public static function getManiaKeys(mania:Int):Array<Array<FlxKey>>
+	{
+		var returArr:Array<Array<FlxKey>> = [];
+		for (i in 1...mania+2)
+			returArr.push(keyBinds.get('note_${mania+1}$i').copy());
+		return returArr;
+	}
 }

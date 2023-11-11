@@ -17,7 +17,6 @@ class Highscore
 		setScore(daSong, 0);
 		setRating(daSong, 0);
 		setLetter(daSong, 'Unrated');
-		setIntensity(daSong, 'Unknown');
 	}
 
 	public static function resetWeek(week:String, diff:Int = 0):Void
@@ -36,7 +35,7 @@ class Highscore
 		return newValue / tempMult;
 	}
 
-	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0, ?rating:Float = -1, ?letter:String = 'Unrated', ?intensity:String = 'Unknown'):Void
+	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0, ?rating:Float = -1, ?letter:String = 'Unrated'):Void
 	{
 		var daSong:String = formatSong(song, diff);
 
@@ -45,14 +44,12 @@ class Highscore
 				setScore(daSong, score);
 				if(rating >= 0) setRating(daSong, rating);
 				setLetter(daSong, letter);
-				setIntensity(daSong, intensity);
 			}
 		}
 		else {
 			setScore(daSong, score);
 			if(rating >= 0) setRating(daSong, rating);
 			setLetter(daSong, letter);
-			setIntensity(daSong, intensity);
 		}
 	}
 
@@ -103,14 +100,6 @@ class Highscore
 		FlxG.save.flush();
 	}
 
-	static function setIntensity(song:String, intensity:String):Void
-	{
-		// Reminder that I don't need to format this song, it should come formatted!
-		songIntensity.set(song, intensity);
-		FlxG.save.data.songIntensity = songIntensity;
-		FlxG.save.flush();
-	}
-
 	inline public static function formatSong(song:String, diff:Int):String
 	{
 		return Paths.formatToSongPath(song) + CoolUtil.getDifficultyFilePath(diff);
@@ -138,14 +127,6 @@ class Highscore
 		if (!songLetter.exists(daSong)) setLetter(daSong, 'Unrated');
 
 		return songLetter.get(daSong);
-	}
-
-	inline public static function getIntensity(song:String, diff:Int):String
-	{
-		var daSong:String = formatSong(song, diff);
-		if (!songIntensity.exists(daSong)) setIntensity(daSong, 'Unknown');
-
-		return songIntensity.get(daSong);
 	}
 
 	inline public static function getWeekScore(week:String, diff:Int):Int

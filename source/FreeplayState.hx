@@ -41,7 +41,6 @@ class FreeplayState extends MusicBeatState
 	var intendedScore:Int = 0;
 	var intendedRating:Float = 0;
 	var intendedLetter:String = 'Unrated';
-	var intendedIntensity:String = 'Unknown';
 
 	//var playlistBG:FlxSprite;
 	//var playlistHeaderTxt:FlxText;
@@ -341,7 +340,7 @@ class FreeplayState extends MusicBeatState
 
 
 		scoreText.text = 'Score: ${FlxStringUtil.formatMoney(lerpScore, false)} (${ratingSplit.join('.')}%)';
-		ratingText.text = '$intendedLetter Rate, $intendedIntensity Generosity';
+		ratingText.text = '$intendedLetter Rate';
 		switch (intendedLetter)
 		{
 			case 'X':
@@ -351,7 +350,7 @@ class FreeplayState extends MusicBeatState
 			case 'A':
 				scoreBG.color = FlxColor.RED;
 			case 'Unrated':
-				ratingText.text = '$intendedLetter, $intendedIntensity Generosity';
+				ratingText.text = '$intendedLetter';
 				scoreBG.color = FlxColor.BLACK;
 			default:
 				scoreBG.color = FlxColor.BLACK;
@@ -672,7 +671,6 @@ class FreeplayState extends MusicBeatState
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
 		intendedRating = Highscore.getRating(songs[curSelected].songName, curDifficulty);
 		intendedLetter = Highscore.getLetter(songs[curSelected].songName, curDifficulty);
-		intendedIntensity = Highscore.getIntensity(songs[curSelected].songName, curDifficulty);
 
 		PlayState.storyDifficulty = curDifficulty;
 		if (CoolUtil.difficulties.length > 1) {
@@ -747,7 +745,6 @@ class FreeplayState extends MusicBeatState
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
 		intendedRating = Highscore.getRating(songs[curSelected].songName, curDifficulty);
 		intendedLetter = Highscore.getLetter(songs[curSelected].songName, curDifficulty);
-		intendedIntensity = Highscore.getIntensity(songs[curSelected].songName, curDifficulty);
 
 		var bullShit:Int = 0;
 
@@ -829,17 +826,17 @@ class FreeplayState extends MusicBeatState
 	}
 
 	private function positionHighscore() {
-		if (scoreText.width > ratingText.width) {
+		//if (scoreText.width > ratingText.width) {
 			scoreText.x = FlxG.width - scoreText.width - 6;
-			ratingText.x = scoreText.x;
+			ratingText.x = (scoreText.x + scoreText.width/2) - ratingText.width/2;
 			scoreBG.scale.x = FlxG.width - scoreText.x + 6;
 			scoreBG.x = FlxG.width - (scoreBG.scale.x / 2);
-		} else {
+		/*} else { //should never happen
 			ratingText.x = FlxG.width - ratingText.width - 6;
 			scoreText.x = ratingText.x;
 			scoreBG.scale.x = FlxG.width - ratingText.x + 6;
 			scoreBG.x = FlxG.width - (scoreBG.scale.x / 2);
-		}
+		}*/
 		
 		diffText.x = Std.int(scoreBG.x + (scoreBG.width / 2));
 		diffText.x -= diffText.width / 2;

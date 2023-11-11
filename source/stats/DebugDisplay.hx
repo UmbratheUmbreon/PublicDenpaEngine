@@ -4,14 +4,26 @@ import lime.system.System as LimeSys;
 import openfl.events.Event;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
+import openfl.system.Capabilities;
+import openfl.display3D.Context3D;
+import sys.io.Process;
 
 class DebugDisplay extends TextField
 {
 	private var storedPeak:Float = 0;
-	private var memPeakDisplayStr:String = ' MB';
+	private var memPeakDisplayStr:String = ' B';
 	private var cachedMem:Float = 0;
-	private var cachedObjCounts:Array<Int> = [0, 0];
-	private var cachedBPM:Float = 0;
+
+	public var showConductor:Bool = false;
+	public var showFlixel:Bool = false;
+	public var showSystem:Bool = false;
+	public var forceUpdate:Bool = false;
+
+	//sys
+	private var platform:String = '???';
+	private var cpu:String = '???';
+	private var gpu:String = '???';
+	private var engVer:String = '???';
 
 	public function new(inX:Float = 10.0, inY:Float = 10.0, inCol:Int = 0x000000)
 	{
@@ -24,29 +36,49 @@ class DebugDisplay extends TextField
 
 		defaultTextFormat = new TextFormat("VCR OSD Mono", 12, inCol);
 
-		text = "";
+		text = 'MEM: 0 B\nMEM-PEAK: 0 B';
 
-		addEventListener(Event.ENTER_FRAME, onEnter);
+		width = 440;
+		height = 290;
 
-		width = 340;
-		height = 90;
+		resetMeta();
 	}
 
-	private function onEnter(_)
+	private function resetMeta()
+	{
+		platform = '${LimeSys.platformLabel} ${LimeSys.platformVersion}';
+		#if windows
+		var process = new Process('wmic', ['cpu', 'get', 'name']);
+		if (process.exitCode() == 0) {
+			cpu = process.stdout.readAll().toString().trim().split('\n')[1].trim();
+			cpu += ' ${Capabilities.cpuArchitecture} ${Capabilities.supports64BitProcesses ? '64 Bit' : '32 Bit'}';
+		}
+		#end
+		@:privateAccess gpu = Std.string(FlxG.stage.context3D.gl.getParameter(FlxG.stage.context3D.gl.RENDERER)).split("/")[0];
+		engVer = Main.denpaEngineVersion.debugVersion;
+	}
+
+	var lastFT:Float = 0.0;
+	private override function __enterFrame(deltaTime:Float):Void
 	{
 		if (!visible) return; //why would we calculate this if its not visible.
+
+		if (!forceUpdate) {
+			lastFT += deltaTime;
+			lastFT -= (lastFT > 100 ? 100 : return); //Il s'agit d'une mémoire tampon pour éviter tout décalage!
+		}
+
 		//get the current used shit
 		final arr:Array<Any> = CoolUtil.getMemUsage();
         var mem:Float = cast arr[0];
-		final uObj = #if debug @:privateAccess flixel.FlxBasic.activeCount #else 0 #end;
-		final dObj = #if debug @:privateAccess flixel.FlxBasic.visibleCount #else 0 #end;
-		if (mem == cachedMem && uObj == cachedObjCounts[0] && dObj == cachedObjCounts[1] && Conductor.bpm == cachedBPM)
+		#if debug
+		final uObj = @:privateAccess flixel.FlxBasic.activeCount;
+		final dObj = @:privateAccess flixel.FlxBasic.visibleCount;
+		#end
+		if (!forceUpdate && (!showConductor && mem == cachedMem))
 			return;
-		else {
+		else
 			cachedMem = mem;
-			cachedObjCounts = [uObj, dObj];
-			cachedBPM = Conductor.bpm;
-		}
 
 		
 		var memDisplayStr:String = cast arr[1];
@@ -59,16 +91,38 @@ class DebugDisplay extends TextField
 		newArr = CoolUtil.truncateByteFormat(memPeak);
 		memPeak = newArr[0];
 		memPeakDisplayStr = newArr[1];
-		
-		//textColor = (((mem > 3 && memDisplayStr == ' GB') || (formats.indexOf(memDisplayStr) > 2)) ? 0xff0000 : 0xffffff);
-		//i HATE how laggy the debugger is so im just gonna have the stats here
-        //^ i said this before i made this an entire debug display
-		text = 'MEM: ${FlxMath.roundDecimal(mem, 2)} $memDisplayStr | ${FlxMath.roundDecimal(memPeak, 2)} $memPeakDisplayStr' +
-			#if debug '\nUPD-OBJ: $uObj | DRW-OBJ: $dObj' + #end
-			'\nCUR: ${Type.getClassName(Type.getClass(FlxG.state))}' +
-			'${(flixel.FlxSubState.curInstance != null ? '\nSUB: ${Type.getClassName(Type.getClass(flixel.FlxSubState.curInstance))}' : '')}' +
-			'\nBPM: ${Conductor.bpm}' +
-			'\nVER: ${Main.denpaEngineVersion.debugVersion}' +
-			'\nSYS: ${LimeSys.platformLabel} ${LimeSys.platformVersion}';
+
+		text = 'MEM: ${Math.fround(mem * 100)/100} $memDisplayStr' + 
+			'\nMEM-PEAK: ${Math.fround(memPeak * 100)/100} $memPeakDisplayStr';
+
+		if (showSystem) {
+			text += '\nVER: $engVer' +
+			'\nSYS: $platform' +
+			'\nCPU: $cpu';
+			if (gpu != cpu)
+				text += '\nGPU: $gpu';
+		}
+
+		if (showConductor) {
+			text += '\nBPM: ${Conductor.bpm}' + 
+				'\nTIME: ${Math.round(Conductor.songPosition)}';
+			if (MusicBeatSubstate.curInstance != null)
+				text += '\nSTEP: ${MusicBeatSubstate.curInstance.curStep}' +
+					'\nBEAT: ${MusicBeatSubstate.curInstance.curBeat}';
+			else if (MusicBeatState.curInstance != null)
+				text += '\nSTEP: ${MusicBeatState.curInstance.curStep}' +
+					'\nBEAT: ${MusicBeatState.curInstance.curBeat}';
+		}
+
+		if (showFlixel) {
+			text += '\nCUR: ${Type.getClassName(Type.getClass(FlxG.state))}' +
+				'${(flixel.FlxSubState.curInstance != null ? '\nSUB: ${Type.getClassName(Type.getClass(flixel.FlxSubState.curInstance))}' : '')}' +
+				'\nMEMBS: ${FlxG.state.members.length}' +
+				#if debug '\nACT-OBJ: $uObj | VIS-OBJ: $dObj' + #end
+				'\nSNDS: ${FlxG.sound.list.length}' + 
+				'\nBMPS: ${FlxG.bitmap.getTotalBitmaps()}';
+		}
+
+		forceUpdate = false;
 	}
 }
