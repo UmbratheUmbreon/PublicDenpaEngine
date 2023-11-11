@@ -7,6 +7,8 @@
 ![GitHub Latest (Including Pre-releases)](https://img.shields.io/github/v/release/UmbratheUmbreon/PublicDenpaEngine?include_prereleases&label=latest%20version)
 [![Discord](https://img.shields.io/discord/993277169876873326?label=discord)](https://discord.gg/BFaMfmTNaa)
 
+[![Star History Chart](https://api.star-history.com/svg?repos=UmbratheUmbreon/PublicDenpaEngine&type=Timeline)](https://star-history.com/#UmbratheUmbreon/PublicDenpaEngine&Timeline)
+
 # Friday Night Funkin': "DENPA" Engine
 
 ## Synopsis
