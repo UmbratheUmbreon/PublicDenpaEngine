@@ -486,6 +486,8 @@ class GeneralSettingsSubState extends BaseOptionsMenu
 		option.decimals = 1;
 
 		super();
+
+		addScrollers();
 	}
 
 	function changeOption(name:String) {
@@ -675,6 +677,8 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		super();
+
+		addScrollers();
 
 		windowBar = new FlxSprite((FlxG.width/4) * 3 - 40, FlxG.height/4 - 100).makeGraphic(80, 220, 0x00ffffff);
 		windowBar.visible = false;
@@ -887,6 +891,8 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		super();
+
+		addScrollers(true);
 
 		shouldZoom = ClientPrefs.settings.get("camZooms");
 
@@ -1152,6 +1158,8 @@ class MiscSettingsSubState extends BaseOptionsMenu
 		option.onChange = changeOption;
 
 		super();
+
+		addScrollers();
 
 		instance = this;
 	}

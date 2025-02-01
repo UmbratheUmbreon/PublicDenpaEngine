@@ -53,16 +53,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		bg.screenCenter();
 		add(bg);
 
-		if (!ClientPrefs.settings.get("lowQuality")) {
-			bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'));
-			bgScroll.velocity.set(29, 30);
-			add(bgScroll);
-	
-			bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'));
-			bgScroll2.velocity.set(-29, -30);
-			add(bgScroll2);
-		}
-
 		gradient = new FlxSprite(0,0).loadGraphic(Paths.image('gradient'));
 		gradient.scrollFactor.set(0, 0);
 		add(gradient);
@@ -139,13 +129,27 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		reloadCheckboxes();
 
 		bg.color = SoundTestState.getDaColor();
-		if (!ClientPrefs.settings.get("lowQuality")) {
-			bgScroll.color = SoundTestState.getDaColor();
-			bgScroll2.color = SoundTestState.getDaColor();
-		}
 		gradient.color = SoundTestState.getDaColor();
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+	}
+
+	public function addScrollers(bypass:Bool = false)
+	{
+		if (ClientPrefs.settings.get("lowQuality") && !bypass) {
+			return;
+		}
+
+		bgScroll = new FlxBackdrop(Paths.image('menuBGHexL6'));
+		bgScroll.velocity.set(29, 30);
+		insert(members.indexOf(gradient), bgScroll);
+
+		bgScroll2 = new FlxBackdrop(Paths.image('menuBGHexL6'));
+		bgScroll2.velocity.set(-29, -30);
+		insert(members.indexOf(gradient), bgScroll2);
+
+		bgScroll.color = SoundTestState.getDaColor();
+		bgScroll2.color = SoundTestState.getDaColor();
 	}
 
 	public function addOption(option:Option) {

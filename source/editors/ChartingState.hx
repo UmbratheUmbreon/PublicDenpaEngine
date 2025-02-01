@@ -159,6 +159,7 @@ class ChartingState extends MusicBeatState
 	var nextRenderedNotes:FlxTypedGroup<Note>;
 
 	var gridBG:FlxSprite;
+	var gridQuantOverlay:FlxSprite;
 	final gridMult:Int32 = 2;
 
 	var daquantspot = 0;
@@ -2121,6 +2122,8 @@ class ChartingState extends MusicBeatState
 		"\n\n\nSection: " + curSection +
 		"\n\n\nBeat: " + curBeat +
 		"\n\n\nStep: " + curStep +
+		//does not fit on screen
+		//"\n\n\nQuant:" + quantOverlayData[curQuantOverlay][3] +
 		"\n\n\nDifficulty: " + difficultyString +
 		"\n\n\nKeys: " + Note.ammo[_song.options.mania];
 	}
@@ -2328,7 +2331,10 @@ class ChartingState extends MusicBeatState
 			case E:
 				if(curSelectedNote != null && curSelectedNote[1] > -1) changeNoteSustain(Conductor.stepCrochet);
 			case Q:
-				if(curSelectedNote != null && curSelectedNote[1] > -1) changeNoteSustain(-Conductor.stepCrochet);
+				if (FlxG.keys.pressed.CONTROL)
+					updateQuant();
+				else
+					if(curSelectedNote != null && curSelectedNote[1] > -1) changeNoteSustain(-Conductor.stepCrochet);
 			case BACKSPACE | ESCAPE:
 				if (FlxG.keys.pressed.CONTROL) {
 					openSubState(new Prompt('This action will clear unsaved progress.\n\nProceed?', 0, function()
@@ -2550,6 +2556,13 @@ class ChartingState extends MusicBeatState
 		reloadGridLayer();
 	}
 
+	function updateQuant() {
+		curQuantOverlay++;
+		if (curQuantOverlay >= quantOverlayData.length) curQuantOverlay = 0;
+		//updateBpmText();
+		reloadGridLayer();
+	}
+
 	function loadAudioBuffer() {
 		if(audioBuffers[0] != null) {
 			audioBuffers[0].dispose();
@@ -2600,6 +2613,26 @@ class ChartingState extends MusicBeatState
 		}
 		#end
 	}
+
+	var curQuantOverlay:Int = 2;
+	final quantOverlayData:Array<Array<Dynamic>> = [
+		//0 is for the modulo by
+		//1 is for the greater than
+		//2 is for the color
+		//3 is for the quant text display
+		[16, 8, 0x33FF00CB, 2], //half notes (2)
+		[12, 6, 0x33AE00FF, 3], //dotted half notes (3)
+		[8, 4, 0x332600FF, 4], //quarter notes (4)
+		[6, 3, 0x33003CFF, 6], //dotted quarter notes (6)
+		[4, 2, 0x3300FFEA, 8], //eighth notes (8)
+		[3, 1.5, 0x3300FF88, 12], //dotted eighth notes (12)
+		[2, 1, 0x331BFF00, 16], //sixteenth notes (16)
+		[1.5, 0.75, 0x339DFF00, 24], //dotted sixteenth notes (24)
+		[1, 0.5, 0x33FFFA00, 32], //thirty-second notes (32)
+		[0.75, 0.375, 0x33FF7400, 48], //dotted thirty-second notes (48)
+		[0.5, 0.25, 0x33FF0000, 64] //sixty-fourth notes (64)
+	];
+
 	function reloadGridLayer() { //sex
 		PlayState.mania = _song.options.mania;
 
@@ -2624,6 +2657,23 @@ class ChartingState extends MusicBeatState
 		if(waveformEnabled != null)
 			updateWaveform();
 		#end
+
+		final GRID_WIDTH = 1 + (1 * Note.ammo[_song.options.mania] * 2);
+		
+		gridQuantOverlay = new FlxSprite().makeGraphic(GRID_WIDTH, Std.int(32 * zoomList[curZoom]), 0x00FFFFFF, true);
+		final curQuantData = quantOverlayData[curQuantOverlay];
+		for (y in 0...gridQuantOverlay.pixels.height) {
+			//i fixed the formula for this you better be grateful
+			if ((y / zoomList[curZoom]) % curQuantData[0] < curQuantData[1]) continue;
+			for (x in 0...gridQuantOverlay.pixels.width) {
+				gridQuantOverlay.pixels.setPixel32(x, y, curQuantData[2]);
+			}
+		}
+		gridQuantOverlay.scale.set(GRID_SIZE, GRID_SIZE);
+		gridQuantOverlay.updateHitbox();
+		gridQuantOverlay.active = false;
+		gridQuantOverlay.antialiasing = false;
+		gridLayer.add(gridQuantOverlay);
 
 		var gridBlack:FlxSprite = new FlxSprite(0, gridBG.height / 2).makeGraphic(Std.int(GRID_SIZE + GRID_SIZE * Note.ammo[_song.options.mania] * 2), Std.int(gridBG.height / 2), FlxColor.BLACK);
 		gridBlack.alpha = 0.4;
@@ -3175,6 +3225,9 @@ class ChartingState extends MusicBeatState
 	{
 		var retStr:String = '';
 		var addedOne:Bool = false;
+		if (names == null) { //?????????
+			return retStr;
+		}
 		for (i in 0...names.length)
 		{
 			if(addedOne) retStr += ', ';
